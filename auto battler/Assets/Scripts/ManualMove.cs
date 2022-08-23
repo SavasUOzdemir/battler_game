@@ -5,7 +5,7 @@ using UnityEngine;
 public class ManualMove : MonoBehaviour
 {
     float speed = 3f;
-    Transform target = null;
+    //Transform target = null;
     void Update()
     {
         if (Input.GetKey(KeyCode.W))
@@ -19,8 +19,8 @@ public class ManualMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("Attack done");
-            target = GetComponent<PickTarget>().Target;
-            target.GetComponent<Attributes>().health -= 5;
+            //target = GetComponent<PickTarget>().Target;
+            //target.GetComponent<Attributes>().health -= 5;
         }
     }
 }
