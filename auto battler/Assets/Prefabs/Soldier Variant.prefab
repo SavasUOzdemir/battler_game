@@ -31,6 +31,10 @@ PrefabInstance:
       propertyPath: m_Offset.x
       value: 0.23082495
       objectReference: {fileID: 0}
+    - target: {fileID: 1540160725, guid: 5df3e1208566e6c41b28b52f4e6a99d8, type: 3}
+      propertyPath: m_Center.x
+      value: 0.21
+      objectReference: {fileID: 0}
     - target: {fileID: 5395409457999462704, guid: 5df3e1208566e6c41b28b52f4e6a99d8, type: 3}
       propertyPath: m_FlipX
       value: 1
