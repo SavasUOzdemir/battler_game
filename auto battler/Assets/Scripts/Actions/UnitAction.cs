@@ -12,33 +12,38 @@ public abstract class UnitAction : MonoBehaviour
     protected float currentCooldown = 0.0f;
     protected bool acting = false;
     protected bool casted = false;
+    protected Animator animator;
+
+    void Awake()
+    {
+        animator = gameObject.GetComponent<Animator>();
+    }
 
     void Update()
     {
-        if (acting)
-        {
-            currentAnimTime += Time.deltaTime;
-            if (currentAnimTime > castTime && !casted)
-            {
-                foreach (GameObject unit in FindTargets())
-                {
-                    ProduceEffect(unit);
-                }
-                currentCooldown = cooldown;
-                casted = true;
-            }
-            else if (currentAnimTime > castTime + backswing)
-            {
-                acting = false;
-                casted = false;
-                currentAnimTime = 0.0f;
-                gameObject.GetComponent<Actor>().busy = false;
-            }
-        }
         ProgressCooldown();
     }
 
-    public abstract void DoAction();
+    public IEnumerator DoAction()
+    {
+        List<GameObject> targets = FindTargets();
+        if(targets != null)
+        {
+            animator.SetBool("acting", true);
+            yield return new WaitForSeconds(castTime);
+            foreach(GameObject unit in targets)
+            {
+                animator.SetBool("casted", true);
+                ProduceEffect(unit);
+            }
+            currentCooldown = cooldown;
+            yield return new WaitForSeconds(backswing);
+            animator.SetBool("acting", false);
+            animator.SetBool("casted", false);
+        }
+        gameObject.GetComponent<Actor>().busy = false;
+    }
+
     protected abstract List<GameObject> FindTargets();
     protected abstract void ProduceEffect(GameObject unit);
 

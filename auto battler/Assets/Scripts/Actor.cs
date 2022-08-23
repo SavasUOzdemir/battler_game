@@ -28,7 +28,7 @@ public class Actor : MonoBehaviour
             {
                 if (action.getCurrentCooldown() <= 0)
                 {
-                    action.DoAction();
+                    StartCoroutine(action.DoAction());
                     busy = true;
                     break;
                 }

@@ -16,12 +16,7 @@ public class UnitActionBasicAttack : UnitAction
         castTime = 0.5f;
         backswing = 0.5f;
     }
-
-    public override void DoAction()
-    {
-        acting = true;
-    }
-
+ 
     protected override List<GameObject> FindTargets()
     {
         Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position, range);

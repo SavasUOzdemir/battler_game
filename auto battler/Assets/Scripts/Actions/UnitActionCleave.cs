@@ -15,11 +15,6 @@ public class UnitActionCleave : UnitAction
         castTime = 0.5f;
         backswing = 0.5f;
     }
-
-    public override void DoAction()
-    {
-        acting = true;
-    }
  
     protected override List<GameObject> FindTargets()
     {
