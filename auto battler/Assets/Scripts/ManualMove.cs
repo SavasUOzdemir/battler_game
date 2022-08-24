@@ -16,11 +16,11 @@ public class ManualMove : MonoBehaviour
             transform.Translate(-1 * Time.deltaTime * speed, 0, 0, Space.World);
         if (Input.GetKey(KeyCode.D))
             transform.Translate(1 * Time.deltaTime * speed, 0, 0, Space.World);
-        if (Input.GetKeyDown(KeyCode.Space))
+        /*if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("Attack done");
             target = GetComponent<PickTarget>().Target;
             target.GetComponent<Attributes>().health -= 5;
-        }
+        }*/
     }
 }

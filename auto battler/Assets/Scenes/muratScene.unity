@@ -220,6 +220,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3198755445470490641, guid: 42f79eb5b0a32a0438fd1bb88467ecf8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3198755445470490641, guid: 42f79eb5b0a32a0438fd1bb88467ecf8, type: 3}
       propertyPath: m_DrawMode
       value: 0
       objectReference: {fileID: 0}
@@ -484,11 +488,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3402823463959875100, guid: 576cb84a2c0ce9a4ea3628106875ff6e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.44
+      value: 2.32
       objectReference: {fileID: 0}
     - target: {fileID: 3402823463959875100, guid: 576cb84a2c0ce9a4ea3628106875ff6e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.03
       objectReference: {fileID: 0}
     - target: {fileID: 3402823463959875100, guid: 576cb84a2c0ce9a4ea3628106875ff6e, type: 3}
       propertyPath: m_LocalPosition.z

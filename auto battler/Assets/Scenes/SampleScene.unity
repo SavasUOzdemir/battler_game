@@ -477,7 +477,7 @@ Tilemap:
   m_Origin: {x: -11, y: -5, z: 0}
   m_Size: {x: 22, y: 5, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
-  m_TileOrientation: 0
+  m_TileOrientation: 1
   m_TileOrientationMatrix:
     e00: 1
     e01: 0
@@ -651,7 +651,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8762132311479085318, guid: eedd3b361654bf443b456586e497c58a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8762132311479085318, guid: eedd3b361654bf443b456586e497c58a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -712,7 +712,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8762132311479085318, guid: eedd3b361654bf443b456586e497c58a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.02
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8762132311479085318, guid: eedd3b361654bf443b456586e497c58a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -960,7 +960,7 @@ Grid:
   m_CellSize: {x: 1, y: 1, z: 0}
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
-  m_CellSwizzle: 0
+  m_CellSwizzle: 1
 --- !u!4 &1061331185
 Transform:
   m_ObjectHideFlags: 0
@@ -1085,7 +1085,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8762132311479085318, guid: eedd3b361654bf443b456586e497c58a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8762132311479085318, guid: eedd3b361654bf443b456586e497c58a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3500,7 +3500,7 @@ Tilemap:
   m_Origin: {x: -12, y: -5, z: 0}
   m_Size: {x: 23, y: 10, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
-  m_TileOrientation: 0
+  m_TileOrientation: 1
   m_TileOrientationMatrix:
     e00: 1
     e01: 0
@@ -3548,7 +3548,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8351670499066093192, guid: 5df3e1208566e6c41b28b52f4e6a99d8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.22
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8351670499066093192, guid: 5df3e1208566e6c41b28b52f4e6a99d8, type: 3}
       propertyPath: m_LocalPosition.z
