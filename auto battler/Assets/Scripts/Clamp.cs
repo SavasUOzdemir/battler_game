@@ -7,6 +7,6 @@ public class Clamp : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -9.3f, 9.7f), Mathf.Clamp(transform.position.y, -4f, 4f), transform.position.z);
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -9.3f, 9.7f), transform.position.y, Mathf.Clamp(transform.position.z, -6.81368f, 8.324822f));
     }
 }
