@@ -10,13 +10,19 @@ public abstract class UnitAction : MonoBehaviour
     protected float backswing;
     protected float currentAnimTime = 0.0f;
     protected float currentCooldown = 0.0f;
-    protected bool acting = false;
-    protected bool casted = false;
     protected Animator animator;
+    protected AnimatorOverrideController animatorOverrideController;
+    protected string animPath;
 
     void Awake()
     {
         animator = gameObject.GetComponent<Animator>();
+        animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+    }
+
+    private void Start()
+    {
+        LoadAnimationClip(animPath);
     }
 
     void Update()
@@ -29,17 +35,15 @@ public abstract class UnitAction : MonoBehaviour
         List<GameObject> targets = FindTargets();
         if(targets != null)
         {
-            animator.SetBool("acting", true);
-            yield return new WaitForSeconds(castTime);
-            foreach(GameObject unit in targets)
+            animator.Play("Attack");
+            yield return new WaitForSeconds(castTime);     
+            foreach (GameObject unit in targets)
             {
-                animator.SetBool("casted", true);
                 ProduceEffect(unit);
             }
             currentCooldown = cooldown;
             yield return new WaitForSeconds(backswing);
-            animator.SetBool("acting", false);
-            animator.SetBool("casted", false);
+            animator.Play("Idle");
         }
         gameObject.GetComponent<Actor>().busy = false;
     }
@@ -50,6 +54,11 @@ public abstract class UnitAction : MonoBehaviour
     void ProgressCooldown()
     {
         currentCooldown = currentCooldown - Time.deltaTime;
+    }
+
+    void LoadAnimationClip(string path)
+    {
+        animatorOverrideController["animation_attack"] = Resources.Load<AnimationClip>(path);
     }
 
     public int getPrio()

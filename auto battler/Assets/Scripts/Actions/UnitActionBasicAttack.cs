@@ -15,6 +15,7 @@ public class UnitActionBasicAttack : UnitAction
         cooldown = 1.0f;
         castTime = 0.5f;
         backswing = 0.5f;
+        animPath = "Animations/Placeholder/animation_attack";
     }
  
     protected override List<GameObject> FindTargets()
