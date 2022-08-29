@@ -50,6 +50,11 @@ namespace DapperDino.TooltipUI
             {
                 newPos.y += topEdgeToScreenEdgeDistance;
             }
+            float bottomEdgeToScreenEdgeDistance = Screen.height - (newPos.y - popupObject.rect.height * popupCanvas.scaleFactor) + padding;
+            if (bottomEdgeToScreenEdgeDistance < 0)
+            {
+                newPos.y += bottomEdgeToScreenEdgeDistance;
+            }
             popupObject.transform.position = newPos;
         }
 
