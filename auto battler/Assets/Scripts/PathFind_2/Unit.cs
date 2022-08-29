@@ -10,6 +10,7 @@ public class Unit : MonoBehaviour {
 	int targetIndex;
 
 	void Start() {
+		//startta değil updatede target != null ise çağır OR STUFF
 		PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
 	}
 
