@@ -22,7 +22,7 @@ public class UnitActionProjectileTest : UnitAction
         backswing = 0.5f;
         animPath = "Placeholder/animation_attack";
         hasProjectile = true;
-        projectileSpeed = 10.0f;
+        projectileSpeed = 30.0f;
         projectile = Resources.Load("Projectiles/Arrow/Prefab_Arrow") as GameObject;
     }
 

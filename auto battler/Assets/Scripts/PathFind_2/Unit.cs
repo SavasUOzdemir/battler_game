@@ -4,15 +4,27 @@ using System.Collections;
 public class Unit : MonoBehaviour {
 
 
-	public Transform target;
+	[SerializeField]private Transform target;
 	float speed = 3;
 	Vector3[] path;
 	int targetIndex;
 
+	/*
 	void Start() {
 		//startta değil updatede target != null ise çağır OR STUFF
 		PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
+	}*/
+
+	public Transform GetTarget()
+	{
+		return target;
 	}
+
+	public void SetTarget(Transform _target) 
+	{
+		this.target = _target;
+        PathRequestManager.RequestPath(transform.position, target.position, OnPathFound);
+    }
 
 	public void OnPathFound(Vector3[] newPath, bool pathSuccessful) {
 		if (pathSuccessful) {
