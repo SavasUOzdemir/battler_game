@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TakeDamage : MonoBehaviour
 {
+    [SerializeField]
     private float currentHP = 30.0f;
 
     public void ChangeAttr(float change)

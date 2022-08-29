@@ -4,19 +4,29 @@ using UnityEngine;
 
 public abstract class UnitAction : MonoBehaviour
 {
+    float currentCooldown = 0.0f;
+
     protected int prio = 10;
     protected float cooldown;
     protected float castTime;
     protected float backswing;
-    protected float currentAnimTime = 0.0f;
-    protected float currentCooldown = 0.0f;
-    protected bool acting = false;
-    protected bool casted = false;
+
+    protected bool hasProjectile = false;
+    protected float projectileSpeed;
+
     protected Animator animator;
+    protected AnimatorOverrideController animatorOverrideController;
+    protected string animPath;
 
     void Awake()
     {
         animator = gameObject.GetComponent<Animator>();
+        animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+    }
+
+    private void Start()
+    {
+        LoadResources();
     }
 
     void Update()
@@ -26,30 +36,35 @@ public abstract class UnitAction : MonoBehaviour
 
     public IEnumerator DoAction()
     {
-        List<GameObject> targets = FindTargets();
-        if(targets != null)
+        if(FindTargets())
         {
-            animator.SetBool("acting", true);
+            animator.Play("Attack");
             yield return new WaitForSeconds(castTime);
-            foreach(GameObject unit in targets)
+            if(ProduceEffect())
             {
-                animator.SetBool("casted", true);
-                ProduceEffect(unit);
+                currentCooldown = cooldown;
+                yield return new WaitForSeconds(backswing);
             }
-            currentCooldown = cooldown;
-            yield return new WaitForSeconds(backswing);
-            animator.SetBool("acting", false);
-            animator.SetBool("casted", false);
+            animator.Play("Idle");
         }
         gameObject.GetComponent<Actor>().busy = false;
+    } 
+
+    protected virtual bool FindTargets()
+    {
+        return true;
     }
 
-    protected abstract List<GameObject> FindTargets();
-    protected abstract void ProduceEffect(GameObject unit);
+    protected abstract bool ProduceEffect();
 
     void ProgressCooldown()
     {
         currentCooldown = currentCooldown - Time.deltaTime;
+    }
+
+    void LoadResources()
+    {
+        animatorOverrideController["animation_attack"] = Resources.Load<AnimationClip>(animPath);
     }
 
     public int getPrio()
