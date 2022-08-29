@@ -4,12 +4,16 @@ using UnityEngine;
 
 public abstract class UnitAction : MonoBehaviour
 {
+    float currentCooldown = 0.0f;
+
     protected int prio = 10;
     protected float cooldown;
     protected float castTime;
     protected float backswing;
-    protected float currentAnimTime = 0.0f;
-    protected float currentCooldown = 0.0f;
+
+    protected bool hasProjectile = false;
+    protected float projectileSpeed;
+
     protected Animator animator;
     protected AnimatorOverrideController animatorOverrideController;
     protected string animPath;
@@ -22,7 +26,7 @@ public abstract class UnitAction : MonoBehaviour
 
     private void Start()
     {
-        LoadAnimationClip(animPath);
+        LoadResources();
     }
 
     void Update()
@@ -32,33 +36,35 @@ public abstract class UnitAction : MonoBehaviour
 
     public IEnumerator DoAction()
     {
-        List<GameObject> targets = FindTargets();
-        if(targets != null)
+        if(FindTargets())
         {
             animator.Play("Attack");
-            yield return new WaitForSeconds(castTime);     
-            foreach (GameObject unit in targets)
+            yield return new WaitForSeconds(castTime);
+            if(ProduceEffect())
             {
-                ProduceEffect(unit);
+                currentCooldown = cooldown;
+                yield return new WaitForSeconds(backswing);
             }
-            currentCooldown = cooldown;
-            yield return new WaitForSeconds(backswing);
             animator.Play("Idle");
         }
         gameObject.GetComponent<Actor>().busy = false;
+    } 
+
+    protected virtual bool FindTargets()
+    {
+        return true;
     }
 
-    protected abstract List<GameObject> FindTargets();
-    protected abstract void ProduceEffect(GameObject unit);
+    protected abstract bool ProduceEffect();
 
     void ProgressCooldown()
     {
         currentCooldown = currentCooldown - Time.deltaTime;
     }
 
-    void LoadAnimationClip(string path)
+    void LoadResources()
     {
-        animatorOverrideController["animation_attack"] = Resources.Load<AnimationClip>(path);
+        animatorOverrideController["animation_attack"] = Resources.Load<AnimationClip>(animPath);
     }
 
     public int getPrio()

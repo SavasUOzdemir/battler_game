@@ -7,6 +7,7 @@ public class UnitActionCleave : UnitAction
     private float range = 2.0f;
     private float damage = 10.0f;
     private float facingRadius = 90.0f;
+    private List<GameObject> enemies;
 
     void Start()
     {
@@ -16,25 +17,27 @@ public class UnitActionCleave : UnitAction
         backswing = 0.5f;
     }
  
-    protected override List<GameObject> FindTargets()
+    protected override bool FindTargets()
     {
         Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position, range);
-        List<GameObject> gObjects = new List<GameObject>();
+        enemies = new List<GameObject>();
         foreach(Collider2D obj in objects)
         {
             if (Vector2.Angle(obj.transform.position - transform.position, transform.right) < facingRadius)  // TODO:: Transform.right to proper facing vector
-                gObjects.Add(obj.gameObject);
+                enemies.Add(obj.gameObject);
         }
-        return gObjects;
+        if(enemies.Count > 0)
+            return true;
+        return false;
 
     }
 
-    protected override void ProduceEffect(GameObject enemy)
+    protected override bool ProduceEffect()
     {
-        if (enemy == null)
-            return;
-        TakeDamage takeDamage = enemy.GetComponent<TakeDamage>();
-        takeDamage.ChangeAttr(damage);
+        foreach(GameObject enemy in enemies)
+        {
+            enemy.GetComponent<TakeDamage>().ChangeAttr(damage);
+        }
+        return true;
     }
-
 }
