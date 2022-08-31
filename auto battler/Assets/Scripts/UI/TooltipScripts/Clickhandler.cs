@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 
-public class clickhandler : MonoBehaviour, IPointerClickHandler
+public class Clickhandler : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField]TMP_Text text;
 
@@ -17,8 +17,14 @@ public class clickhandler : MonoBehaviour, IPointerClickHandler
 
             if (index > -1)
             {
-//                "ÝSTEDÝÐÝM ÞEYLERÝ YAP"
+                InstantiateRectTransform();
             }
         }
+    }
+
+    void InstantiateRectTransform()
+    {
+        var newRectTransform = Instantiate(this.transform.parent, Input.mousePosition, Quaternion.identity);
+        newRectTransform.SetParent(this.transform.parent.parent);
     }
 }

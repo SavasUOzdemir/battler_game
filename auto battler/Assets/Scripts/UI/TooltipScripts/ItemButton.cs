@@ -10,26 +10,42 @@ namespace DapperDino.TooltipUI
     {
         [SerializeField] private TooltipPopup tooltipPopup;
         [SerializeField] private Item item;
+        bool pointerOut = false;
         //[SerializeField] int extraPopupAmount = 0;
+
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            pointerOut = false;
             tooltipPopup.DisplayInfo(item);
+            StartCoroutine("FixRectInPosition");
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-
-            tooltipPopup.HideInfo();
+            pointerOut = true;
+        //    tooltipPopup.fixPosition = false;
+        //    tooltipPopup.HideInfo();
 
         }
-        //public void OnPointerClick(PointerEventData eventData)
-        //{
-        //    Debug.Log("klikd");
-        //    if (eventData.button == PointerEventData.InputButton.Left)
-        //    {
-        //        Debug.Log(TMP_TextUtilities.FindIntersectingLink(tooltipPopup.infoText, Input.mousePosition, null));
-        //    }
-        //}
+
+        IEnumerator FixRectInPosition()
+        {
+            yield return new WaitForSecondsRealtime(0.5f);
+            //if (new PointerEventData(EventSystem.current).hovered.Contains(this.gameObject))
+            if (pointerOut == false)
+            {
+                tooltipPopup.fixPosition = true;
+            }
+        }
     }
+    //public void OnPointerClick(PointerEventData eventData)
+    //{
+    //    Debug.Log("klikd");
+    //    if (eventData.button == PointerEventData.InputButton.Left)
+    //    {
+    //        Debug.Log(TMP_TextUtilities.FindIntersectingLink(tooltipPopup.infoText, Input.mousePosition, null));
+    //    }
+    //}
 }
+

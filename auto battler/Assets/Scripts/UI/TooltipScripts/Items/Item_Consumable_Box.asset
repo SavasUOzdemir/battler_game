@@ -15,4 +15,4 @@ MonoBehaviour:
   name: Box
   sellPrice: 75
   rarity: {fileID: 11400000, guid: 35f08bce9e62807488cb1932e2a0174e, type: 2}
-  useText: This be a box. Not the beating kind.
+  useText: This be a box. Not the <link = ID01>beating </link>kind.
