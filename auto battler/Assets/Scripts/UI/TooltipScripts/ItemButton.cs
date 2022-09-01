@@ -9,6 +9,7 @@ namespace DapperDino.TooltipUI
     public class ItemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private TooltipPopup tooltipPopup;
+        [SerializeField] private RectTransform mainBackground;
         [SerializeField] private Item item;
         bool pointerOut = false;
         //[SerializeField] int extraPopupAmount = 0;
@@ -17,16 +18,16 @@ namespace DapperDino.TooltipUI
         public void OnPointerEnter(PointerEventData eventData)
         {
             pointerOut = false;
-            tooltipPopup.DisplayInfo(item);
+            DisplayInfo displayinfo = mainBackground.GetComponent<DisplayInfo>();
+            displayinfo.DisplayItemInfo(item, mainBackground);
             StartCoroutine("FixRectInPosition");
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             pointerOut = true;
-        //    tooltipPopup.fixPosition = false;
-        //    tooltipPopup.HideInfo();
-
+            DisplayInfo displayinfo = mainBackground.GetComponent<DisplayInfo>();
+            displayinfo.HideInfo();
         }
 
         IEnumerator FixRectInPosition()

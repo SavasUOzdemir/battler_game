@@ -58,22 +58,23 @@ namespace DapperDino.TooltipUI
             popupObject.transform.position = newPos;
         }
 
-        public void DisplayInfo(Item item)
-        {
-            StringBuilder builder = new();
+        //public void DisplayInfo(Item item, RectTransform popupObject_)
+        //{
+        //    StringBuilder builder = new();
 
-            builder.Append("<size=35>").Append(item.ColouredName).Append("</size>").AppendLine();
-            builder.Append(item.GetTooltipInfoText());
+        //    builder.Append("<size=35>").Append(item.ColouredName).Append("</size>").AppendLine();
+        //    builder.Append(item.GetTooltipInfoText());
 
-            infoText.text = builder.ToString();
+        //    infoText.text = builder.ToString();
 
-            popupCanvasObject.SetActive(true);
-            LayoutRebuilder.ForceRebuildLayoutImmediate(popupObject);
-        }
+        //    if(popupCanvasObject.activeSelf == false)
+        //        popupCanvasObject.SetActive(true);
+        //    LayoutRebuilder.ForceRebuildLayoutImmediate(popupObject_);
+        //}
 
-        public void HideInfo()
-        {
-            popupCanvasObject.SetActive(false);
-        }
+        //public void HideInfo()
+        //{
+        //    popupCanvasObject.SetActive(false);
+        //}
     }
 }

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ed9f560f02ab2b4894d356dd3a10343, type: 3}
-  m_Name: Item_Consumable_ManaPotion 1
+  m_Name: Item_Consumable_Beating
   m_EditorClassIdentifier: 
-  name: Mana Potion
-  sellPrice: 300
-  rarity: {fileID: 11400000, guid: 35f08bce9e62807488cb1932e2a0174e, type: 2}
-  useText: Something else.
+  name: Beating
+  sellPrice: 50
+  rarity: {fileID: 11400000, guid: a51c474e0322525429c21ecb68b31a21, type: 2}
+  useText: Punching someone repeatedly until they stop resisting.

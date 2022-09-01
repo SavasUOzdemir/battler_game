@@ -123,6 +123,30 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &137978731 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2471403536785970822, guid: 599fc18ab47d2de4f944bc0b111cfb77, type: 3}
+  m_PrefabInstance: {fileID: 1343297596}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &137978732 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2471403536785970825, guid: 599fc18ab47d2de4f944bc0b111cfb77, type: 3}
+  m_PrefabInstance: {fileID: 1343297596}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &137978737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 137978731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df4afd2105057e045aab86169e8818e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoText: {fileID: 1970036312}
+  popupCanvasObject: {fileID: 1296701478}
 --- !u!1001 &282326229
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -134,6 +158,10 @@ PrefabInstance:
       propertyPath: tooltipPopup
       value: 
       objectReference: {fileID: 1343297597}
+    - target: {fileID: 623499839, guid: 3683cb690c686d147a933828e657ee39, type: 3}
+      propertyPath: mainBackground
+      value: 
+      objectReference: {fileID: 137978732}
     - target: {fileID: 7598714679162978202, guid: 3683cb690c686d147a933828e657ee39, type: 3}
       propertyPath: m_Name
       value: ItemCanvas
@@ -376,6 +404,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1296701478 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5056369616310407389, guid: 599fc18ab47d2de4f944bc0b111cfb77, type: 3}
+  m_PrefabInstance: {fileID: 1343297596}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1343297596
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -383,6 +416,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2429971473443215904, guid: 599fc18ab47d2de4f944bc0b111cfb77, type: 3}
+      propertyPath: tooltipPopup
+      value: 
+      objectReference: {fileID: 1343297597}
     - target: {fileID: 6524138454246826223, guid: 599fc18ab47d2de4f944bc0b111cfb77, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -442,5 +479,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fef1ee8234fcf74daf478440a98cdba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1970036312 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2471403537084055738, guid: 599fc18ab47d2de4f944bc0b111cfb77, type: 3}
+  m_PrefabInstance: {fileID: 1343297596}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -3,28 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
-
-
-public class Clickhandler : MonoBehaviour, IPointerClickHandler
+namespace DapperDino.TooltipUI
 {
-    [SerializeField]TMP_Text text;
-
-    public void OnPointerClick(PointerEventData eventData)
+    public class Clickhandler : MonoBehaviour, IPointerClickHandler
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            int index = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, null);
+        [SerializeField] TMP_Text text;
+        [SerializeField] private TooltipPopup tooltipPopup;
+        Item item;
 
-            if (index > -1)
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                InstantiateRectTransform();
+                int index = TMP_TextUtilities.FindIntersectingLink(text, Input.mousePosition, null);
+                item = Resources.Load<Consumable>("Items/Item_Consumable_Beating");
+                if (index > -1)
+                {
+                    InstantiateRectTransform(item);
+                }
             }
         }
-    }
 
-    void InstantiateRectTransform()
-    {
-        var newRectTransform = Instantiate(this.transform.parent, Input.mousePosition, Quaternion.identity);
-        newRectTransform.SetParent(this.transform.parent.parent);
+        void InstantiateRectTransform(Item item)
+        {
+            var newRectTransform = Instantiate(this.transform.parent, Input.mousePosition, Quaternion.identity);
+            newRectTransform.SetParent(this.transform.parent.parent);
+            DisplayInfo displayInfo_ = newRectTransform.GetComponent<DisplayInfo>();
+            displayInfo_.DisplayItemInfo(item, newRectTransform.GetComponent<RectTransform>());
+        }
     }
 }
