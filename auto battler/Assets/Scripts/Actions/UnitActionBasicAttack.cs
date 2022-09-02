@@ -38,7 +38,7 @@ public class UnitActionBasicAttack : UnitAction
     {
         if (enemy == null)
             return false;
-        enemy.GetComponent<TakeDamage>().ChangeAttr(damage);
+        enemy.GetComponent<Attributes>().ChangeHP(-damage);
         return true;
     }
 }

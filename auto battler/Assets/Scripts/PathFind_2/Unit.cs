@@ -4,10 +4,11 @@ using System.Collections;
 public class Unit : MonoBehaviour {
 
 
-	[SerializeField]private Transform target;
+	[SerializeField]private Vector3 target;
 	float speed = 3;
 	Vector3[] path;
 	int targetIndex;
+
 
 	/*
 	void Start() {
@@ -15,15 +16,15 @@ public class Unit : MonoBehaviour {
 		PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
 	}*/
 
-	public Transform GetTarget()
+	public Vector3 GetTarget()
 	{
 		return target;
 	}
 
-	public void SetTarget(Transform _target) 
+	public void SetTarget(Vector3 _target) 
 	{
 		this.target = _target;
-        PathRequestManager.RequestPath(transform.position, target.position, OnPathFound);
+        PathRequestManager.RequestPath(transform.position, target, OnPathFound);
     }
 
 	public void OnPathFound(Vector3[] newPath, bool pathSuccessful) {
@@ -35,12 +36,19 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
+	public void EndMove()
+	{
+		StopCoroutine("FollowPath");
+        gameObject.SendMessage("EndMovement", SendMessageOptions.RequireReceiver);
+    }
+
 	IEnumerator FollowPath() {
 		Vector3 currentWaypoint = path[0];
 		while (true) {
 			if (transform.position == currentWaypoint) {
 				targetIndex ++;
 				if (targetIndex >= path.Length) {
+					gameObject.SendMessage("EndMovement", SendMessageOptions.RequireReceiver);
 					yield break;
 				}
 				currentWaypoint = path[targetIndex];

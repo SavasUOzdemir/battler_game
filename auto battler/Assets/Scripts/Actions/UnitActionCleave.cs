@@ -36,7 +36,7 @@ public class UnitActionCleave : UnitAction
     {
         foreach(GameObject enemy in enemies)
         {
-            enemy.GetComponent<TakeDamage>().ChangeAttr(damage);
+            enemy.GetComponent<Attributes>().ChangeHP(-damage);
         }
         return true;
     }
