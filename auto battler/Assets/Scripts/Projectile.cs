@@ -42,7 +42,7 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        other.GetComponent<TakeDamage>().ChangeAttr(damage);
+        other.GetComponent<Attributes>().ChangeHP(-damage);
         Destroy(this.gameObject);
     }
 }

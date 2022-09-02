@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 7685123667458232255}
   - component: {fileID: 117234964874808636}
   - component: {fileID: 2169595368316687558}
+  - component: {fileID: 6736594527194332667}
+  - component: {fileID: 628564564640820343}
   m_Layer: 0
   m_Name: MuratFootman
   m_TagString: PlayerUnit
@@ -133,6 +135,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6736594527194332667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4790909944199296502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23126a64e4015df4d99bbfff271c2e23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {x: 0, y: 0, z: 0}
+--- !u!114 &628564564640820343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4790909944199296502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3861cbbea73f0f44eb8b53eebce3cead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  speed: 1
+  morale: 100
+  endurance: 100
+  damageReduction: 0.1
 --- !u!1 &9185388314954254621
 GameObject:
   m_ObjectHideFlags: 0

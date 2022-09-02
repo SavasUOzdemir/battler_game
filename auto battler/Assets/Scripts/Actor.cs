@@ -7,8 +7,13 @@ public class Actor : MonoBehaviour
 
     List<UnitAction> actionList = new List<UnitAction>();
     public bool busy = false;
+    Unit unit;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        unit = GetComponent<Unit>();
+    }
+
     void Start()
     {
         Component[] actions = GetComponents(typeof(UnitAction));
@@ -19,7 +24,6 @@ public class Actor : MonoBehaviour
         actionList.Sort((x,y) => x.getPrio().CompareTo(y.getPrio()));
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!busy)
@@ -34,6 +38,22 @@ public class Actor : MonoBehaviour
                 }
             }
         }    
+    }
+
+    private void Move(Vector3 target)
+    {
+        unit.SetTarget(target);
+        busy = true;
+    }
+
+    public void EndMovement()
+    {
+        busy = false;
+    }
+
+    public void AddUnitAction()
+    {
+        //TODO
     }
 
 }

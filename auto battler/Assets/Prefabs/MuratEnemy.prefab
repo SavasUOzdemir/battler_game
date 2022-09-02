@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4925631716366480209}
   - component: {fileID: -503397217257282504}
-  - component: {fileID: 6645431632219847340}
   - component: {fileID: 2903203731979295953}
+  - component: {fileID: 6803303844650424632}
   m_Layer: 0
   m_Name: MuratEnemy
   m_TagString: Enemy
@@ -49,19 +49,6 @@ CapsuleCollider:
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.7, z: 0}
---- !u!114 &6645431632219847340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3909842488032721162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 308c763fb1f726a4b85f3ff284c816f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHP: 30
 --- !u!54 &2903203731979295953
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -78,6 +65,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6803303844650424632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3909842488032721162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3861cbbea73f0f44eb8b53eebce3cead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  speed: 1
+  morale: 100
+  endurance: 100
+  damageReduction: 0.1
+  team: 1
 --- !u!1 &5648483077178614401
 GameObject:
   m_ObjectHideFlags: 0
