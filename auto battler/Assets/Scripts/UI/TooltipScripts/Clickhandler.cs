@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
@@ -24,13 +22,13 @@ namespace DapperDino.TooltipUI
                 }
             }
         }
-
         void InstantiateRectTransform(Item item)
         {
-            var newRectTransform = Instantiate(this.transform.parent, Input.mousePosition, Quaternion.identity);
+            Transform newRectTransform = Instantiate(this.transform.parent, Input.mousePosition, Quaternion.identity);
             newRectTransform.SetParent(this.transform.parent.parent);
             DisplayInfo displayInfo_ = newRectTransform.GetComponent<DisplayInfo>();
             displayInfo_.DisplayItemInfo(item, newRectTransform.GetComponent<RectTransform>());
+            Tooltip_Manager.rectTransforms.Add(newRectTransform.GetComponent<RectTransform>());
         }
     }
 }

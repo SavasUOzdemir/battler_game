@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 2471403536785970827}
   - component: {fileID: 2471403536785970824}
   - component: {fileID: 2471403536785970829}
+  - component: {fileID: 137978737}
   m_Layer: 5
   m_Name: MainBackground
   m_TagString: Untagged
@@ -217,6 +218,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &137978737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2471403536785970822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df4afd2105057e045aab86169e8818e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoText: {fileID: 2471403537084055738}
+  popupCanvasObject: {fileID: 5056369616310407389}
+  cursorOnThis: 0
 --- !u!1 &2471403537084055736
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,6 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 2471403537084055738}
+  tooltipPopup: {fileID: 2823367092065860438}
 --- !u!1 &5056369616310407389
 GameObject:
   m_ObjectHideFlags: 0
@@ -525,7 +542,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6524138454246826223}
   - component: {fileID: 2823367092065860438}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TooltipPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -4,49 +4,55 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
+
 namespace DapperDino.TooltipUI
 {
-    public class ItemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+      public class ItemButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private TooltipPopup tooltipPopup;
         [SerializeField] private RectTransform mainBackground;
         [SerializeField] private Item item;
         bool pointerOut = false;
-        //[SerializeField] int extraPopupAmount = 0;
-
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            Tooltip_Manager.cursorOnTooltip = false;
             pointerOut = false;
             DisplayInfo displayinfo = mainBackground.GetComponent<DisplayInfo>();
             displayinfo.DisplayItemInfo(item, mainBackground);
-            StartCoroutine("FixRectInPosition");
+            StartCoroutine(nameof(FixRectInPosition));
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             pointerOut = true;
-            DisplayInfo displayinfo = mainBackground.GetComponent<DisplayInfo>();
-            displayinfo.HideInfo();
+            StartCoroutine(nameof(CheckTooltipsAfterAFrame));
+            StartCoroutine(nameof(FreeRectPosition));
         }
-
+        IEnumerator CheckTooltipsAfterAFrame()
+        {
+            DisplayInfo displayinfo = mainBackground.GetComponent<DisplayInfo>();
+            yield return new WaitForEndOfFrame();
+            if (Tooltip_Manager.cursorOnTooltip == false)
+                displayinfo.HideInfo();
+        }
         IEnumerator FixRectInPosition()
         {
             yield return new WaitForSecondsRealtime(0.5f);
-            //if (new PointerEventData(EventSystem.current).hovered.Contains(this.gameObject))
             if (pointerOut == false)
             {
                 tooltipPopup.fixPosition = true;
             }
         }
+
+        IEnumerator FreeRectPosition()
+        {
+            yield return new WaitForSecondsRealtime(0.5f);
+            if(Tooltip_Manager.cursorOnTooltip==false)
+                tooltipPopup.fixPosition = false;
+        }
+
+        
     }
-    //public void OnPointerClick(PointerEventData eventData)
-    //{
-    //    Debug.Log("klikd");
-    //    if (eventData.button == PointerEventData.InputButton.Left)
-    //    {
-    //        Debug.Log(TMP_TextUtilities.FindIntersectingLink(tooltipPopup.infoText, Input.mousePosition, null));
-    //    }
-    //}
 }
 
