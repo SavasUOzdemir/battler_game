@@ -11,10 +11,10 @@ namespace DapperDino.TooltipUI
     {
         [SerializeField] private GameObject popupCanvasObject;
         [SerializeField] private RectTransform popupObject;
-        [SerializeField] public TextMeshProUGUI infoText;
+        public TextMeshProUGUI infoText;
         [SerializeField] private Vector3 offset;
         [SerializeField] private float padding;
-        [SerializeField] public bool fixPosition;
+        public bool fixPosition;
 
         private Canvas popupCanvas;
 
@@ -56,24 +56,6 @@ namespace DapperDino.TooltipUI
                 newPos.y += bottomEdgeToScreenEdgeDistance;
             }
             popupObject.transform.position = newPos;
-        }
-
-        public void DisplayInfo(Item item)
-        {
-            StringBuilder builder = new();
-
-            builder.Append("<size=35>").Append(item.ColouredName).Append("</size>").AppendLine();
-            builder.Append(item.GetTooltipInfoText());
-
-            infoText.text = builder.ToString();
-
-            popupCanvasObject.SetActive(true);
-            LayoutRebuilder.ForceRebuildLayoutImmediate(popupObject);
-        }
-
-        public void HideInfo()
-        {
-            popupCanvasObject.SetActive(false);
         }
     }
 }

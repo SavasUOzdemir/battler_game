@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ed9f560f02ab2b4894d356dd3a10343, type: 3}
-  m_Name: Item_Consumable_ManaPotion 1
+  m_Name: Item_Consumable_Box 1
   m_EditorClassIdentifier: 
-  name: Mana Potion
-  sellPrice: 300
+  name: Box
+  sellPrice: 75
   rarity: {fileID: 11400000, guid: 35f08bce9e62807488cb1932e2a0174e, type: 2}
-  useText: Something else.
+  useText: This be a box. Not the <link = ID01>beating </link>kind.

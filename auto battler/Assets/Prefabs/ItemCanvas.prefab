@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipPopup: {fileID: 0}
+  mainBackground: {fileID: 0}
   item: {fileID: 11400000, guid: 1dfb8f6ffff441345ab328046e56d45a, type: 2}
 --- !u!1 &7598714679162978202
 GameObject:
