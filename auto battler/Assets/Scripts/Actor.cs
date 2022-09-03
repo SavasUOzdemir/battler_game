@@ -8,6 +8,8 @@ public class Actor : MonoBehaviour
     List<UnitAction> actionList = new List<UnitAction>();
     public bool busy = false;
     Unit unit;
+    Animator animator;
+    AnimatorOverrideController animatorOverrideController;
 
     private void Awake()
     {
@@ -16,12 +18,8 @@ public class Actor : MonoBehaviour
 
     void Start()
     {
-        Component[] actions = GetComponents(typeof(UnitAction));
-        foreach(UnitAction action in actions)
-        {
-            actionList.Add(action);
-        }
-        actionList.Sort((x,y) => x.getPrio().CompareTo(y.getPrio()));
+        animator = gameObject.GetComponent<Animator>();
+        animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
     }
 
     void Update()
@@ -42,6 +40,8 @@ public class Actor : MonoBehaviour
 
     private void Move(Vector3 target)
     {
+        StopAllCoroutines();
+        animator.Play("Idle");
         unit.SetTarget(target);
         busy = true;
     }
@@ -51,9 +51,10 @@ public class Actor : MonoBehaviour
         busy = false;
     }
 
-    public void AddUnitAction()
+    public void AddUnitAction(System.Type type)
     {
-        //TODO
+        actionList.Add(gameObject.AddComponent(type) as UnitAction);
+        actionList.Sort((x, y) => x.getPrio().CompareTo(y.getPrio()));
     }
 
 }

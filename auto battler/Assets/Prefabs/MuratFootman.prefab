@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4888998421701833528}
   - component: {fileID: 935979826544179818}
-  - component: {fileID: 7685123667458232255}
   - component: {fileID: 117234964874808636}
   - component: {fileID: 2169595368316687558}
   - component: {fileID: 6736594527194332667}
   - component: {fileID: 628564564640820343}
+  - component: {fileID: -1373375277925396512}
   m_Layer: 0
   m_Name: MuratFootman
   m_TagString: PlayerUnit
@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4790909944199296502}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.27, y: 0.3, z: 0}
+  m_LocalPosition: {x: -7.27, y: 0.502, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -51,18 +51,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   busy: 0
---- !u!114 &7685123667458232255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4790909944199296502}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46d6c62698090794db4ede6ad0ccc8b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &117234964874808636
 Animator:
   serializedVersion: 4
@@ -165,6 +153,21 @@ MonoBehaviour:
   morale: 100
   endurance: 100
   damageReduction: 0.1
+  team: 0
+--- !u!136 &-1373375277925396512
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4790909944199296502}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.7, z: 0}
 --- !u!1 &9185388314954254621
 GameObject:
   m_ObjectHideFlags: 0

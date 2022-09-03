@@ -10,6 +10,7 @@ public abstract class UnitAction : MonoBehaviour
     protected float cooldown;
     protected float castTime;
     protected float backswing;
+    protected float range = 0;
 
     protected bool hasProjectile = false;
     protected float projectileSpeed;
@@ -18,14 +19,10 @@ public abstract class UnitAction : MonoBehaviour
     protected AnimatorOverrideController animatorOverrideController;
     protected string animPath;
 
-    void Awake()
+    private void Start()
     {
         animator = gameObject.GetComponent<Animator>();
         animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
-    }
-
-    private void Start()
-    {
         LoadResources();
     }
 
@@ -75,6 +72,11 @@ public abstract class UnitAction : MonoBehaviour
     public float getCurrentCooldown()
     {
         return currentCooldown;
+    }
+
+    public float GetRange()
+    {
+        return range;
     }
 
 }
