@@ -8,13 +8,13 @@ public class Unit : MonoBehaviour {
 	float speed = 3;
 	Vector3[] path;
 	int targetIndex;
+	Attributes attributes;
 
 
-	/*
-	void Start() {
-		//startta değil updatede target != null ise çağır OR STUFF
-		PathRequestManager.RequestPath(transform.position,target.position, OnPathFound);
-	}*/
+	private void Awake()
+	{
+		attributes = GetComponent<Attributes>();
+	}
 
 	public Vector3 GetTarget()
 	{
@@ -53,7 +53,7 @@ public class Unit : MonoBehaviour {
 				}
 				currentWaypoint = path[targetIndex];
 			}
-
+			attributes.SetFacing((currentWaypoint - transform.position).normalized);
 			transform.position = Vector3.MoveTowards(transform.position,currentWaypoint,speed * Time.deltaTime);
 			yield return null;
 

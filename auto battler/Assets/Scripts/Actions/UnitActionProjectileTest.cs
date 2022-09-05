@@ -23,24 +23,6 @@ public class UnitActionProjectileTest : UnitAction
         projectileSpeed = 30.0f;
         projectile = Resources.Load("Projectiles/Arrow/Prefab_Arrow") as GameObject;
     }
-    /*
-    protected override bool FindTargets()
-    {
-        Physics.OverlapSphereNonAlloc(transform.position, range, objects);
-        foreach (Collider obj in objects)
-        {
-            if (!obj || !obj.GetComponent<Attributes>())
-                continue;
-            if (obj.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() &&
-                Vector3.Angle(obj.transform.position - transform.position, transform.right) < facingRadius)
-            {
-                target = obj.gameObject.transform;
-                return true;
-            }  // TODO:: Transform.right to proper facing vector
-
-        }
-        return false;
-    }*/
 
     protected override bool FindTargets()
     {
@@ -50,7 +32,7 @@ public class UnitActionProjectileTest : UnitAction
             if (!obj)
                 continue;
             if(obj.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() && 
-               Vector3.Angle(obj.transform.position - transform.position, transform.right) < facingRadius)
+               Vector3.Angle(obj.transform.position - transform.position, attributes.GetFacing()) < facingRadius)
             {
                 target = obj.transform;
                 return true;

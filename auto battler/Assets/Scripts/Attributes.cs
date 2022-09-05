@@ -11,7 +11,16 @@ public class Attributes : MonoBehaviour
     public float damageReduction = 0.1f;
 
     [SerializeField]int team;
+
     float currentHP;
+    GameObject company;
+    SpriteRenderer spriteRenderer;
+    Vector3 facing = Vector3.right;
+
+    private void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
 
     private void Start()
     {
@@ -33,5 +42,26 @@ public class Attributes : MonoBehaviour
     public int GetTeam()
     {
         return team;
+    }
+
+    public void SetFacing(Vector3 _facing)
+    {
+        facing = _facing;
+        if(facing.x < 0)
+            spriteRenderer.flipX = true;
+        else
+            spriteRenderer.flipX = false;
+
+    }
+
+    public Vector3 GetFacing()
+    {
+        return facing;
+    }
+
+    void SetCompany(ModelAttributes modelAttributes)
+    {
+        company = modelAttributes.company;
+        team = modelAttributes.team;
     }
 }

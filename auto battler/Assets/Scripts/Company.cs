@@ -13,7 +13,6 @@ public class Company : MonoBehaviour
 
     
     public GameObject prefab;
-    public Vector3 firstPos;
     public int modelCount = 16;
 
     List<GameObject> models = new List<GameObject>();
@@ -25,6 +24,7 @@ public class Company : MonoBehaviour
     int team = 0;
     float aiUpdateTime = 0.2f;
     float currentTime = 0;
+    Vector3 companyDirection = Vector3.right;
 
     void Start()
     {
@@ -35,8 +35,6 @@ public class Company : MonoBehaviour
     
     void Update()
     {
-        //Debug.Log("Enemy in range: " + AreEnemiesInRange());
-        //Debug.Log(FindClosestEnemyPosition());
         updateCompanyPosition();
         if(currentTime <= 0)
         {
@@ -48,10 +46,12 @@ public class Company : MonoBehaviour
 
     private void Init()
     {
+        ModelAttributes messagePar = new ModelAttributes(gameObject, team);
         calcModelPositions(transform.position);
         for (int i = 0; i < modelCount; i++)
         {
             models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity));
+            models[i].SendMessage("SetCompany",messagePar);
         }
     }
 
@@ -117,6 +117,11 @@ public class Company : MonoBehaviour
         return false;
     }
 
+    bool AreEnemiesInFront()
+    {
+        return false;
+    }
+
     Vector3 FindClosestEnemyPosition()
     {
         Utils.UnitsInRadius(transform.position, 2000, rangeCheckBuffer);
@@ -142,9 +147,12 @@ public class Company : MonoBehaviour
         if (!AreEnemiesInRange())
         {
             Vector3 enemyPos = FindClosestEnemyPosition();
+            if(enemyPos == Vector3.zero)
+            {
+                return;
+            }
             Vector3 newPos = (transform.position - enemyPos).normalized * 30 + enemyPos;
             moveModels(newPos);
-            Debug.Log("Moving to: " + newPos);
         }
     }
 
@@ -169,5 +177,17 @@ public class Company : MonoBehaviour
     public void RemoveModel(GameObject model)
     {
         //TODO
+    }
+}
+
+public class ModelAttributes
+{
+    public GameObject company;
+    public int team;
+
+    public ModelAttributes(GameObject _company, int _team)
+    {
+        company = _company;
+        team = _team;
     }
 }
