@@ -51,8 +51,6 @@ namespace DapperDino.TooltipUI
             if(Tooltip_Manager.cursorOnTooltip==false)
                 tooltipPopup.fixPosition = false;
         }
-
-        
     }
 }
 
