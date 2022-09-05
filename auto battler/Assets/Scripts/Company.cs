@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Company : MonoBehaviour
 {
@@ -18,36 +19,42 @@ public class Company : MonoBehaviour
     List<GameObject> models = new List<GameObject>();
     Formation formation = 0;
     Vector3[] modelPositions = new Vector3[16];
-    Vector3 directionVector = Vector3.right;
+    Vector3 companyDir = Vector3.right;
     float range = 0;
-    GameObject[] rangeCheckBuffer = new GameObject[500];
-    int team = 0;
-    float aiUpdateTime = 0.2f;
+    GameObject[] buffer = new GameObject[500];
+    List<GameObject> enemiesList = new List<GameObject>();
+    [SerializeField]int team = 0;
+    float aiUpdateTime = 0.5f;
     float currentTime = 0;
-    Vector3 companyDirection = Vector3.right;
+    float attackArc = 60f;
+
+    //TEMP
+    [SerializeField] int UA;
 
     void Start()
     {
         Init();
-        AddUnitActionToCompany(typeof(UnitActionProjectileTest));
+        if(UA == 0)
+            AddUnitActionToCompany(typeof(UnitActionProjectileTest));
+        if(UA == 1)
+            AddUnitActionToCompany(typeof(UnitActionBasicAttack));
     }
 
-    
     void Update()
     {
-        updateCompanyPosition();
+        UpdateCompanyPosition();
         if(currentTime <= 0)
         {
             BehaviourLoop();
             currentTime = aiUpdateTime;
         }
-        currentTime -= Time.deltaTime;
+        currentTime -= Time.deltaTime;      
     }
 
     private void Init()
     {
-        ModelAttributes messagePar = new ModelAttributes(gameObject, team);
-        calcModelPositions(transform.position);
+        ModelAttributes messagePar = new ModelAttributes(this, team);
+        CalcModelPositions(transform.position, Vector3.right);
         for (int i = 0; i < modelCount; i++)
         {
             models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity));
@@ -55,13 +62,10 @@ public class Company : MonoBehaviour
         }
     }
 
-    void calcModelPositions(Vector3 companyPos)
+    void CalcModelPositions(Vector3 companyPos, Vector3 direction)
     {
-        Vector3 directionVector = transform.position - companyPos;
-        if (directionVector == Vector3.zero)
-            directionVector = Vector3.right;
-        Vector3 localLeft = Vector3.Cross(directionVector, Vector3.down).normalized;
-        Vector3 localBack = -directionVector.normalized;
+        Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
+        Vector3 localBack = -(direction.normalized);
         Vector3 firstPosition = companyPos + 1.75f * localLeft;
         switch (formation)
         {
@@ -84,17 +88,45 @@ public class Company : MonoBehaviour
         }
     }
 
-    void moveModels(Vector3 target)
+    void MoveModels()
     {
-        calcModelPositions(target);
         for (int i = 0; i < models.Count; i++)
         {
             models[i].gameObject.SendMessage("Move", modelPositions[i]);
         }
     }
 
-    void updateCompanyPosition()
+    void MoveCompany(Vector3 target)
     {
+        Vector3 dir = target - transform.position;
+        companyDir = dir.normalized;
+        CalcModelPositions(target, companyDir);
+        MoveModels();
+    }
+
+    void StopCompany()
+    {
+        for(int i = 0; i < models.Count; i++)
+        {
+            models[i].SendMessage("EndMove");
+        }
+    }
+
+    void RotateCompany(Vector3 dir)
+    {
+        companyDir = dir;
+        CalcModelPositions(transform.position, dir);
+        MoveModels();
+    }
+
+    void UpdateCompanyPosition()
+    {
+        if (models.Count == 0)
+        {
+            Destroy(this);
+            return;
+        }
+            
         Vector3 sum = Vector3.zero;
         foreach(GameObject model in models)
         {
@@ -105,13 +137,11 @@ public class Company : MonoBehaviour
 
     bool AreEnemiesInRange()
     {
-        Utils.UnitsInRadius(transform.position, range, rangeCheckBuffer);
-        foreach(GameObject obj in rangeCheckBuffer)
+        foreach(GameObject obj in enemiesList)
         {
             if(!obj)
                 continue;
-            if(obj.GetComponent<Attributes>().GetTeam() != team &&
-                (obj.transform.position - transform.position).sqrMagnitude <= range*range)
+            if((obj.transform.position - transform.position).sqrMagnitude <= (range*range * 0.81))
                 return true;
         }
         return false;
@@ -119,40 +149,69 @@ public class Company : MonoBehaviour
 
     bool AreEnemiesInFront()
     {
+        Utils.CompaniesInRadius(transform.position, 1000, buffer);
+        foreach(GameObject obj in enemiesList)
+        {
+            if (!obj)
+                continue;
+            if (Vector3.Angle(obj.transform.position - transform.position, companyDir) < attackArc)
+                return true;
+        }
         return false;
     }
 
     Vector3 FindClosestEnemyPosition()
     {
-        Utils.UnitsInRadius(transform.position, 2000, rangeCheckBuffer);
         float distSqr = Mathf.Infinity;
         Vector3 distVector;
         Vector3 target = Vector3.zero;
-        foreach(GameObject model in rangeCheckBuffer)
+        foreach(GameObject company in enemiesList)
         {
-            if (!model || model.GetComponent<Attributes>().GetTeam() == team)
+            if(!company)
                 continue;
-            distVector = model.transform.position - transform.position;
+            distVector = company.transform.position - transform.position;
             if (distSqr > distVector.sqrMagnitude) 
             { 
                 distSqr = distVector.sqrMagnitude;
-                target = model.transform.position;
+                target = company.transform.position;
             }
         }
         return target;
     }
 
+    void FindEnemies()
+    {
+        Utils.CompaniesInRadius(transform.position, 2000, buffer);
+        enemiesList.Clear();
+        foreach(GameObject company in buffer)
+        {
+            if (!company || !company.GetComponent<Company>() || company.GetComponent<Company>().GetTeam() == team)
+                continue;
+            else
+                enemiesList.Add(company);
+        }
+    }
+
     void BehaviourLoop()
     {
+        FindEnemies();
         if (!AreEnemiesInRange())
         {
             Vector3 enemyPos = FindClosestEnemyPosition();
-            if(enemyPos == Vector3.zero)
+            if (enemyPos == Vector3.zero)
             {
                 return;
             }
-            Vector3 newPos = (transform.position - enemyPos).normalized * 30 + enemyPos;
-            moveModels(newPos);
+            Vector3 newPos = (transform.position - enemyPos).normalized * (range * 0.9f) + enemyPos;
+            MoveCompany(enemyPos);
+        }
+        else if (!AreEnemiesInFront())
+        {
+            RotateCompany((FindClosestEnemyPosition() - transform.position).normalized);
+        }
+        else
+        {
+            StopCompany();
         }
     }
 
@@ -176,16 +235,26 @@ public class Company : MonoBehaviour
 
     public void RemoveModel(GameObject model)
     {
-        //TODO
+        models.Remove(model);
+    }
+
+    public int GetTeam()
+    {
+        return team;
+    }
+
+    public Vector3 GetFacing()
+    {
+        return companyDir;
     }
 }
 
 public class ModelAttributes
 {
-    public GameObject company;
+    public Company company;
     public int team;
 
-    public ModelAttributes(GameObject _company, int _team)
+    public ModelAttributes(Company _company, int _team)
     {
         company = _company;
         team = _team;

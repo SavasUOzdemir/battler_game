@@ -1,14 +1,15 @@
 using UnityEngine;
+using UnityEngine.UIElements.Experimental;
 
 public class UnitActionProjectileTest : UnitAction
 {
-    private GameObject projectile;
-    private Transform target;
-    private Attributes attributes;
-    private float damage = 30.0f;
-    private float facingRadius = 90.0f;
-    private float ySpeed = 10f;
-    private GameObject[] objects = new GameObject[100];
+    GameObject projectile;
+    Transform target;
+    Attributes attributes;
+    float damage = 10.0f;
+    float facingRadius = 60.0f;
+    float ySpeed = 10f;
+    GameObject[] unitsBuffer = new GameObject[100];
 
     void Awake()
     {
@@ -26,13 +27,13 @@ public class UnitActionProjectileTest : UnitAction
 
     protected override bool FindTargets()
     {
-        Utils.UnitsInRadius(transform.position, range, objects);
-        foreach(GameObject obj in objects)
+        Utils.UnitsInRadius(transform.position, range, unitsBuffer);
+        foreach(GameObject obj in unitsBuffer)
         {
             if (!obj)
                 continue;
             if(obj.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() && 
-               Vector3.Angle(obj.transform.position - transform.position, attributes.GetFacing()) < facingRadius)
+               Vector3.Angle(attributes.GetFacing(), obj.transform.position - transform.position) < facingRadius)
             {
                 target = obj.transform;
                 return true;

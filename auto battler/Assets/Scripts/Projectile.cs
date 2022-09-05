@@ -4,22 +4,23 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private float damage;
-    private Vector3 velocity;
-    private Vector3 gravity = Vector3.zero;
-    private Animator animator;
-    private Collider collider;
+    float damage;
+    Vector3 velocity;
+    Vector3 gravity = Vector3.zero;
+    Animator animator;
+    float fuse = 0.2f;
+    float timeAlive = 0;
+
 
 
     void Awake()
     {    
         animator = GetComponent<Animator>();
-        collider = GetComponent<Collider>();
     }
 
     private void Start()
     {
-
+        GetComponent<Collider>().enabled = false;
     }
 
     void Update()
@@ -30,6 +31,9 @@ public class Projectile : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+        if (timeAlive > fuse)
+            GetComponent<Collider>().enabled = true;
+        timeAlive += Time.deltaTime;
     }
 
     public void Init(float speed, float ySpeed, Transform target, float damage)

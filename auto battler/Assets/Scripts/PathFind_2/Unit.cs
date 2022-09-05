@@ -43,6 +43,8 @@ public class Unit : MonoBehaviour {
     }
 
 	IEnumerator FollowPath() {
+		if (path.Length < 1) 
+			yield break;
 		Vector3 currentWaypoint = path[0];
 		while (true) {
 			if (transform.position == currentWaypoint) {
