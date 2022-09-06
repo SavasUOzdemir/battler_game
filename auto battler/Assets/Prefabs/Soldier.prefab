@@ -94,11 +94,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8351670499066093192}
   - component: {fileID: 7084090528342799583}
-  - component: {fileID: 1540160721}
   - component: {fileID: 1540160724}
   - component: {fileID: 1540160725}
-  - component: {fileID: 7186186601860680919}
-  - component: {fileID: 1540160726}
   m_Layer: 0
   m_Name: Soldier
   m_TagString: PlayerUnit
@@ -138,21 +135,8 @@ MonoBehaviour:
   speed: 1
   morale: 100
   endurance: 100
-  attackRange: 1
-  damage: 5
   damageReduction: 0.1
---- !u!114 &1540160721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6430665856064752816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 167afd1067ad78640930e7d370950213, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  team: 0
 --- !u!54 &1540160724
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -183,28 +167,3 @@ CapsuleCollider:
   m_Height: 1.19
   m_Direction: 1
   m_Center: {x: -0.3, y: 0.6, z: 0}
---- !u!114 &7186186601860680919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6430665856064752816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23126a64e4015df4d99bbfff271c2e23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 0}
---- !u!114 &1540160726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6430665856064752816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0ec96fcc4dd18e46a1c0c93a67b04e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
