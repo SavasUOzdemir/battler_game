@@ -31,14 +31,14 @@ public class Unit : MonoBehaviour {
 		if (pathSuccessful) {
 			path = newPath;
 			targetIndex = 0;
-			StopCoroutine("FollowPath");
-			StartCoroutine("FollowPath");
+			StopCoroutine(nameof(FollowPath));
+			StartCoroutine(nameof(FollowPath));
 		}
 	}
 
 	public void EndMove()
 	{
-		StopCoroutine("FollowPath");
+		StopCoroutine(nameof(FollowPath));
         gameObject.SendMessage("EndMovement", SendMessageOptions.RequireReceiver);
     }
 
