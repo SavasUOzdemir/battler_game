@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class UnitActionCleave : UnitAction
 {
-    private float range = 2.0f;
     private float damage = 10.0f;
     private float facingRadius = 90.0f;
     private List<GameObject> enemies;
@@ -15,6 +14,7 @@ public class UnitActionCleave : UnitAction
         cooldown = 8.0f;
         castTime = 0.5f;
         backswing = 0.5f;
+        range = 1f;
     }
  
     protected override bool FindTargets()

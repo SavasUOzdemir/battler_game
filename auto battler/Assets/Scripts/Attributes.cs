@@ -13,7 +13,7 @@ public class Attributes : MonoBehaviour
     [SerializeField]int team;
 
     float currentHP;
-    GameObject company;
+    Company company;
     SpriteRenderer spriteRenderer;
     Vector3 facing = Vector3.right;
 
@@ -37,6 +37,7 @@ public class Attributes : MonoBehaviour
     private void Die()
     {
         Destroy(gameObject);
+        company.RemoveModel(gameObject);
     }
 
     public int GetTeam()
@@ -51,12 +52,16 @@ public class Attributes : MonoBehaviour
             spriteRenderer.flipX = true;
         else
             spriteRenderer.flipX = false;
-
     }
 
     public Vector3 GetFacing()
     {
         return facing;
+    }
+
+    public Company GetCompany()
+    {
+        return company;
     }
 
     void SetCompany(ModelAttributes modelAttributes)

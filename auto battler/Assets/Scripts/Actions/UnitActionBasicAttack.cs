@@ -1,35 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class UnitActionBasicAttack : UnitAction
 {
 
-    private float range = 2.0f;
-    private float damage = 5.0f;
-    private float facingRadius = 90.0f;
-    private GameObject enemy;
+    float damage = 50.0f;
+    float facingRadius = 60.0f;
+    GameObject enemy;
+    GameObject[] unitsBuffer = new GameObject[100];
+    Attributes attributes;
 
-    void Start()
+    void Awake()
     {
+        attributes = GetComponent<Attributes>();
         prio = 10;
         cooldown = 1.0f;
         castTime = 0.5f;
         backswing = 0.5f;
+        range = 2.0f;
         animPath = "Placeholder/animation_attack";
     }
  
     protected override bool FindTargets()
     {
-        Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position, range);
-        foreach(Collider2D obj in objects)
+        Utils.UnitsInRadius(transform.position, range, unitsBuffer);
+        foreach (GameObject obj in unitsBuffer)
         {
-            if (Vector2.Angle(obj.transform.position - transform.position, transform.right) < facingRadius)
+            if (!obj)
+                continue;
+            if (obj.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() &&
+               Vector3.Angle(attributes.GetFacing(), obj.transform.position - transform.position) < facingRadius)
             {
-                enemy = obj.gameObject;
+                enemy = obj;
                 return true;
-            }  // TODO:: Transform.right to proper facing vector
-                
+            }
         }
         return false;
     }

@@ -10,20 +10,33 @@ public class Actor : MonoBehaviour
     Unit unit;
     Animator animator;
     AnimatorOverrideController animatorOverrideController;
+    Attributes attributes;
+    Company company;
+    float brainLag = 0.2f;
+    float brainTime = 0;
 
     private void Awake()
     {
         unit = GetComponent<Unit>();
+        animator = gameObject.GetComponent<Animator>();
+        animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        attributes = GetComponent<Attributes>(); 
     }
 
     void Start()
     {
-        animator = gameObject.GetComponent<Animator>();
-        animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        company = attributes.GetCompany();
     }
 
     void Update()
     {
+        if (brainTime < brainLag)
+        {
+            brainTime += Time.deltaTime;
+            return;
+        }
+        brainTime = 0f;
+
         if (!busy)
         {
             foreach (UnitAction action in actionList)
@@ -35,7 +48,9 @@ public class Actor : MonoBehaviour
                     break;
                 }
             }
-        }    
+        }
+
+        attributes.SetFacing(company.GetFacing());
     }
 
     private void Move(Vector3 target)

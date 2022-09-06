@@ -47,7 +47,7 @@ namespace CodeMonkey.Utils {
             return cachedCanvasTransform;
         }
 
-        // Get Default Unity Font, used in text objects if no font given
+        // Get Default Unity Font, used in text unitsBuffer if no font given
         public static Font GetDefaultFont() {
             return Resources.GetBuiltinResource<Font>("Arial.ttf");
         }
