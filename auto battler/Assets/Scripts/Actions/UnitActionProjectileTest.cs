@@ -8,7 +8,7 @@ public class UnitActionProjectileTest : UnitAction
     Attributes attributes;
     float damage = 10.0f;
     float facingRadius = 60.0f;
-    float ySpeed = 10f;
+    float ySpeed = 20f;
     GameObject[] unitsBuffer = new GameObject[100];
 
     void Awake()
@@ -19,9 +19,10 @@ public class UnitActionProjectileTest : UnitAction
         castTime = 0.5f;
         backswing = 0.5f;
         range = 30f;
+        melee = false;
         animPath = "Placeholder/animation_attack";
         hasProjectile = true;
-        projectileSpeed = 30.0f;
+        projectileSpeed = 20.0f;
         projectile = Resources.Load("Projectiles/Arrow/Prefab_Arrow") as GameObject;
     }
 
@@ -47,7 +48,7 @@ public class UnitActionProjectileTest : UnitAction
         if (target != null)
         {
             GameObject firedProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
-            firedProjectile.GetComponent<Projectile>().Init(projectileSpeed, ySpeed, target, damage);
+            firedProjectile.GetComponent<Projectile>().Init(projectileSpeed, ySpeed, target, damage, attributes.GetTeam());
             return true;
         }
         return false;
