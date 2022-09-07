@@ -38,6 +38,7 @@ public abstract class UnitAction : MonoBehaviour
     {
         if(FindTargets())
         {
+            actor.moving = false;
             animator.Play("Attack");
             yield return new WaitForSeconds(castTime);
             if(ProduceEffect())

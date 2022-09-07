@@ -73,11 +73,12 @@ public class Company : MonoBehaviour
     {
         Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
         Vector3 localBack = -(direction.normalized);
-        Vector3 firstPosition = companyPos + 1.75f * localLeft;
+        Vector3 firstPosition;
         switch (formation)
         {
             case Formation.Line:
-                for(int i = 0; i < modelCount; i++)
+                firstPosition = companyPos + 1.75f * localLeft;
+                for (int i = 0; i < modelCount; i++)
                 {
                     if(i < 8)
                     {

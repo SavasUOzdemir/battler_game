@@ -103,7 +103,6 @@ public class Actor : MonoBehaviour
             unit.EndMove();
             StartCoroutine(meleeAction.DoAction());
             busy = true;
-            moving = false;
         }
         else
         {
