@@ -13,7 +13,7 @@ public class Actor : MonoBehaviour
     AnimatorOverrideController animatorOverrideController;
     Attributes attributes;
     Vector3 aiDest;
-    //Company company;
+    Company company;
     float brainLag = 0.2f;
     float brainTime = 0;
 
@@ -27,7 +27,7 @@ public class Actor : MonoBehaviour
 
     void Start()
     {
-        //company = attributes.GetCompany();
+        company = attributes.GetCompany();
     }
 
     void Update()
@@ -52,7 +52,7 @@ public class Actor : MonoBehaviour
             }
         }
 
-        //attributes.SetFacing(company.GetFacing());
+        attributes.SetFacing(company.GetFacing());
     }
 
     private void Move(Vector3 target)
