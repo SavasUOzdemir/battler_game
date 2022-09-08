@@ -365,8 +365,12 @@ namespace Pathfinding {
 			// Check if we have reached the target
 			var prevTargetReached = reachedEndOfPath;
 			reachedEndOfPath = distanceToEnd <= endReachedDistance && interpolator.valid;
-			if (!prevTargetReached && reachedEndOfPath) OnTargetReached();
-			float slowdown;
+			if (!prevTargetReached && reachedEndOfPath)
+			{
+				OnTargetReached();
+				gameObject.SendMessage("EndMovement", SendMessageOptions.RequireReceiver);
+			}
+				float slowdown;
 
 			// Normalized direction of where the agent is looking
 			var forwards = movementPlane.ToPlane(simulatedRotation * (orientation == OrientationMode.YAxisForward ? Vector3.up : Vector3.forward));

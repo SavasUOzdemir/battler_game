@@ -1,31 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class Actor : MonoBehaviour
 {
 
     List<UnitAction> actionList = new List<UnitAction>();
     public bool busy = false;
-    Unit unit;
+    
     Animator animator;
     AnimatorOverrideController animatorOverrideController;
     Attributes attributes;
-    Company company;
+    Vector3 aiDest;
+    //Company company;
     float brainLag = 0.2f;
     float brainTime = 0;
 
     private void Awake()
     {
-        unit = GetComponent<Unit>();
         animator = gameObject.GetComponent<Animator>();
         animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
-        attributes = GetComponent<Attributes>(); 
+        attributes = GetComponent<Attributes>();
+        aiDest = GetComponent<AIDestinationSetter>().targetVector;
     }
 
     void Start()
     {
-        company = attributes.GetCompany();
+        //company = attributes.GetCompany();
     }
 
     void Update()
@@ -50,15 +52,15 @@ public class Actor : MonoBehaviour
             }
         }
 
-        attributes.SetFacing(company.GetFacing());
+        //attributes.SetFacing(company.GetFacing());
     }
 
     private void Move(Vector3 target)
     {
         StopAllCoroutines();
         animator.Play("Idle");
-        unit.SetTarget(target);
-        busy = true;
+        aiDest = target;
+            busy = true;
     }
 
     public void EndMovement()
