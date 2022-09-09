@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class Actor : MonoBehaviour
 {
@@ -9,10 +10,10 @@ public class Actor : MonoBehaviour
 
     List<UnitAction> actionList = new List<UnitAction>();
     UnitAction meleeAction = null;
-    Unit unit;
     Animator animator;
     AnimatorOverrideController animatorOverrideController;
     Attributes attributes;
+    AIDestinationSetter aiDest;
     Company company;
     float brainLag = 0.2f;
     float brainTime = 0;
@@ -20,10 +21,10 @@ public class Actor : MonoBehaviour
 
     private void Awake()
     {
-        unit = GetComponent<Unit>();
         animator = gameObject.GetComponent<Animator>();
         animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
-        attributes = GetComponent<Attributes>(); 
+        attributes = GetComponent<Attributes>();
+        aiDest = GetComponent<AIDestinationSetter>();
     }
 
     void Start()
@@ -60,8 +61,9 @@ public class Actor : MonoBehaviour
         busy = false;
         StopAllCoroutines();
         animator.Play("Idle");
-        unit.SetTarget(target);
         moving = true;
+        aiDest.targetVector = target;
+        Debug.Log("Move Commanded"); //Move'a þu an girmiyor.
     }
 
     private GameObject FindClosestEnemyModel()
@@ -100,7 +102,6 @@ public class Actor : MonoBehaviour
             return;
         if (IsModelInRange(closestModel))
         {
-            unit.EndMove();
             StartCoroutine(meleeAction.DoAction());
             busy = true;
         }
@@ -122,6 +123,7 @@ public class Actor : MonoBehaviour
             }
         }
         attributes.SetFacing(company.GetFacing());
+
     }
 
     public void EndMovement()
