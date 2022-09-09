@@ -5,10 +5,11 @@ using Pathfinding;
 
 public class Actor : MonoBehaviour
 {
+    public bool busy = false;
+    public bool moving = false;
 
     List<UnitAction> actionList = new List<UnitAction>();
-    public bool busy = false;
-
+    UnitAction meleeAction = null;
     Animator animator;
     AnimatorOverrideController animatorOverrideController;
     Attributes attributes;
@@ -16,6 +17,7 @@ public class Actor : MonoBehaviour
     Company company;
     float brainLag = 0.2f;
     float brainTime = 0;
+    GameObject[] buffer = new GameObject[500];
 
     private void Awake()
     {
@@ -38,39 +40,106 @@ public class Actor : MonoBehaviour
             return;
         }
         brainTime = 0f;
-
-        if (!busy)
+        
+        if (company.InMelee())
         {
-            foreach (UnitAction action in actionList)
+            if (!meleeAction)
             {
-                if (action.getCurrentCooldown() <= 0)
-                {
-                    StartCoroutine(action.DoAction());
-                    busy = true;
-                    break;
-                }
+                Debug.Log("No Melee Action");
+                return;
             }
+            MeleeBehaviour();
         }
-
-        attributes.SetFacing(company.GetFacing());
+        else
+        {
+            NotMeleeBehaviour();
+        }
     }
 
     private void Move(Vector3 target)
     {
+        busy = false;
         StopAllCoroutines();
         animator.Play("Idle");
+        moving = true;
         aiDest = target;
-        busy = true;
         Debug.Log("Move Commanded"); //Move'a þu an girmiyor.
+    }
+
+    private GameObject FindClosestEnemyModel()
+    {
+        Utils.UnitsInRadius(transform.position, 10, buffer);
+        float distSqr = Mathf.Infinity;
+        Vector3 distVector;
+        GameObject target = null;
+        foreach (GameObject model in buffer)
+        {
+            if (!model || model.GetComponent<Attributes>().GetTeam() == attributes.GetTeam())
+                continue;
+            distVector = model.transform.position - transform.position;
+            if (distSqr > distVector.sqrMagnitude)
+            {
+                distSqr = distVector.sqrMagnitude;
+                target = model;
+            }
+        }
+        return target;
+    }
+
+    private bool IsModelInRange(GameObject target)
+    {
+        if (!target || !target.transform)
+            return false;
+        if ((target.transform.position - transform.position).sqrMagnitude <= meleeAction.GetRange()*meleeAction.GetRange())
+            return true;
+        return false;
+    }
+
+    private void MeleeBehaviour()
+    {
+        GameObject closestModel = FindClosestEnemyModel();
+        if (!closestModel || busy)
+            return;
+        if (IsModelInRange(closestModel))
+        {
+            unit.EndMove();
+            StartCoroutine(meleeAction.DoAction());
+            busy = true;
+        }
+        else
+        {
+            Move(closestModel.transform.position);
+        }
+    }
+
+    private void NotMeleeBehaviour()
+    {
+        foreach (UnitAction action in actionList)
+        {
+            if (action.getCurrentCooldown() <= 0)
+            {
+                StartCoroutine(action.DoAction());
+                busy = true;
+                break;
+            }
+        }
+        attributes.SetFacing(company.GetFacing());
+
     }
 
     public void EndMovement()
     {
-        busy = false;
+        moving = false;
     }
 
     public void AddUnitAction(System.Type type)
     {
+        UnitAction unitAction = gameObject.AddComponent(type) as UnitAction;
+        if (unitAction.IsActionMelee())
+        {
+            meleeAction = unitAction;
+            return;
+        }
         actionList.Add(gameObject.AddComponent(type) as UnitAction);
         actionList.Sort((x, y) => x.getPrio().CompareTo(y.getPrio()));
     }

@@ -27,9 +27,13 @@ public class Company : MonoBehaviour
     float aiUpdateTime = 0.5f;
     float currentTime = 0;
     float attackArc = 60f;
+    
 
     //TEMP
     [SerializeField] int UA;
+    [SerializeField] bool inMelee = false;
+    [SerializeField] float meleeRange = 5f;
+
 
     void Start()
     {
@@ -42,8 +46,11 @@ public class Company : MonoBehaviour
 
     void Update()
     {
-        UpdateCompanyPosition();
-        if (currentTime <= 0)
+        UpdateBannerPosition();
+        CheckMelee();
+        if (inMelee)
+            return;
+        if(currentTime <= 0)
         {
             BehaviourLoop();
             currentTime = aiUpdateTime;
@@ -68,10 +75,11 @@ public class Company : MonoBehaviour
     {
         Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
         Vector3 localBack = -(direction.normalized);
-        Vector3 firstPosition = companyPos + 1.75f * localLeft;
+        Vector3 firstPosition;
         switch (formation)
         {
             case Formation.Line:
+                firstPosition = companyPos + 1.75f * localLeft;
                 for (int i = 0; i < modelCount; i++)
                 {
                     if (i < 8)
@@ -126,7 +134,7 @@ public class Company : MonoBehaviour
         MoveModels();
     }
 
-    void UpdateCompanyPosition()
+    void UpdateBannerPosition()
     {
         if (models.Count == 0)
         {
@@ -210,6 +218,7 @@ public class Company : MonoBehaviour
             {
                 return;
             }
+            //TODO: Fix?
             Vector3 newPos = (transform.position - enemyPos).normalized * (range * 0.9f) + enemyPos;
             MoveCompany(enemyPos);
         }
@@ -222,6 +231,16 @@ public class Company : MonoBehaviour
         {
             StopCompany();
         }
+    }
+
+    void CheckMelee()
+    {
+        if((FindClosestEnemyPosition()-transform.position).sqrMagnitude <= meleeRange * meleeRange)
+        {
+            inMelee = true;
+            return;
+        }
+        inMelee = false;
     }
 
     public void AddUnitActionToCompany(System.Type type)
@@ -245,6 +264,10 @@ public class Company : MonoBehaviour
     public void RemoveModel(GameObject model)
     {
         models.Remove(model);
+        if(models.Count == 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public int GetTeam()
@@ -255,6 +278,11 @@ public class Company : MonoBehaviour
     public Vector3 GetFacing()
     {
         return companyDir;
+    }
+
+    public bool InMelee()
+    {
+        return inMelee;
     }
 }
 

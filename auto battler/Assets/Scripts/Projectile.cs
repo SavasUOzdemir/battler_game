@@ -8,19 +8,13 @@ public class Projectile : MonoBehaviour
     Vector3 velocity;
     Vector3 gravity = Vector3.zero;
     Animator animator;
-    float fuse = 0.2f;
-    float timeAlive = 0;
+    int team;
 
 
 
     void Awake()
     {    
         animator = GetComponent<Animator>();
-    }
-
-    private void Start()
-    {
-        GetComponent<Collider>().enabled = false;
     }
 
     void Update()
@@ -31,21 +25,21 @@ public class Projectile : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        if (timeAlive > fuse)
-            GetComponent<Collider>().enabled = true;
-        timeAlive += Time.deltaTime;
     }
 
-    public void Init(float speed, float ySpeed, Transform target, float damage)
+    public void Init(float speed, float ySpeed, Transform target, float damage, int team)
     {    
         velocity = Vector3.Normalize(target.position - transform.position) * speed;
         velocity.y = ySpeed;
         gravity.y = -2 * speed * velocity.y / (transform.position - target.position).magnitude ;
         this.damage = damage;
+        this.team = team;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.GetComponent<Attributes>().GetTeam() == team)
+            return;
         other.GetComponent<Attributes>().ChangeHP(-damage);
         Destroy(this.gameObject);
     }

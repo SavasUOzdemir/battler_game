@@ -10,7 +10,8 @@ public abstract class UnitAction : MonoBehaviour
     protected float cooldown;
     protected float castTime;
     protected float backswing;
-    protected float range = 0;
+    protected float range = 1f;
+    protected bool melee = true;
 
     protected bool hasProjectile = false;
     protected float projectileSpeed;
@@ -18,11 +19,13 @@ public abstract class UnitAction : MonoBehaviour
     protected Animator animator;
     protected AnimatorOverrideController animatorOverrideController;
     protected string animPath;
+    protected Actor actor;
 
     private void Start()
     {
         animator = gameObject.GetComponent<Animator>();
         animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        actor = gameObject.GetComponent<Actor>();
         LoadResources();
     }
 
@@ -35,6 +38,7 @@ public abstract class UnitAction : MonoBehaviour
     {
         if(FindTargets())
         {
+            actor.moving = false;
             animator.Play("Attack");
             yield return new WaitForSeconds(castTime);
             if(ProduceEffect())
@@ -44,7 +48,7 @@ public abstract class UnitAction : MonoBehaviour
             }
             animator.Play("Idle");
         }
-        gameObject.GetComponent<Actor>().busy = false;
+        actor.busy = false;
     } 
 
     protected virtual bool FindTargets()
@@ -79,4 +83,8 @@ public abstract class UnitAction : MonoBehaviour
         return range;
     }
 
+    public bool IsActionMelee()
+    {
+        return melee;
+    }
 }
