@@ -13,7 +13,7 @@ public class Actor : MonoBehaviour
     Animator animator;
     AnimatorOverrideController animatorOverrideController;
     Attributes attributes;
-    Vector3 aiDest;
+    AIDestinationSetter aiDest;
     Company company;
     float brainLag = 0.2f;
     float brainTime = 0;
@@ -24,7 +24,7 @@ public class Actor : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
         animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
         attributes = GetComponent<Attributes>();
-        aiDest = GetComponent<AIDestinationSetter>().targetVector;
+        aiDest = GetComponent<AIDestinationSetter>();
     }
 
     void Start()
@@ -62,7 +62,7 @@ public class Actor : MonoBehaviour
         StopAllCoroutines();
         animator.Play("Idle");
         moving = true;
-        aiDest = target;
+        aiDest.targetVector = target;
         Debug.Log("Move Commanded"); //Move'a þu an girmiyor.
     }
 
@@ -102,7 +102,6 @@ public class Actor : MonoBehaviour
             return;
         if (IsModelInRange(closestModel))
         {
-            unit.EndMove();
             StartCoroutine(meleeAction.DoAction());
             busy = true;
         }
