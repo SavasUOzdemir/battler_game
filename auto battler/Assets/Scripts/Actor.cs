@@ -8,7 +8,7 @@ public class Actor : MonoBehaviour
 
     List<UnitAction> actionList = new List<UnitAction>();
     public bool busy = false;
-    
+
     Animator animator;
     AnimatorOverrideController animatorOverrideController;
     Attributes attributes;
@@ -60,7 +60,8 @@ public class Actor : MonoBehaviour
         StopAllCoroutines();
         animator.Play("Idle");
         aiDest = target;
-            busy = true;
+        busy = true;
+        Debug.Log("Move Commanded"); //Move'a þu an girmiyor.
     }
 
     public void EndMovement()

@@ -12,7 +12,7 @@ public class Company : MonoBehaviour
         Skirmish
     }
 
-    
+
     public GameObject prefab;
     public int modelCount = 16;
 
@@ -23,7 +23,7 @@ public class Company : MonoBehaviour
     float range = 0;
     GameObject[] buffer = new GameObject[500];
     List<GameObject> enemiesList = new List<GameObject>();
-    [SerializeField]int team = 0;
+    [SerializeField] int team = 0;
     float aiUpdateTime = 0.5f;
     float currentTime = 0;
     float attackArc = 60f;
@@ -34,31 +34,33 @@ public class Company : MonoBehaviour
     void Start()
     {
         Init();
-        if(UA == 0)
+        if (UA == 0)
             AddUnitActionToCompany(typeof(UnitActionProjectileTest));
-        if(UA == 1)
+        if (UA == 1)
             AddUnitActionToCompany(typeof(UnitActionBasicAttack));
     }
 
     void Update()
     {
         UpdateCompanyPosition();
-        if(currentTime <= 0)
+        if (currentTime <= 0)
         {
             BehaviourLoop();
             currentTime = aiUpdateTime;
         }
-        currentTime -= Time.deltaTime;      
+        currentTime -= Time.deltaTime;
     }
 
     private void Init()
     {
         ModelAttributes messagePar = new ModelAttributes(this, team);
         CalcModelPositions(transform.position, Vector3.right);
+        var newParent = new GameObject(); //Jako
         for (int i = 0; i < modelCount; i++)
         {
-            models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity));
-            models[i].SendMessage("SetCompany",messagePar);
+            models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity, newParent.transform/*jako*/));
+            //models[i].transform.SetParent(transform); causes weirdest behavior
+            models[i].SendMessage("SetCompany", messagePar);
         }
     }
 
@@ -70,12 +72,13 @@ public class Company : MonoBehaviour
         switch (formation)
         {
             case Formation.Line:
-                for(int i = 0; i < modelCount; i++)
+                for (int i = 0; i < modelCount; i++)
                 {
-                    if(i < 8)
+                    if (i < 8)
                     {
                         modelPositions[i] = firstPosition - i * localLeft;
-                    }else if (i >= 8)
+                    }
+                    else if (i >= 8)
                     {
                         modelPositions[i] = firstPosition + localBack - (i % 8) * localLeft;
                     }
@@ -94,10 +97,12 @@ public class Company : MonoBehaviour
         {
             models[i].gameObject.SendMessage("Move", modelPositions[i]);
         }
+        Debug.Log("MoveModels called");
     }
 
     void MoveCompany(Vector3 target)
     {
+        Debug.Log("MoveCompany called");
         Vector3 dir = target - transform.position;
         companyDir = dir.normalized;
         CalcModelPositions(target, companyDir);
@@ -106,10 +111,12 @@ public class Company : MonoBehaviour
 
     void StopCompany()
     {
-        for(int i = 0; i < models.Count; i++)
+        for (int i = 0; i < models.Count; i++)
         {
             models[i].SendMessage("EndMove");
         }
+        Debug.Log("StopCompany called");
+
     }
 
     void RotateCompany(Vector3 dir)
@@ -126,9 +133,9 @@ public class Company : MonoBehaviour
             Destroy(this);
             return;
         }
-            
+
         Vector3 sum = Vector3.zero;
-        foreach(GameObject model in models)
+        foreach (GameObject model in models)
         {
             sum += model.transform.position;
         }
@@ -137,11 +144,11 @@ public class Company : MonoBehaviour
 
     bool AreEnemiesInRange()
     {
-        foreach(GameObject obj in enemiesList)
+        foreach (GameObject obj in enemiesList)
         {
-            if(!obj)
+            if (!obj)
                 continue;
-            if((obj.transform.position - transform.position).sqrMagnitude <= (range*range * 0.81))
+            if ((obj.transform.position - transform.position).sqrMagnitude <= (range * range * 0.81))
                 return true;
         }
         return false;
@@ -150,7 +157,7 @@ public class Company : MonoBehaviour
     bool AreEnemiesInFront()
     {
         Utils.CompaniesInRadius(transform.position, 1000, buffer);
-        foreach(GameObject obj in enemiesList)
+        foreach (GameObject obj in enemiesList)
         {
             if (!obj)
                 continue;
@@ -165,13 +172,13 @@ public class Company : MonoBehaviour
         float distSqr = Mathf.Infinity;
         Vector3 distVector;
         Vector3 target = Vector3.zero;
-        foreach(GameObject company in enemiesList)
+        foreach (GameObject company in enemiesList)
         {
-            if(!company)
+            if (!company)
                 continue;
             distVector = company.transform.position - transform.position;
-            if (distSqr > distVector.sqrMagnitude) 
-            { 
+            if (distSqr > distVector.sqrMagnitude)
+            {
                 distSqr = distVector.sqrMagnitude;
                 target = company.transform.position;
             }
@@ -183,7 +190,7 @@ public class Company : MonoBehaviour
     {
         Utils.CompaniesInRadius(transform.position, 2000, buffer);
         enemiesList.Clear();
-        foreach(GameObject company in buffer)
+        foreach (GameObject company in buffer)
         {
             if (!company || !company.GetComponent<Company>() || company.GetComponent<Company>().GetTeam() == team)
                 continue;
@@ -197,6 +204,7 @@ public class Company : MonoBehaviour
         FindEnemies();
         if (!AreEnemiesInRange())
         {
+            Debug.Log("Enemies not in range");
             Vector3 enemyPos = FindClosestEnemyPosition();
             if (enemyPos == Vector3.zero)
             {
@@ -208,6 +216,7 @@ public class Company : MonoBehaviour
         else if (!AreEnemiesInFront())
         {
             RotateCompany((FindClosestEnemyPosition() - transform.position).normalized);
+            Debug.Log("Enemies not in front");
         }
         else
         {
@@ -222,8 +231,8 @@ public class Company : MonoBehaviour
             Debug.Log("Trying to add non UnitAction type!");
             return;
         }
-            
-        foreach(GameObject model in models)
+
+        foreach (GameObject model in models)
         {
             model.GetComponent<Actor>().AddUnitAction(type);
         }
