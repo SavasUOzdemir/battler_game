@@ -56,19 +56,19 @@ public class Actor : MonoBehaviour
         }
     }
 
-    private void Move(Vector3 target)
+    //TODO:: REWRITE
+    public void Move(Vector3 target)
     {
         busy = false;
         StopAllCoroutines();
         animator.Play("Idle");
         moving = true;
         aiDest.targetVector = target;
-        Debug.Log("Move Commanded"); //Move'a þu an girmiyor.
     }
 
     private GameObject FindClosestEnemyModel()
     {
-        Utils.UnitsInRadius(transform.position, 10, buffer);
+        BattlefieldManager.ModelsInRadius(transform.position, 10, buffer);
         float distSqr = Mathf.Infinity;
         Vector3 distVector;
         GameObject target = null;
@@ -104,6 +104,7 @@ public class Actor : MonoBehaviour
         {
             StartCoroutine(meleeAction.DoAction());
             busy = true;
+            moving = false;
         }
         else
         {
@@ -142,5 +143,4 @@ public class Actor : MonoBehaviour
         actionList.Add(gameObject.AddComponent(type) as UnitAction);
         actionList.Sort((x, y) => x.getPrio().CompareTo(y.getPrio()));
     }
-
 }

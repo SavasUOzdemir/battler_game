@@ -31,16 +31,16 @@ namespace Pathfinding {
 		void OnDisable () {
 			if (ai != null) ai.onSearchPath -= Update;
 		}
-		void EndMove()
-        {
-			targetVector = transform.position;
-        }
-
 
 		/// <summary>Updates the AI's destination every frame</summary>
 		void Update () {
 			//if (target != null && ai != null) ai.destination = target.position;
 			if (target != null && ai != null) ai.destination = targetVector;
 		}
-	}
+
+        public void EndMove()
+        {
+            targetVector = transform.position;
+        }
+    }
 }

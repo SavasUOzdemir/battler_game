@@ -53,6 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   busy: 0
+  moving: 0
 --- !u!95 &117234964874808636
 Animator:
   serializedVersion: 4
@@ -152,7 +153,7 @@ MonoBehaviour:
     interval: 0.5
     sensitivity: 10
     maximumInterval: 2
-    visualizeSensitivity: 0
+    visualizeSensitivity: 1
   targetCompatibility: {fileID: 0}
   maxAcceleration: -2.5
   rotationSpeed: 360

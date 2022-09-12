@@ -28,7 +28,7 @@ public class UnitActionProjectileTest : UnitAction
 
     protected override bool FindTargets()
     {
-        Utils.UnitsInRadius(transform.position, range, unitsBuffer);
+        BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
         foreach(GameObject obj in unitsBuffer)
         {
             if (!obj)

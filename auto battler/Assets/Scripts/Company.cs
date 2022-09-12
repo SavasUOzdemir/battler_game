@@ -1,3 +1,4 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -27,6 +28,7 @@ public class Company : MonoBehaviour
     float aiUpdateTime = 0.5f;
     float currentTime = 0;
     float attackArc = 60f;
+    float aiFuse = 01f;
     
 
     //TEMP
@@ -37,15 +39,24 @@ public class Company : MonoBehaviour
 
     void Start()
     {
+        BattlefieldManager.AddCompany(gameObject);
         Init();
         if (UA == 0)
             AddUnitActionToCompany(typeof(UnitActionProjectileTest));
         if (UA == 1)
             AddUnitActionToCompany(typeof(UnitActionBasicAttack));
+        if(UA == 3)
+        {
+            AddUnitActionToCompany(typeof(UnitActionProjectileTest));
+            AddUnitActionToCompany(typeof(UnitActionBasicAttack));
+        }
+
     }
 
     void Update()
     {
+        if (Time.timeSinceLevelLoad < aiFuse)
+            return;
         UpdateBannerPosition();
         CheckMelee();
         if (inMelee)
@@ -103,17 +114,17 @@ public class Company : MonoBehaviour
     {
         for (int i = 0; i < models.Count; i++)
         {
-            models[i].gameObject.SendMessage("Move", modelPositions[i]);
+            //models[i].gameObject.SendMessage("Move", modelPositions[i]); // Clashes with A* scripts somehow
+            models[i].GetComponent<Actor>().Move(modelPositions[i]);
         }
-        Debug.Log("MoveModels called");
     }
 
     void MoveCompany(Vector3 target)
     {
-        Debug.Log("MoveCompany called");
         Vector3 dir = target - transform.position;
         companyDir = dir.normalized;
         CalcModelPositions(target, companyDir);
+        StopCompany();
         MoveModels();
     }
 
@@ -121,10 +132,9 @@ public class Company : MonoBehaviour
     {
         for (int i = 0; i < models.Count; i++)
         {
-            models[i].SendMessage("EndMove");
+            //models[i].SendMessage("EndMove"); //Potential clash with A* scripts
+            models[i].GetComponent<AIDestinationSetter>().EndMove();
         }
-        Debug.Log("StopCompany called");
-
     }
 
     void RotateCompany(Vector3 dir)
@@ -164,7 +174,7 @@ public class Company : MonoBehaviour
 
     bool AreEnemiesInFront()
     {
-        Utils.CompaniesInRadius(transform.position, 1000, buffer);
+        BattlefieldManager.CompaniesInRadius(transform.position, 1000, buffer);
         foreach (GameObject obj in enemiesList)
         {
             if (!obj)
@@ -196,7 +206,7 @@ public class Company : MonoBehaviour
 
     void FindEnemies()
     {
-        Utils.CompaniesInRadius(transform.position, 2000, buffer);
+        BattlefieldManager.CompaniesInRadius(transform.position, 2000, buffer);
         enemiesList.Clear();
         foreach (GameObject company in buffer)
         {
@@ -212,7 +222,6 @@ public class Company : MonoBehaviour
         FindEnemies();
         if (!AreEnemiesInRange())
         {
-            Debug.Log("Enemies not in range");
             Vector3 enemyPos = FindClosestEnemyPosition();
             if (enemyPos == Vector3.zero)
             {
@@ -220,12 +229,12 @@ public class Company : MonoBehaviour
             }
             //TODO: Fix?
             Vector3 newPos = (transform.position - enemyPos).normalized * (range * 0.9f) + enemyPos;
+            //MoveCompany(enemyPos);
             MoveCompany(enemyPos);
         }
         else if (!AreEnemiesInFront())
         {
             RotateCompany((FindClosestEnemyPosition() - transform.position).normalized);
-            Debug.Log("Enemies not in front");
         }
         else
         {
@@ -267,6 +276,7 @@ public class Company : MonoBehaviour
         if(models.Count == 0)
         {
             Destroy(gameObject);
+            BattlefieldManager.RemoveCompany(gameObject);
         }
     }
 

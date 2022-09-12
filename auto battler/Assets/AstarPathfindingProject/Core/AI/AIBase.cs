@@ -626,7 +626,8 @@ namespace Pathfinding {
 			Vector3 currentPosition = simulatedPosition;
 			bool positionDirty1 = false;
 
-			if (controller != null && controller.enabled && updatePosition) {
+			if (controller != null && controller.enabled && updatePosition)
+			{
 				// Use CharacterController
 				// The Transform may not be at #position if it was outside the navmesh and had to be moved to the closest valid position
 				tr.position = currentPosition;
@@ -635,7 +636,9 @@ namespace Pathfinding {
 				// TODO: Add this into the clampedPosition calculation below to make RVO better respond to physics
 				currentPosition = tr.position;
 				if (controller.isGrounded) verticalVelocity = 0;
-			} else {
+			}
+			else
+			{
 				// Use Transform, Rigidbody, Rigidbody2D or nothing at all (if updatePosition = false)
 				float lastElevation;
 				movementPlane.ToPlane(currentPosition, out lastElevation);
@@ -651,7 +654,8 @@ namespace Pathfinding {
 			currentPosition = ClampToNavmesh(currentPosition, out positionDirty2);
 
 			// Assign the final position to the character if we haven't already set it (mostly for performance, setting the position can be slow)
-			if ((positionDirty1 || positionDirty2) && updatePosition) {
+			if ((positionDirty1 || positionDirty2) && updatePosition)
+			{
 				// Note that rigid.MovePosition may or may not move the character immediately.
 				// Check the Unity documentation for the special cases.
 				if (rigid != null) rigid.MovePosition(currentPosition);

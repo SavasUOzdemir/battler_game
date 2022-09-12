@@ -48,6 +48,9 @@ MonoBehaviour:
   prefab: {fileID: 4790909944199296502, guid: 42f79eb5b0a32a0438fd1bb88467ecf8, type: 3}
   modelCount: 16
   team: 0
+  UA: 0
+  inMelee: 0
+  meleeRange: 5
 --- !u!65 &-6465811474957131811
 BoxCollider:
   m_ObjectHideFlags: 0

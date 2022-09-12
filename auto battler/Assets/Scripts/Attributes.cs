@@ -24,6 +24,7 @@ public class Attributes : MonoBehaviour
 
     private void Start()
     {
+        BattlefieldManager.AddModel(gameObject);
         currentHP = health;
     }
 
@@ -38,6 +39,7 @@ public class Attributes : MonoBehaviour
     {
         Destroy(gameObject);
         company.RemoveModel(gameObject);
+        BattlefieldManager.RemoveModel(gameObject);
     }
 
     public int GetTeam()

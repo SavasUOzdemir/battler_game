@@ -9,7 +9,7 @@ public class UnitActionBasicAttack : UnitAction
     float damage = 50.0f;
     float facingRadius = 60.0f;
     GameObject enemy;
-    GameObject[] unitsBuffer = new GameObject[100];
+    GameObject[] unitsBuffer = new GameObject[500];
     Attributes attributes;
 
     void Awake()
@@ -25,7 +25,7 @@ public class UnitActionBasicAttack : UnitAction
  
     protected override bool FindTargets()
     {
-        Utils.UnitsInRadius(transform.position, range, unitsBuffer);
+        BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
         foreach (GameObject obj in unitsBuffer)
         {
             if (!obj)
