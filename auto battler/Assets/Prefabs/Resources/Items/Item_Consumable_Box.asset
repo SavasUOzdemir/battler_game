@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Box
   sellPrice: 75
+  energyCost: 1
+  type: {fileID: 11400000, guid: f9ad6098e484d46439d0c0d7651e89fd, type: 2}
   rarity: {fileID: 11400000, guid: 35f08bce9e62807488cb1932e2a0174e, type: 2}
   useText: This be a box. Not the <link = ID01>beating </link>kind.

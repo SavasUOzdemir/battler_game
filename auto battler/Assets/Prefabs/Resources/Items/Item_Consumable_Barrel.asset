@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ed9f560f02ab2b4894d356dd3a10343, type: 3}
-  m_Name: Item_Consumable_Someone
+  m_Name: Item_Consumable_Barrel
   m_EditorClassIdentifier: 
-  name: Someone
-  sellPrice: 999999
-  energyCost: 1
+  name: Barrel
+  sellPrice: 10
+  energyCost: 2
   type: {fileID: 11400000, guid: 5b024ac89e272d8469bb4962b242184e, type: 2}
-  rarity: {fileID: 11400000, guid: a51c474e0322525429c21ecb68b31a21, type: 2}
-  useText: Someone is someone.
+  rarity: {fileID: 11400000, guid: a5cfab54d6abfd242b0372b281eb602b, type: 2}
+  useText: This is a barrel that rolls.

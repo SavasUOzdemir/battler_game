@@ -33,7 +33,7 @@ namespace DapperDino.TooltipUI
         {
             if (!popupCanvasObject.activeSelf) { return; }
 
-            Vector3 newPos = Input.mousePosition + offset;
+            Vector3 newPos = Input.mousePosition + offset*(popupCanvas.renderingDisplaySize.x/1920f);
             newPos.z = 0f;
             float rightEdgeToScreenEdgeDistance = Screen.width - (newPos.x + popupObject.rect.width * popupCanvas.scaleFactor / 2) - padding;
             if (rightEdgeToScreenEdgeDistance < 0)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DapperDino.TooltipUI;
 
 public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler/*, IDropHandler*/
 {
@@ -42,8 +43,8 @@ public class DragDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, I
         img_.maskable = true;
         if (this.transform.parent.gameObject == ogParent)
             transform.localPosition = localPos;
-        if (this.transform.parent.gameObject != ogParent)
-            transform.parent.parent.SendMessage("RegisterItems", SendMessageOptions.RequireReceiver);        
+        if (transform.parent.gameObject != ogParent && ogParent.transform.parent.GetComponent<UI_Squad>() != null)
+            ogParent.transform.parent.SendMessage("RemoveItems", eventData.pointerDrag.GetComponent<ItemButton>().Item, SendMessageOptions.RequireReceiver);
     }
 
     public void OnPointerDown(PointerEventData eventData)
