@@ -7,11 +7,11 @@ using DapperDino.TooltipUI;
 
 
 public class UI_Squad : MonoBehaviour, IDropHandler
-{ 
-    protected Item[] items = new Item[4];
-    int maxSlots = 4;
-    int availableSlots = 4;
-    int availableEnergy = 6;
+{
+    [SerializeField] protected Item[] items = new Item[4];
+    [SerializeField] int maxSlots = 4;
+    [SerializeField] int availableSlots = 4;
+    [SerializeField] int availableEnergy = 6;
     
     public bool IsItemAccepted(GameObject item)
     {
