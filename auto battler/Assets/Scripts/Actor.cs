@@ -18,6 +18,7 @@ public class Actor : MonoBehaviour
     float brainLag = 0.2f;
     float brainTime = 0;
     GameObject[] buffer = new GameObject[500];
+    Vector3 currentTargetPos;
 
     private void Awake()
     {
@@ -40,7 +41,10 @@ public class Actor : MonoBehaviour
             return;
         }
         brainTime = 0f;
-        
+
+        if (company.Moving() == true)
+            return;
+
         if (company.InMelee())
         {
             if (!meleeAction)
@@ -50,7 +54,7 @@ public class Actor : MonoBehaviour
             }
             MeleeBehaviour();
         }
-        else
+        else if (IsInPosition()) 
         {
             NotMeleeBehaviour();
         }
@@ -59,11 +63,19 @@ public class Actor : MonoBehaviour
     //TODO:: REWRITE
     public void Move(Vector3 target)
     {
+        currentTargetPos = target;
         busy = false;
         StopAllCoroutines();
         animator.Play("Idle");
         moving = true;
         aiDest.targetVector = target;
+    }
+
+    bool IsInPosition()
+    {
+        if ((transform.position - currentTargetPos).sqrMagnitude < 0.2f)
+            return true;
+        return false;
     }
 
     private GameObject FindClosestEnemyModel()

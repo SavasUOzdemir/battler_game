@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class Company : MonoBehaviour
 {
@@ -21,6 +23,7 @@ public class Company : MonoBehaviour
     Formation formation = 0;
     Vector3[] modelPositions = new Vector3[16];
     Vector3 companyDir = Vector3.right;
+    Vector3 currentTarget;
     float range = 0;
     GameObject[] buffer = new GameObject[500];
     List<GameObject> enemiesList = new List<GameObject>();
@@ -28,13 +31,19 @@ public class Company : MonoBehaviour
     float aiUpdateTime = 0.5f;
     float currentTime = 0;
     float attackArc = 60f;
-    float aiFuse = 01f;
+    float aiFuse = 01f; 
     
 
     //TEMP
     [SerializeField] int UA;
-    [SerializeField] bool inMelee = false;
     [SerializeField] float meleeRange = 5f;
+    [SerializeField] bool debug = false;
+
+    //AI STATE
+    [SerializeField] bool inMelee = false;
+    [SerializeField] bool inMeleeLastFrame = false;
+    [SerializeField] bool moving = false;
+    [SerializeField] bool stoppingMove = false;
 
 
     void Start()
@@ -60,7 +69,12 @@ public class Company : MonoBehaviour
         UpdateBannerPosition();
         CheckMelee();
         if (inMelee)
+        {
+            inMeleeLastFrame = true;
+            moving = false;
             return;
+        }
+            
         if(currentTime <= 0)
         {
             BehaviourLoop();
@@ -71,14 +85,16 @@ public class Company : MonoBehaviour
 
     private void Init()
     {
+        if (team == 1)
+            companyDir *= -1;
         ModelAttributes messagePar = new ModelAttributes(this, team);
-        CalcModelPositions(transform.position, Vector3.right);
+        CalcModelPositions(transform.position, companyDir);
         var newParent = new GameObject(); //Jako
         for (int i = 0; i < modelCount; i++)
         {
             models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity, newParent.transform/*jako*/));
             //models[i].transform.SetParent(transform); causes weirdest behavior
-            models[i].SendMessage("SetCompany", messagePar);
+            models[i].GetComponent<Attributes>().SetCompany(messagePar);
         }
     }
 
@@ -87,10 +103,14 @@ public class Company : MonoBehaviour
         Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
         Vector3 localBack = -(direction.normalized);
         Vector3 firstPosition;
+        if (debug)
+        {
+            Debug.Log("Left: " + localLeft + " Back: " + localBack);
+        }
         switch (formation)
         {
             case Formation.Line:
-                firstPosition = companyPos + 1.75f * localLeft;
+                firstPosition = companyPos + 3.5f * localLeft;
                 for (int i = 0; i < modelCount; i++)
                 {
                     if (i < 8)
@@ -114,28 +134,31 @@ public class Company : MonoBehaviour
     {
         for (int i = 0; i < models.Count; i++)
         {
-            //models[i].gameObject.SendMessage("Move", modelPositions[i]); // Clashes with A* scripts somehow
             models[i].GetComponent<Actor>().Move(modelPositions[i]);
         }
     }
 
     void MoveCompany(Vector3 target)
     {
+        currentTarget = target;
+        moving = true;
         Vector3 dir = target - transform.position;
         companyDir = dir.normalized;
         CalcModelPositions(target, companyDir);
-        StopCompany();
         MoveModels();
     }
 
     void StopCompany()
     {
-        for (int i = 0; i < models.Count; i++)
-        {
-            //models[i].SendMessage("EndMove"); //Potential clash with A* scripts
-            models[i].GetComponent<AIDestinationSetter>().EndMove();
-        }
+        moving = false;
+        Vector3 newDir = (currentTarget - transform.position).normalized;
+        CalcModelPositions(transform.position + newDir, newDir);
+        MoveModels();
+        if(debug)
+            Debug.Log(newDir);
     }
+
+    
 
     void RotateCompany(Vector3 dir)
     {
@@ -219,6 +242,7 @@ public class Company : MonoBehaviour
 
     void BehaviourLoop()
     {
+        //TODO:: Add post melee reformation
         FindEnemies();
         if (!AreEnemiesInRange())
         {
@@ -229,14 +253,13 @@ public class Company : MonoBehaviour
             }
             //TODO: Fix?
             Vector3 newPos = (transform.position - enemyPos).normalized * (range * 0.9f) + enemyPos;
-            //MoveCompany(enemyPos);
             MoveCompany(enemyPos);
         }
         else if (!AreEnemiesInFront())
         {
             RotateCompany((FindClosestEnemyPosition() - transform.position).normalized);
         }
-        else
+        else if(moving)
         {
             StopCompany();
         }
@@ -293,6 +316,11 @@ public class Company : MonoBehaviour
     public bool InMelee()
     {
         return inMelee;
+    }
+
+    public bool Moving()
+    {
+        return moving;
     }
 }
 
