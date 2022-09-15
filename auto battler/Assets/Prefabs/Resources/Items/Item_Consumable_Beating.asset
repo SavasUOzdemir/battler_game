@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Beating
   sellPrice: 50
+  energyCost: 1
+  type: {fileID: 11400000, guid: f9ad6098e484d46439d0c0d7651e89fd, type: 2}
   rarity: {fileID: 11400000, guid: a51c474e0322525429c21ecb68b31a21, type: 2}
   useText: Punching <link = ID01>someone</link> repeatedly until they stop resisting.

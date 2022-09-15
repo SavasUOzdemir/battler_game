@@ -14,6 +14,8 @@ namespace DapperDino.TooltipUI
         [SerializeField] private Item item;
         bool pointerOut = false;
 
+        public Item Item { get { return item; } }
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             Tooltip_Manager.cursorOnTooltip = false;
