@@ -187,7 +187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: modelCount
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.size
@@ -195,7 +195,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.data[0]
-      value: UnitPassive_SpikedShield
+      value: UnitAction_AdhesiveSling
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_RootOrder
@@ -203,7 +203,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.79
+      value: 1.64
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -211,7 +211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 12.904
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -429,7 +429,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: modelCount
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.size
@@ -437,11 +437,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.data[0]
-      value: UnitPassive_Gambeson
+      value: UnitPassive_PlateMail
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.data[1]
-      value: UnitAction_MorningStar
+      value: UnitAction_AdhesiveSling
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_RootOrder
@@ -449,7 +449,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -457,7 +457,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.025
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalRotation.w

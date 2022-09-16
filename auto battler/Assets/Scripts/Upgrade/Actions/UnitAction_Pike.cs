@@ -4,34 +4,34 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class UnitAction_GreatSword : UnitAction
+public class UnitAction_Pike : UnitAction
 {
-    float damage = -40.0f;
-    float facingRadius = 60.0f;
+    float damage = -20.0f;
+    float facingRadius = 90.0f;
     GameObject enemy;
     GameObject[] unitsBuffer = new GameObject[500];
 
     void Awake()
     {
         prio = 10;
-        cooldown = 2.0f;
+        cooldown = 1.0f;
         castTime = 0.5f;
         backswing = 0.5f;
-        range = 2.0f;
+        range = 4.0f;
         animPath = "Placeholder/animation_attack";
     }
 
     protected override bool FindTargets()
     {
         BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
-        foreach (GameObject model in unitsBuffer)
+        foreach (GameObject obj in unitsBuffer)
         {
-            if (!model)
+            if (!obj)
                 continue;
-            if (model.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() &&
-               Vector3.Angle(attributes.GetFacing(), model.transform.position - transform.position) < facingRadius)
+            if (obj.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() &&
+               Vector3.Angle(attributes.GetFacing(), obj.transform.position - transform.position) < facingRadius)
             {
-                enemy = model;
+                enemy = obj;
                 return true;
             }
         }
@@ -42,7 +42,7 @@ public class UnitAction_GreatSword : UnitAction
     {
         if (enemy == null)
             return false;
-        AttackPacket attack = new AttackPacket(damage, gameObject);
+        AttackPacket attack = new AttackPacket(damage, gameObject,0f,2f);
         enemy.GetComponent<Attributes>().ReceiveAttack(attack);
         return true;
     }

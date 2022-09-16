@@ -11,11 +11,9 @@ public class UnitAction_MorningStar : UnitAction
     float piercing = 0.1f;
     GameObject enemy;
     GameObject[] unitsBuffer = new GameObject[500];
-    Attributes attributes;
 
     void Awake()
     {
-        attributes = GetComponent<Attributes>();
         prio = 10;
         cooldown = 2.0f;
         castTime = 0.5f;

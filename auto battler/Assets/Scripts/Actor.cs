@@ -9,7 +9,8 @@ public class Actor : MonoBehaviour
     public bool moving = false;
 
     List<UnitAction> actionList = new List<UnitAction>();
-    UnitAction meleeAction = null;
+    UnitAction meleeWeapon = null;
+    UnitAction rangedWeapon = null;
     Animator animator;
     AnimatorOverrideController animatorOverrideController;
     Attributes attributes;
@@ -42,12 +43,12 @@ public class Actor : MonoBehaviour
         }
         brainTime = 0f;
 
-        if (company.Moving() == true)
+        if (company.Moving() || busy)
             return;
 
         if (company.InMelee())
         {
-            if (!meleeAction)
+            if (!meleeWeapon)
             {
                 return;
             }
@@ -101,19 +102,29 @@ public class Actor : MonoBehaviour
     {
         if (!target || !target.transform)
             return false;
-        if ((target.transform.position - transform.position).sqrMagnitude <= meleeAction.GetRange()*meleeAction.GetRange())
+        if ((target.transform.position - transform.position).sqrMagnitude <= meleeWeapon.GetRange()*meleeWeapon.GetRange())
             return true;
         return false;
     }
 
     private void MeleeBehaviour()
     {
+        foreach (UnitAction action in actionList)
+        {
+            if (action.getCurrentCooldown() <= 0)
+            {
+                StartCoroutine(action.DoAction());
+                busy = true;
+                attributes.SetFacing(company.GetFacing());
+                return;
+            }
+        }
         GameObject closestModel = FindClosestEnemyModel();
         if (!closestModel || busy)
             return;
         if (IsModelInRange(closestModel))
         {
-            StartCoroutine(meleeAction.DoAction());
+            StartCoroutine(meleeWeapon.DoAction());
             busy = true;
             moving = false;
         }
@@ -131,11 +142,18 @@ public class Actor : MonoBehaviour
             {
                 StartCoroutine(action.DoAction());
                 busy = true;
-                break;
+                attributes.SetFacing(company.GetFacing());
+                return;
             }
         }
-        attributes.SetFacing(company.GetFacing());
-
+        if (rangedWeapon == null)
+            return;
+        if(rangedWeapon.getCurrentCooldown() <= 0)
+        {
+            StartCoroutine(rangedWeapon.DoAction());
+            busy = true;
+            attributes.SetFacing(company.GetFacing());
+        }
     }
 
     public void EndMovement()
@@ -148,11 +166,18 @@ public class Actor : MonoBehaviour
         UnitUpgrade unitUpgrade = gameObject.AddComponent(type) as UnitUpgrade;
         if(unitUpgrade is UnitAction)
         {
-            if ((unitUpgrade as UnitAction).IsActionMelee())
+            if((unitUpgrade as UnitAction).IsMainWeapon())
             {
-                meleeAction = unitUpgrade as UnitAction;
-                return;
-            }
+                if ((unitUpgrade as UnitAction).IsActionMelee())
+                {
+                    meleeWeapon = unitUpgrade as UnitAction;
+                    return;
+                }
+                else
+                {
+                    rangedWeapon = unitUpgrade as UnitAction;
+                }
+            }          
             actionList.Add(unitUpgrade as UnitAction);
             actionList.Sort((x, y) => x.getPrio().CompareTo(y.getPrio()));
         }

@@ -4,21 +4,27 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class UnitAction_ShortSword : UnitAction
+public class UnitAction_LongBow : UnitAction
 {
-    float damage = -10.0f;
-    float facingRadius = 90.0f;
-    GameObject enemy;
-    GameObject[] unitsBuffer = new GameObject[500];
+    GameObject projectile;
+    Transform target;
+    float damage = -30.0f;
+    float facingRadius = 60.0f;
+    float ySpeed = 20f;
+    GameObject[] unitsBuffer = new GameObject[100];
 
     void Awake()
     {
-        prio = 10;
+        prio = 1;
         cooldown = 1.0f;
         castTime = 0.5f;
         backswing = 0.5f;
-        range = 2.0f;
+        range = 20f;
+        melee = false;
         animPath = "Placeholder/animation_attack";
+        hasProjectile = true;
+        projectileSpeed = 20.0f;
+        projectile = Resources.Load("Projectiles/Arrow/Prefab_Arrow") as GameObject;
     }
 
     protected override bool FindTargets()
@@ -31,7 +37,7 @@ public class UnitAction_ShortSword : UnitAction
             if (obj.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() &&
                Vector3.Angle(attributes.GetFacing(), obj.transform.position - transform.position) < facingRadius)
             {
-                enemy = obj;
+                target = obj.transform;
                 return true;
             }
         }
@@ -40,10 +46,12 @@ public class UnitAction_ShortSword : UnitAction
 
     protected override bool ProduceEffect()
     {
-        if (enemy == null)
-            return false;
-        AttackPacket attack = new AttackPacket(damage, gameObject);
-        enemy.GetComponent<Attributes>().ReceiveAttack(attack);
-        return true;
+        if (target != null)
+        {
+            GameObject firedProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
+            firedProjectile.GetComponent<Projectile_Arrow>().Init(projectileSpeed, ySpeed, target, damage, attributes.GetTeam());
+            return true;
+        }
+        return false;
     }
 }

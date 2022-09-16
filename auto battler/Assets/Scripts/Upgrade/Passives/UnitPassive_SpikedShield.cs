@@ -22,11 +22,11 @@ public class UnitPassive_SpikedShield : UnitPassive
     public override void OnHit(AttackPacket packet)
     {
         if (Random.Range(0f, 1f) < blockChance)
-            packet.blocked = true;
-        if(packet.owner != null)
+            packet.Blocked = true;
+        if(packet.Owner != null)
         {
             AttackPacket returnToSender = new AttackPacket(packet.HpChange * damageReturn, gameObject);
-            packet.owner.GetComponent<Attributes>().ReceiveAttack(returnToSender);
+            packet.Owner.GetComponent<Attributes>().ReceiveAttack(returnToSender);
         }      
     }
 }

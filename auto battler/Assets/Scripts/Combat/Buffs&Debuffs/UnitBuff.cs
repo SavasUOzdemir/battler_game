@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class UnitBuff
 {
-    float duration =0f;
+    protected float duration = 0f;
 
     public abstract void BuffEffect(Attributes attribute);
 

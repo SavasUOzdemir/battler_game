@@ -1,5 +1,7 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Attributes : MonoBehaviour
@@ -9,29 +11,35 @@ public class Attributes : MonoBehaviour
     public float maxEndurance = 100f;
     public float armor = 0f;
     public float discipline = 0f;
-    public float vigor = 0f;
-    public float speed = 1f;
+    public float vigor = 0f; 
     public float knockbackResist = 0f;
+
+    float speed = 1f;
 
     [SerializeField]int team;
 
-    [SerializeField]float currentHP;
+    [SerializeField] float currentHP;
+    [SerializeField] float currentEndurance;
     [SerializeField] Vector3 facing = Vector3.right;
+    [SerializeField] List<UnitBuff> buffList = new List<UnitBuff>();
     Company company;
-    SpriteRenderer spriteRenderer;   
-    List<UnitBuff> buffList = new List<UnitBuff>();
+    SpriteRenderer spriteRenderer;
+    AIPath aIPath;
     List<UnitPassive> passivesList = new List<UnitPassive>();
     Vector3 lastPos;
 
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        aIPath = GetComponent<AIPath>();
     }
 
     void Start()
     {
         BattlefieldManager.AddModel(gameObject);
         currentHP = maxHP;
+        currentEndurance = maxEndurance;
+        aIPath.maxSpeed = speed;
         lastPos = transform.position;
     }
 
@@ -49,7 +57,39 @@ public class Attributes : MonoBehaviour
 
     void updateFacing()
     {
-        facing = (transform.position - lastPos).normalized;
+        SetFacing((transform.position - lastPos).normalized);
+    }
+
+    public void ChangeSpeed(float change)
+    {
+        speed += change;
+        aIPath.maxSpeed = speed;
+    }
+  
+
+    public void ChangeEndurance(float change)
+    {
+        currentEndurance += change * (1 - vigor);
+        if(currentEndurance > maxEndurance)
+            currentEndurance = maxEndurance;
+        if(currentEndurance < 0f)
+            currentEndurance = 0f;
+        Debug.Log(change);
+    }
+  
+
+    void Die()
+    {
+        Destroy(gameObject);
+        company.RemoveModel(gameObject);
+        BattlefieldManager.RemoveModel(gameObject);
+    }
+    void KnockBack(AttackPacket packet)
+    {
+        if(packet.Owner != null)
+        {
+            aIPath.Move((transform.position - packet.Owner.transform.position).normalized * packet.KnockBack);
+        }
     }
 
     void ChangeHP(AttackPacket packet)
@@ -62,18 +102,11 @@ public class Attributes : MonoBehaviour
             Die();
     }
 
-    void Die()
-    {
-        Destroy(gameObject);
-        company.RemoveModel(gameObject);
-        BattlefieldManager.RemoveModel(gameObject);
-    }
-
     public void ReceiveAttack(AttackPacket packet)
     {
         foreach(UnitPassive passive in passivesList)
         {
-            if (packet.blocked)
+            if (packet.Blocked)
                 break;
             passive.OnHit(packet);
         }
@@ -81,12 +114,15 @@ public class Attributes : MonoBehaviour
         {
             foreach(UnitBuff buff in packet.buffList)
             {
+                if (buffList.Any(x => x.GetType() == buff.GetType()))
+                    continue;
                 buffList.Add(buff);
             }
         }
-        if (!packet.blocked)
+        if (!packet.Blocked)
         {
             ChangeHP(packet);
+            KnockBack(packet);
         }    
     }
 

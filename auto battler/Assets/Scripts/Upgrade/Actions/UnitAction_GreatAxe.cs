@@ -9,11 +9,9 @@ public class UnitAction_GreatAxe : UnitAction
     private float facingRadius = 90.0f;
     private List<GameObject> enemies;
     GameObject[] unitsBuffer = new GameObject[500];
-    Attributes attributes;
 
     void Awake()
     {
-        attributes = GetComponent<Attributes>();
         prio = 10;
         cooldown = 2.0f;
         castTime = 0.5f;

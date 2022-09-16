@@ -21,6 +21,6 @@ public class UnitPassive_Shield : UnitPassive
     public override void OnHit(AttackPacket packet)
     {
         if(Random.Range(0f,1f) < blockChance)
-            packet.blocked = true;
+            packet.Blocked = true;
     }
 }

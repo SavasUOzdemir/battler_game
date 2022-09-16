@@ -6,7 +6,7 @@ public class UnitPassive_PlateMail : UnitPassive
 {
     float armor = 0.3f;
     float discipline = 0.3f;
-    float speed = -0.5f;
+    float speedChange = -0.5f;
     float vigor = -0.2f;
     float knockbackResist = 0.2f;
 
@@ -14,7 +14,7 @@ public class UnitPassive_PlateMail : UnitPassive
     {
         attributes.armor += armor;
         attributes.discipline += discipline;
-        attributes.speed += speed;
+        attributes.ChangeSpeed(speedChange);
         attributes.vigor += vigor;
         attributes.knockbackResist += knockbackResist;
     }

@@ -6,7 +6,6 @@ public class UnitActionProjectileTest : UnitAction
 {
     GameObject projectile;
     Transform target;
-    Attributes attributes;
     float damage = -10.0f;
     float facingRadius = 60.0f;
     float ySpeed = 20f;
@@ -14,7 +13,6 @@ public class UnitActionProjectileTest : UnitAction
 
     void Awake()
     {
-        attributes = GetComponent<Attributes>();
         prio = 1;
         cooldown = 1.0f;
         castTime = 0.5f;
@@ -49,7 +47,7 @@ public class UnitActionProjectileTest : UnitAction
         if (target != null)
         {
             GameObject firedProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
-            firedProjectile.GetComponent<Projectile>().Init(projectileSpeed, ySpeed, target, damage, attributes.GetTeam());
+            firedProjectile.GetComponent<Projectile_Arrow>().Init(projectileSpeed, ySpeed, target, damage, attributes.GetTeam());
             return true;
         }
         return false;

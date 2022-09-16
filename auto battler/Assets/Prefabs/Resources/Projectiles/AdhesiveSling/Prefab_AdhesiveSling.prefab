@@ -95,9 +95,9 @@ GameObject:
   - component: {fileID: 8771494677535658687}
   - component: {fileID: 1763992658653093792}
   - component: {fileID: 386870798887301001}
-  - component: {fileID: 5595004880781156310}
+  - component: {fileID: 8917622504608718370}
   m_Layer: 0
-  m_Name: Prefab_Arrow
+  m_Name: Prefab_AdhesiveSling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +153,7 @@ CapsuleCollider:
   m_Height: 0.58
   m_Direction: 0
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5595004880781156310
+--- !u!114 &8917622504608718370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,6 +162,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9028593094983397756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ad1c7e9f33a0fc429082b105eac2d63, type: 3}
+  m_Script: {fileID: 11500000, guid: 5640cc3ff6ba35d4b8c8177f8d5e4acd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

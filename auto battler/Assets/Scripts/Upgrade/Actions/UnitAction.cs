@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public abstract class UnitAction : UnitUpgrade
 {
@@ -11,19 +12,23 @@ public abstract class UnitAction : UnitUpgrade
     protected float castTime;
     protected float backswing;
     protected float range = 1f;
-    protected bool melee = true;
+    protected float exhaust = 0f;
 
+    protected bool mainWeapon = true;
+    protected bool melee = true;
     protected bool hasProjectile = false;
     protected float projectileSpeed;
 
     protected Animator animator;
     protected AnimatorOverrideController animatorOverrideController;
+    protected Attributes attributes;
     protected string animPath;
     protected Actor actor;
 
     private void Start()
     {
         animator = gameObject.GetComponent<Animator>();
+        attributes = gameObject.GetComponent<Attributes>();
         animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
         actor = gameObject.GetComponent<Actor>();
         LoadResources();
@@ -43,6 +48,7 @@ public abstract class UnitAction : UnitUpgrade
             yield return new WaitForSeconds(castTime);
             if(ProduceEffect())
             {
+                attributes.ChangeEndurance(exhaust);
                 currentCooldown = cooldown;
                 yield return new WaitForSeconds(backswing);
             }
@@ -83,8 +89,18 @@ public abstract class UnitAction : UnitUpgrade
         return range;
     }
 
+    public bool IsMainWeapon()
+    {
+        return mainWeapon;
+    }
+
     public bool IsActionMelee()
     {
         return melee;
+    }
+
+    public float GetExhaust()
+    {
+        return exhaust;
     }
 }

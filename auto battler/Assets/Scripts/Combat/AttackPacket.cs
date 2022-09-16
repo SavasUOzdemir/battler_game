@@ -8,18 +8,20 @@ public class AttackPacket
     public float Piercing { get; }
     public float EnduranceChange { get; }
     public float MoraleChange { get; }
+    public float KnockBack { get; }
     public List<UnitBuff> buffList = new List<UnitBuff>();
-    public GameObject owner { get; }
-    public bool blocked { get; set; }
+    public GameObject Owner { get; }
+    public bool Blocked { get; set; }
 
-    public AttackPacket(float hpChange, GameObject owner = null, float piercing = 0f, float enduranceDamage = 0f, float moraleDamage = 0f, UnitBuff buff = null)
+    public AttackPacket(float hpChange, GameObject owner = null, float piercing = 0f,float knockBack = 0f, float moraleDamage = 0f, UnitBuff buff = null, float enduranceDamage = 0f)
     {
         HpChange = hpChange;
         Piercing = piercing;
         EnduranceChange = enduranceDamage;
         MoraleChange = moraleDamage;
+        KnockBack = knockBack;
         if (!(buff == null))
             buffList.Add(buff);
-        this.owner = owner;
+        Owner = owner;
     }
 }
