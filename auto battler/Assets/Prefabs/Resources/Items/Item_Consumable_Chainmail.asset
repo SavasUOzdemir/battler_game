@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ed9f560f02ab2b4894d356dd3a10343, type: 3}
+  m_Name: Item_Consumable_Chainmail
+  m_EditorClassIdentifier: 
+  name: Chainmail
+  sellPrice: 30
+  energyCost: 0
+  type: {fileID: 11400000, guid: 94f13de052d958a4382c6454458cce8f, type: 2}
+  thumbnail: {fileID: 21300000, guid: 9d2a77116a2d61e40b200a8dac24dd2e, type: 3}
+  rarity: {fileID: 11400000, guid: a51c474e0322525429c21ecb68b31a21, type: 2}
+  useText: This is a mail in a chain. If you don't send this to 10 people you will
+    die.
