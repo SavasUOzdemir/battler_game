@@ -40,7 +40,8 @@ public class Projectile : MonoBehaviour
     {
         if (other.GetComponent<Attributes>().GetTeam() == team)
             return;
-        other.GetComponent<Attributes>().ChangeHP(-damage);
+        AttackPacket attack = new AttackPacket(damage);
+        other.GetComponent<Attributes>().ReceiveAttack(attack);
         Destroy(this.gameObject);
     }
 }

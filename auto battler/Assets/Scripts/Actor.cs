@@ -49,7 +49,6 @@ public class Actor : MonoBehaviour
         {
             if (!meleeAction)
             {
-                Debug.Log("No Melee Action");
                 return;
             }
             MeleeBehaviour();
@@ -80,7 +79,7 @@ public class Actor : MonoBehaviour
 
     private GameObject FindClosestEnemyModel()
     {
-        BattlefieldManager.ModelsInRadius(transform.position, 10, buffer);
+        BattlefieldManager.ModelsInRadius(transform.position, 20, buffer);
         float distSqr = Mathf.Infinity;
         Vector3 distVector;
         GameObject target = null;
@@ -146,13 +145,20 @@ public class Actor : MonoBehaviour
 
     public void AddUnitAction(System.Type type)
     {
-        UnitAction unitAction = gameObject.AddComponent(type) as UnitAction;
-        if (unitAction.IsActionMelee())
+        UnitUpgrade unitUpgrade = gameObject.AddComponent(type) as UnitUpgrade;
+        if(unitUpgrade is UnitAction)
         {
-            meleeAction = unitAction;
-            return;
+            if ((unitUpgrade as UnitAction).IsActionMelee())
+            {
+                meleeAction = unitUpgrade as UnitAction;
+                return;
+            }
+            actionList.Add(unitUpgrade as UnitAction);
+            actionList.Sort((x, y) => x.getPrio().CompareTo(y.getPrio()));
         }
-        actionList.Add(gameObject.AddComponent(type) as UnitAction);
-        actionList.Sort((x, y) => x.getPrio().CompareTo(y.getPrio()));
+        else if(unitUpgrade is UnitPassive)
+        {
+            attributes.AddUnitPassive(unitUpgrade as UnitPassive);
+        }
     }
 }

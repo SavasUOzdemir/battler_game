@@ -18,7 +18,7 @@ public class ManualMove : MonoBehaviour
         {
             Debug.Log("Attack done");
             //target = GetComponent<PickTarget>().Target;
-            //target.GetComponent<Attributes>().health -= 5;
+            //target.GetComponent<Attributes>().maxHP -= 5;
         }
     }
 }

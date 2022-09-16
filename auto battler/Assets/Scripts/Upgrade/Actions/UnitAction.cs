@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class UnitAction : MonoBehaviour
+public abstract class UnitAction : UnitUpgrade
 {
     float currentCooldown = 0.0f;
 

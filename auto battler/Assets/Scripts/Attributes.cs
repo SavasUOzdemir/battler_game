@@ -4,42 +4,97 @@ using UnityEngine;
 
 public class Attributes : MonoBehaviour
 {
-    public float health = 100f;
+    public float maxHP = 100f;
+    public float maxMorale = 100f;
+    public float maxEndurance = 100f;
+    public float armor = 0f;
+    public float discipline = 0f;
+    public float vigor = 0f;
     public float speed = 1f;
-    public float morale = 100f;
-    public float endurance = 100f;
-    public float damageReduction = 0.1f;
+    public float knockbackResist = 0f;
 
     [SerializeField]int team;
 
-    float currentHP;
+    [SerializeField]float currentHP;
+    [SerializeField] Vector3 facing = Vector3.right;
     Company company;
-    SpriteRenderer spriteRenderer;
-    Vector3 facing = Vector3.right;
+    SpriteRenderer spriteRenderer;   
+    List<UnitBuff> buffList = new List<UnitBuff>();
+    List<UnitPassive> passivesList = new List<UnitPassive>();
+    Vector3 lastPos;
 
-    private void Awake()
+    void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void Start()
+    void Start()
     {
         BattlefieldManager.AddModel(gameObject);
-        currentHP = health;
+        currentHP = maxHP;
+        lastPos = transform.position;
     }
 
-    public void ChangeHP(float change)
+    private void Update()
     {
-        currentHP += change;
+        //if(!company.InMelee())
+            updateFacing();
+        foreach(UnitBuff buff in buffList)
+        {
+            buff.BuffEffect(this);
+            if(buff.BuffTick() <= 0f)
+                buffList.Remove(buff);
+        }
+    }
+
+    void updateFacing()
+    {
+        facing = (transform.position - lastPos).normalized;
+    }
+
+    void ChangeHP(AttackPacket packet)
+    {
+        if (packet.HpChange < 0f)
+            currentHP += packet.HpChange * (1 - Mathf.Clamp(armor - packet.Piercing, 0f, 1f));
+        else
+            currentHP += packet.HpChange;
         if (currentHP <= 0)
             Die();
     }
 
-    private void Die()
+    void Die()
     {
         Destroy(gameObject);
         company.RemoveModel(gameObject);
         BattlefieldManager.RemoveModel(gameObject);
+    }
+
+    public void ReceiveAttack(AttackPacket packet)
+    {
+        foreach(UnitPassive passive in passivesList)
+        {
+            if (packet.blocked)
+                break;
+            passive.OnHit(packet);
+        }
+        if(packet.buffList.Count > 0)
+        {
+            foreach(UnitBuff buff in packet.buffList)
+            {
+                buffList.Add(buff);
+            }
+        }
+        if (!packet.blocked)
+        {
+            ChangeHP(packet);
+        }    
+    }
+
+    public void AddUnitPassive(UnitPassive passive)
+    {
+        passive.SetAttributes(this);
+        passivesList.Add(passive);
+        passive.OnPurchase();
     }
 
     public int GetTeam()
@@ -66,7 +121,7 @@ public class Attributes : MonoBehaviour
         return company;
     }
 
-    void SetCompany(ModelAttributes modelAttributes)
+    public void SetCompany(ModelAttributes modelAttributes)
     {
         company = modelAttributes.company;
         team = modelAttributes.team;

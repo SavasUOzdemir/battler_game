@@ -28,7 +28,6 @@ public class BattlefieldManager : MonoBehaviour
         System.Array.Clear(buffer, 0, buffer.Length);
         int bufferIndex = 0;
         List<GameObject> searchList = null;
-        Vector3 unitPos;
         switch (option)
         {
             case FindOptions.Model:

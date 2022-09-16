@@ -15,7 +15,7 @@ using UnityEngine;
 namespace CodeMonkey.Utils {
 
     /*
-     * Bar in the World, great for quickly making a health bar
+     * Bar in the World, great for quickly making a maxHP bar
      * */
     public class World_Bar {
         

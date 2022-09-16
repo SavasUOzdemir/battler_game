@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnitActionCleave : UnitAction
 {
-    private float damage = 10.0f;
+    private float damage = -10.0f;
     private float facingRadius = 90.0f;
     private List<GameObject> enemies;
 
@@ -34,9 +34,10 @@ public class UnitActionCleave : UnitAction
 
     protected override bool ProduceEffect()
     {
+        AttackPacket attack = new AttackPacket(damage, gameObject);
         foreach(GameObject enemy in enemies)
         {
-            enemy.GetComponent<Attributes>().ChangeHP(-damage);
+            enemy.GetComponent<Attributes>().ReceiveAttack(attack);
         }
         return true;
     }

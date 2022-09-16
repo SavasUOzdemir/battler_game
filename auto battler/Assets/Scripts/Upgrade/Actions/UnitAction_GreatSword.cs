@@ -1,12 +1,12 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
-public class UnitActionBasicAttack : UnitAction
+public class UnitAction_GreatSword : UnitAction
 {
-
-    float damage = 50.0f;
+    float damage = -40.0f;
     float facingRadius = 60.0f;
     GameObject enemy;
     GameObject[] unitsBuffer = new GameObject[500];
@@ -16,24 +16,24 @@ public class UnitActionBasicAttack : UnitAction
     {
         attributes = GetComponent<Attributes>();
         prio = 10;
-        cooldown = 1.0f;
+        cooldown = 2.0f;
         castTime = 0.5f;
         backswing = 0.5f;
         range = 2.0f;
         animPath = "Placeholder/animation_attack";
     }
- 
+
     protected override bool FindTargets()
     {
         BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
-        foreach (GameObject obj in unitsBuffer)
+        foreach (GameObject model in unitsBuffer)
         {
-            if (!obj)
+            if (!model)
                 continue;
-            if (obj.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() &&
-               Vector3.Angle(attributes.GetFacing(), obj.transform.position - transform.position) < facingRadius)
+            if (model.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() &&
+               Vector3.Angle(attributes.GetFacing(), model.transform.position - transform.position) < facingRadius)
             {
-                enemy = obj;
+                enemy = model;
                 return true;
             }
         }
@@ -44,7 +44,8 @@ public class UnitActionBasicAttack : UnitAction
     {
         if (enemy == null)
             return false;
-        enemy.GetComponent<Attributes>().ChangeHP(-damage);
+        AttackPacket attack = new AttackPacket(damage, gameObject);
+        enemy.GetComponent<Attributes>().ReceiveAttack(attack);
         return true;
     }
 }

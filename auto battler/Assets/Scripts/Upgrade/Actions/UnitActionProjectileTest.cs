@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 
@@ -6,10 +7,10 @@ public class UnitActionProjectileTest : UnitAction
     GameObject projectile;
     Transform target;
     Attributes attributes;
-    float damage = 10.0f;
+    float damage = -10.0f;
     float facingRadius = 60.0f;
     float ySpeed = 20f;
-    GameObject[] unitsBuffer = new GameObject[100];
+    GameObject[] unitsBuffer = new GameObject[100];    
 
     void Awake()
     {

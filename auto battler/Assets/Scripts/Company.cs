@@ -31,45 +31,54 @@ public class Company : MonoBehaviour
     float aiUpdateTime = 0.5f;
     float currentTime = 0;
     float attackArc = 60f;
-    float aiFuse = 01f; 
-    
+    float aiFuse = 01f;
+
 
     //TEMP
-    [SerializeField] int UA;
     [SerializeField] float meleeRange = 5f;
     [SerializeField] bool debug = false;
 
     //AI STATE
     [SerializeField] bool inMelee = false;
     [SerializeField] bool inMeleeLastFrame = false;
-    [SerializeField] bool moving = false;
-    [SerializeField] bool stoppingMove = false;
+    [SerializeField] bool moving = true;
+
+    //Attach upgrades in editor
+    [SerializeField] List<string> editorUpgrades = new List<string>();
+    bool addedEditorUpgrades = false;
+
+    void AddEditorUpgrades()
+    {
+        foreach(string upgrade in editorUpgrades)
+        {
+            Debug.Log(System.Type.GetType(upgrade));
+            AddUnitUpgrade(System.Type.GetType(upgrade));
+        }
+    }
 
 
     void Start()
     {
         BattlefieldManager.AddCompany(gameObject);
         Init();
-        if (UA == 0)
-            AddUnitActionToCompany(typeof(UnitActionProjectileTest));
-        if (UA == 1)
-            AddUnitActionToCompany(typeof(UnitActionBasicAttack));
-        if(UA == 3)
-        {
-            AddUnitActionToCompany(typeof(UnitActionProjectileTest));
-            AddUnitActionToCompany(typeof(UnitActionBasicAttack));
-        }
-
     }
 
     void Update()
     {
+        if (!addedEditorUpgrades)
+        {
+            AddEditorUpgrades();
+            addedEditorUpgrades = true;
+        }
+            
         if (Time.timeSinceLevelLoad < aiFuse)
             return;
         UpdateBannerPosition();
         CheckMelee();
         if (inMelee)
         {
+            if (moving)
+                StopCompany();
             inMeleeLastFrame = true;
             moving = false;
             return;
@@ -89,11 +98,10 @@ public class Company : MonoBehaviour
             companyDir *= -1;
         ModelAttributes messagePar = new ModelAttributes(this, team);
         CalcModelPositions(transform.position, companyDir);
-        var newParent = new GameObject(); //Jako
+        var newParent = new GameObject();
         for (int i = 0; i < modelCount; i++)
         {
-            models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity, newParent.transform/*jako*/));
-            //models[i].transform.SetParent(transform); causes weirdest behavior
+            models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity, newParent.transform));
             models[i].GetComponent<Attributes>().SetCompany(messagePar);
         }
     }
@@ -103,10 +111,6 @@ public class Company : MonoBehaviour
         Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
         Vector3 localBack = -(direction.normalized);
         Vector3 firstPosition;
-        if (debug)
-        {
-            Debug.Log("Left: " + localLeft + " Back: " + localBack);
-        }
         switch (formation)
         {
             case Formation.Line:
@@ -154,8 +158,6 @@ public class Company : MonoBehaviour
         Vector3 newDir = (currentTarget - transform.position).normalized;
         CalcModelPositions(transform.position + newDir, newDir);
         MoveModels();
-        if(debug)
-            Debug.Log(newDir);
     }
 
     
@@ -251,8 +253,6 @@ public class Company : MonoBehaviour
             {
                 return;
             }
-            //TODO: Fix?
-            Vector3 newPos = (transform.position - enemyPos).normalized * (range * 0.9f) + enemyPos;
             MoveCompany(enemyPos);
         }
         else if (!AreEnemiesInFront())
@@ -275,11 +275,11 @@ public class Company : MonoBehaviour
         inMelee = false;
     }
 
-    public void AddUnitActionToCompany(System.Type type)
+    public void AddUnitUpgrade(System.Type type)
     {
-        if (!type.IsSubclassOf(typeof(UnitAction)))
+        if (!type.IsSubclassOf(typeof(UnitUpgrade)))
         {
-            Debug.Log("Trying to add non UnitAction type!");
+            Debug.Log("Trying to add non UnitUpgrade type!");
             return;
         }
 
@@ -288,9 +288,11 @@ public class Company : MonoBehaviour
             model.GetComponent<Actor>().AddUnitAction(type);
         }
 
-        float actionRange = (models[0].GetComponent(type) as UnitAction).GetRange();
-        if (actionRange > range)
-            range = actionRange;
+        UnitAction unitAction = models[0].GetComponent(type) as UnitAction;
+        if (unitAction)
+            if (unitAction.GetRange() > range)
+                range = unitAction.GetRange();
+            
     }
 
     public void RemoveModel(GameObject model)
