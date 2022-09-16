@@ -16,5 +16,6 @@ MonoBehaviour:
   sellPrice: 10
   energyCost: 2
   type: {fileID: 11400000, guid: 5b024ac89e272d8469bb4962b242184e, type: 2}
+  thumbnail: {fileID: -4584001840792588798, guid: ca1fe683d8872314481b6dbcd87cb1d1, type: 3}
   rarity: {fileID: 11400000, guid: a5cfab54d6abfd242b0372b281eb602b, type: 2}
   useText: This is a barrel that rolls.

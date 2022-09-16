@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DapperDino.TooltipUI;
 
 
 public class Armory : MonoBehaviour, IDropHandler
@@ -15,7 +16,7 @@ public class Armory : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("Item Stored in Armory");
-        if (eventData.pointerDrag != null)
+        if (eventData.pointerDrag != null && eventData.pointerDrag.GetComponent<ItemButton>()!= null)
         {
             RectTransform thisItem = eventData.pointerDrag.GetComponent<RectTransform>();
             float rescaleFactor = gr.cellSize.x / thisItem.sizeDelta.x;

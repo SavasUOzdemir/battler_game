@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DapperDino.TooltipUI;
+using System.Linq;
+
 
 
 public class UI_Squad : MonoBehaviour, IDropHandler
@@ -52,5 +54,35 @@ public class UI_Squad : MonoBehaviour, IDropHandler
         availableSlots++;
         for (i = 0; items[i] != item; i++){}
         items[i] = null;
+        UpdateArray(items);
+        //SetImages(items);
+    }
+
+    //void SetImages(Item[] items)
+    //{
+    //    int i;
+    //    for (i = 0; i < maxSlots-availableSlots; i++)
+    //        transform.GetChild(i).GetComponent<Image>().sprite = items[i].Thumbnail;
+    //    while (i<maxSlots)
+    //    {
+    //        transform.GetChild(i).GetComponent<Image>().sprite = null;
+    //        i++;
+    //    }
+    //}
+
+    void UpdateArray(Item[] items)
+    {
+        if (availableSlots<maxSlots)        
+            for (int i = 0; i + 1 < items.Length; i++)            
+                if (items[i]==null)
+                {
+                    items[i] = items[i + 1];
+                    items[i + 1] = null;
+                    if (transform.GetChild(i + 1).childCount == 1) 
+                    {
+                        transform.GetChild(i + 1).GetChild(0).SetParent(transform.GetChild(i));
+                        transform.GetChild(i).transform.GetChild(0).transform.localPosition = new Vector3(0, 0, 0);
+                    }
+                }
     }
 }
