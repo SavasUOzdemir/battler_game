@@ -7995,6 +7995,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   squadTab: {fileID: 1188057317}
   shopTab: {fileID: 625147801}
+  unitsText: {fileID: 1516990096}
 --- !u!114 &1949702335
 MonoBehaviour:
   m_ObjectHideFlags: 0
