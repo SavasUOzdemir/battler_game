@@ -14,7 +14,12 @@ public class UI_Squad : MonoBehaviour, IDropHandler
     [SerializeField] int maxSlots = 4;
     [SerializeField] int availableSlots = 4;
     [SerializeField] int availableEnergy = 6;
-    
+    [SerializeField] Squad squad;
+
+    private void Awake()
+    {
+        UpdateItemObject();
+    }
     public bool IsItemAccepted(GameObject item)
     {
         var item_ = item.GetComponent<ItemButton>().Item;
@@ -22,9 +27,9 @@ public class UI_Squad : MonoBehaviour, IDropHandler
             return false;
         if (availableEnergy < item_.EnergyCost)
             return false;
-        for (int i = 0; i < maxSlots-availableSlots; i++)
+        for (int i = 0; i < maxSlots - availableSlots; i++)
         {
-            if(items[i].Type == item_.Type)
+            if (items[i].Type == item_.Type)
             {
                 return false;
             }
@@ -39,11 +44,12 @@ public class UI_Squad : MonoBehaviour, IDropHandler
             RectTransform thisItem = eventData.pointerDrag.GetComponent<RectTransform>();
             float rescaleFactor = transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x / thisItem.sizeDelta.x;
             thisItem.localScale = new Vector3(rescaleFactor, rescaleFactor, 1);
-            thisItem.position = transform.GetChild(4-availableSlots).position;
-            thisItem.SetParent(transform.GetChild(4-availableSlots).transform);
+            thisItem.position = transform.GetChild(4 - availableSlots).position;
+            thisItem.SetParent(transform.GetChild(4 - availableSlots).transform);
             items[maxSlots - availableSlots] = eventData.pointerDrag.GetComponent<ItemButton>().Item;
             availableSlots--;
             availableEnergy -= eventData.pointerDrag.GetComponent<ItemButton>().Item.EnergyCost;
+            UpdateItemObject();
         }
     }
 
@@ -52,9 +58,10 @@ public class UI_Squad : MonoBehaviour, IDropHandler
         int i;
         availableEnergy += item.EnergyCost;
         availableSlots++;
-        for (i = 0; items[i] != item; i++){}
+        for (i = 0; items[i] != item; i++) { }
         items[i] = null;
         UpdateArray(items);
+        UpdateItemObject();
         //SetImages(items);
     }
 
@@ -69,20 +76,32 @@ public class UI_Squad : MonoBehaviour, IDropHandler
     //        i++;
     //    }
     //}
+    void UpdateItemObject()
+    {
+        for (int j = 0; j < maxSlots; j++)
+        {
+            squad.heldItems[j] = items[j];
+        }
+        squad.AvailableSlots = availableSlots;
+        squad.CurrentEnergy = availableEnergy;
+    }
+
 
     void UpdateArray(Item[] items)
     {
-        if (availableSlots<maxSlots)        
-            for (int i = 0; i + 1 < items.Length; i++)            
-                if (items[i]==null)
+        if (availableSlots < maxSlots)
+            for (int i = 0; i + 1 < items.Length; i++)
+            {
+                if (items[i] == null)
                 {
                     items[i] = items[i + 1];
                     items[i + 1] = null;
-                    if (transform.GetChild(i + 1).childCount == 1) 
+                    if (transform.GetChild(i + 1).childCount == 1)
                     {
                         transform.GetChild(i + 1).GetChild(0).SetParent(transform.GetChild(i));
                         transform.GetChild(i).transform.GetChild(0).transform.localPosition = new Vector3(0, 0, 0);
                     }
                 }
+            }
     }
 }

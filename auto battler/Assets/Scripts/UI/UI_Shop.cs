@@ -20,9 +20,8 @@ public class UI_Shop : MonoBehaviour, IDropHandler
         if (eventData.pointerDrag != null && eventData.pointerDrag.GetComponent<ItemButton>() != null)
         {
             RectTransform thisItem = eventData.pointerDrag.GetComponent<RectTransform>();
-            float rescaleFactor = transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x / thisItem.sizeDelta.x;
-            thisItem.localScale = new Vector3(rescaleFactor, rescaleFactor, 1);
             thisItem.SetParent(gameObject.transform);
+            thisItem.gameObject.transform.SetAsFirstSibling();
             Item actualItem = eventData.pointerDrag.GetComponent<ItemButton>().Item;
             InventorySingleton.instance.CurrentGold+= actualItem.SellPrice/2;
         }
@@ -51,7 +50,6 @@ public class UI_Shop : MonoBehaviour, IDropHandler
 
     void UpdateArray(Item[] items)
     {
-        if (true)        
             for (int i = 0; i + 1 < items.Length; i++)            
                 if (items[i]==null)
                 {
