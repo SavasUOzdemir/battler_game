@@ -203,6 +203,7 @@ MonoBehaviour:
   maxSlots: 4
   availableSlots: 4
   availableEnergy: 6
+  squad: {fileID: 11400000, guid: e76048d2218c6e644a1983392e5314d6, type: 2}
 --- !u!114 &6432390072563885350
 MonoBehaviour:
   m_ObjectHideFlags: 0
