@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public abstract class UnitAction : UnitUpgrade
 {
@@ -41,23 +39,20 @@ public abstract class UnitAction : UnitUpgrade
 
     public IEnumerator DoAction()
     {
-        if(FindTargets())
+        actor.moving = false;
+        animator.Play("Attack");
+        yield return new WaitForSeconds(castTime);
+        if(ProduceEffect())
         {
-            actor.moving = false;
-            animator.Play("Attack");
-            yield return new WaitForSeconds(castTime);
-            if(ProduceEffect())
-            {
-                attributes.ChangeEndurance(exhaust);
-                currentCooldown = cooldown;
-                yield return new WaitForSeconds(backswing);
-            }
-            animator.Play("Idle");
+            attributes.ChangeEndurance(exhaust);
+            currentCooldown = cooldown;
+            yield return new WaitForSeconds(backswing);
         }
+        animator.Play("Idle");
         actor.busy = false;
-    } 
+    }
 
-    protected virtual bool FindTargets()
+    public virtual bool FindTargets()
     {
         return true;
     }
@@ -66,7 +61,7 @@ public abstract class UnitAction : UnitUpgrade
 
     void ProgressCooldown()
     {
-        currentCooldown = currentCooldown - Time.deltaTime;
+        currentCooldown -=  Time.deltaTime;
     }
 
     void LoadResources()
@@ -74,12 +69,12 @@ public abstract class UnitAction : UnitUpgrade
         animatorOverrideController["animation_attack"] = Resources.Load<AnimationClip>(animPath);
     }
 
-    public int getPrio()
+    public int GetPrio()
     {
         return prio;
     }
 
-    public float getCurrentCooldown()
+    public float GetCurrentCooldown()
     {
         return currentCooldown;
     }

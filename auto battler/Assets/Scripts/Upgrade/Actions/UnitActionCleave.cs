@@ -16,8 +16,8 @@ public class UnitActionCleave : UnitAction
         backswing = 0.5f;
         range = 1f;
     }
- 
-    protected override bool FindTargets()
+
+    public override bool FindTargets()
     {
         Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position, range);
         enemies = new List<GameObject>();

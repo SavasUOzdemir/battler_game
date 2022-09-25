@@ -187,15 +187,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: modelCount
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
-      propertyPath: editorUpgrades.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: editorUpgrades.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.data[0]
-      value: UnitAction_AdhesiveSling
+      value: UnitAction_ShortBow
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: editorUpgrades.Array.data[1]
+      value: UnitPassive_PlateMail
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_RootOrder
@@ -203,7 +207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.64
+      value: -1.13
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -429,11 +433,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: modelCount
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.data[0]
@@ -441,7 +445,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.data[1]
-      value: UnitAction_AdhesiveSling
+      value: UnitAction_ShortSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: editorUpgrades.Array.data[2]
+      value: UnitAction_Execute
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770737, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: m_RootOrder

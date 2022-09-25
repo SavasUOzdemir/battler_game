@@ -86,12 +86,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3861cbbea73f0f44eb8b53eebce3cead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  speed: 12.98
-  morale: 100
-  endurance: 100
-  damageReduction: 0.1
+  maxHP: 100
+  maxMorale: 100
+  maxEndurance: 100
+  armor: 0
+  discipline: 0
+  vigor: 0
+  knockbackResist: 0
   team: 0
+  currentHP: 0
+  currentEndurance: 0
+  speed: 1
+  facing: {x: 1, y: 0, z: 0}
 --- !u!136 &-1373375277925396512
 CapsuleCollider:
   m_ObjectHideFlags: 0

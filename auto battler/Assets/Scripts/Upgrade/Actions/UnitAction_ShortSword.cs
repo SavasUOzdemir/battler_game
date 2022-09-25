@@ -21,7 +21,7 @@ public class UnitAction_ShortSword : UnitAction
         animPath = "Placeholder/animation_attack";
     }
 
-    protected override bool FindTargets()
+    public override bool FindTargets()
     {
         BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
         foreach (GameObject obj in unitsBuffer)
@@ -29,12 +29,13 @@ public class UnitAction_ShortSword : UnitAction
             if (!obj)
                 continue;
             if (obj.GetComponent<Attributes>().GetTeam() != attributes.GetTeam() &&
-               Vector3.Angle(attributes.GetFacing(), obj.transform.position - transform.position) < facingRadius)
+                Vector3.Angle(attributes.GetFacing(), obj.transform.position - transform.position) < facingRadius)
             {
                 enemy = obj;
                 return true;
             }
         }
+
         return false;
     }
 

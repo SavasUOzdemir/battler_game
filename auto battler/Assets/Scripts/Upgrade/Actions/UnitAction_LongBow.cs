@@ -1,6 +1,8 @@
 using Pathfinding;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,10 +10,15 @@ public class UnitAction_LongBow : UnitAction
 {
     GameObject projectile;
     Transform target;
+    GameObject[] unitsBuffer = new GameObject[100];
+
     float damage = -30.0f;
+    float piercing = 0f;
+    float moraleDamage = 0f;
+    Type debuff = null;
     float facingRadius = 60.0f;
     float ySpeed = 20f;
-    GameObject[] unitsBuffer = new GameObject[100];
+    
 
     void Awake()
     {
@@ -27,7 +34,7 @@ public class UnitAction_LongBow : UnitAction
         projectile = Resources.Load("Projectiles/Arrow/Prefab_Arrow") as GameObject;
     }
 
-    protected override bool FindTargets()
+    public override bool FindTargets()
     {
         BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
         foreach (GameObject obj in unitsBuffer)
@@ -48,10 +55,19 @@ public class UnitAction_LongBow : UnitAction
     {
         if (target != null)
         {
-            GameObject firedProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
-            firedProjectile.GetComponent<Projectile_Arrow>().Init(projectileSpeed, ySpeed, target, damage, attributes.GetTeam());
+            Projectile_Arrow firedProjectile = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Projectile_Arrow>();
+            firedProjectile.Init(projectileSpeed, ySpeed, target, attributes.GetTeam());
+            firedProjectile.SetStats(damage, piercing, moraleDamage, debuff); 
             return true;
         }
         return false;
+    }
+
+    public void UpgradeBow(float damage, float piercing, float moraleDamage, Type debuff)
+    {
+        this.damage += damage;
+        this.piercing += piercing;
+        this.moraleDamage += moraleDamage;
+        this.debuff = debuff;
     }
 }

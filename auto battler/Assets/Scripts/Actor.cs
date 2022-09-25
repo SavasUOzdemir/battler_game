@@ -41,6 +41,8 @@ public class Actor : MonoBehaviour
             brainTime += Time.deltaTime;
             return;
         }
+        if (attributes.GetWinded())
+            return;
         brainTime = 0f;
 
         if (company.Moving() || busy)
@@ -63,6 +65,8 @@ public class Actor : MonoBehaviour
     //TODO:: REWRITE
     public void Move(Vector3 target)
     {
+        if (attributes.GetWinded())
+            return;
         currentTargetPos = target;
         busy = false;
         StopAllCoroutines();
@@ -111,7 +115,7 @@ public class Actor : MonoBehaviour
     {
         foreach (UnitAction action in actionList)
         {
-            if (action.getCurrentCooldown() <= 0)
+            if (action.GetCurrentCooldown() <= 0 && action.FindTargets())
             {
                 StartCoroutine(action.DoAction());
                 busy = true;
@@ -122,7 +126,7 @@ public class Actor : MonoBehaviour
         GameObject closestModel = FindClosestEnemyModel();
         if (!closestModel || busy)
             return;
-        if (IsModelInRange(closestModel))
+        if (IsModelInRange(closestModel) && meleeWeapon.FindTargets())
         {
             StartCoroutine(meleeWeapon.DoAction());
             busy = true;
@@ -138,7 +142,7 @@ public class Actor : MonoBehaviour
     {
         foreach (UnitAction action in actionList)
         {
-            if (action.getCurrentCooldown() <= 0)
+            if (action.GetCurrentCooldown() <= 0 && action.FindTargets())
             {
                 StartCoroutine(action.DoAction());
                 busy = true;
@@ -148,7 +152,7 @@ public class Actor : MonoBehaviour
         }
         if (rangedWeapon == null)
             return;
-        if(rangedWeapon.getCurrentCooldown() <= 0)
+        if(rangedWeapon.GetCurrentCooldown() <= 0 && rangedWeapon.FindTargets())
         {
             StartCoroutine(rangedWeapon.DoAction());
             busy = true;
@@ -179,7 +183,7 @@ public class Actor : MonoBehaviour
                 }
             }          
             actionList.Add(unitUpgrade as UnitAction);
-            actionList.Sort((x, y) => x.getPrio().CompareTo(y.getPrio()));
+            actionList.Sort((x, y) => x.GetPrio().CompareTo(y.GetPrio()));
         }
         else if(unitUpgrade is UnitPassive)
         {

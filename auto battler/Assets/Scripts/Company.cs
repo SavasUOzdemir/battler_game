@@ -1,11 +1,6 @@
-using Pathfinding;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UIElements;
-using static UnityEngine.GraphicsBuffer;
+
 
 public class Company : MonoBehaviour
 {
@@ -21,10 +16,11 @@ public class Company : MonoBehaviour
 
     List<GameObject> models = new List<GameObject>();
     Formation formation = 0;
-    Vector3[] modelPositions = new Vector3[16];
+    Vector3[] modelPositions;
     Vector3 companyDir = Vector3.right;
     Vector3 currentTarget;
     float range = 0;
+    float modelColliderDia = 1;
     GameObject[] buffer = new GameObject[500];
     List<GameObject> enemiesList = new List<GameObject>();
     [SerializeField] int team = 0;
@@ -38,10 +34,18 @@ public class Company : MonoBehaviour
     [SerializeField] float meleeRange = 5f;
     [SerializeField] bool debug = false;
 
+    //Formation Variables
+    [SerializeField] int columns = 8;
+
     //AI STATE
     [SerializeField] bool inMelee = false;
     [SerializeField] bool inMeleeLastFrame = false;
     [SerializeField] bool moving = true;
+
+    //GAMEPLAY STATS
+    [SerializeField] float maxMorale = 100f;
+    [SerializeField] float currentMorale;
+    [SerializeField] bool broken = false;
 
     //Attach upgrades in editor
     [SerializeField] List<string> editorUpgrades = new List<string>();
@@ -60,6 +64,7 @@ public class Company : MonoBehaviour
     void Start()
     {
         BattlefieldManager.AddCompany(gameObject);
+        modelPositions = new Vector3[modelCount];
         Init();
     }
 
@@ -96,6 +101,7 @@ public class Company : MonoBehaviour
     {
         if (team == 1)
             companyDir *= -1;
+        currentMorale = maxMorale;
         ModelAttributes messagePar = new ModelAttributes(this, team);
         CalcModelPositions(transform.position, companyDir);
         var newParent = new GameObject();
@@ -104,6 +110,12 @@ public class Company : MonoBehaviour
             models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity, newParent.transform));
             models[i].GetComponent<Attributes>().SetCompany(messagePar);
         }
+        modelColliderDia = models[0].GetComponent<CapsuleCollider>().radius * 2;
+        CalcModelPositions(transform.position, companyDir);
+        for (int i = 0; i < modelCount; i++)
+        {
+            models[i].transform.position = modelPositions[i];
+        }      
     }
 
     void CalcModelPositions(Vector3 companyPos, Vector3 direction)
@@ -111,20 +123,24 @@ public class Company : MonoBehaviour
         Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
         Vector3 localBack = -(direction.normalized);
         Vector3 firstPosition;
+        int rows = models.Count / columns;
+        int currentRow = 0;
+        int currentModel;
+        int leftOvers = models.Count % columns;
         switch (formation)
         {
             case Formation.Line:
-                firstPosition = companyPos + 3.5f * localLeft;
-                for (int i = 0; i < modelCount; i++)
+                firstPosition = ((columns - 1) / 2f * modelColliderDia) * localLeft + companyPos;
+                for(currentModel = 0; currentModel < rows * columns; currentModel++)
                 {
-                    if (i < 8)
-                    {
-                        modelPositions[i] = firstPosition - i * localLeft;
-                    }
-                    else if (i >= 8)
-                    {
-                        modelPositions[i] = firstPosition + localBack - (i % 8) * localLeft;
-                    }
+                    modelPositions[currentModel] = firstPosition - (currentModel % columns) * localLeft + currentRow * localBack;
+                    if (currentModel > 0 && (currentModel + 1) % columns == 0)
+                        currentRow++;
+                }
+                firstPosition = ((leftOvers - 1) / 2 * modelColliderDia) * localLeft + rows * localBack + companyPos;
+                for(int i = 0; i < leftOvers; i++)
+                {
+                    modelPositions[currentModel + i] = firstPosition - i * localLeft;
                 }
                 break;
             case Formation.Skirmish:
@@ -161,7 +177,6 @@ public class Company : MonoBehaviour
     }
 
     
-
     void RotateCompany(Vector3 dir)
     {
         companyDir = dir;
@@ -173,14 +188,13 @@ public class Company : MonoBehaviour
     {
         if (models.Count == 0)
         {
-            Destroy(this);
-            return;
+            RemoveCompany();
         }
 
         Vector3 sum = Vector3.zero;
-        foreach (GameObject model in models)
+        for(int i = 0; i < models.Count && i < columns; i++)
         {
-            sum += model.transform.position;
+            sum += models[i].transform.position;
         }
         transform.position = sum / models.Count;
     }
@@ -244,7 +258,6 @@ public class Company : MonoBehaviour
 
     void BehaviourLoop()
     {
-        //TODO:: Add post melee reformation
         FindEnemies();
         if (!AreEnemiesInRange())
         {
@@ -295,13 +308,18 @@ public class Company : MonoBehaviour
             
     }
 
+    void RemoveCompany()
+    {
+        Destroy(gameObject);
+        BattlefieldManager.RemoveCompany(gameObject);
+    }
+
     public void RemoveModel(GameObject model)
     {
         models.Remove(model);
         if(models.Count == 0)
         {
-            Destroy(gameObject);
-            BattlefieldManager.RemoveCompany(gameObject);
+            RemoveCompany();
         }
     }
 
@@ -323,6 +341,16 @@ public class Company : MonoBehaviour
     public bool Moving()
     {
         return moving;
+    }
+
+    public void changeMorale(float change)
+    {
+        currentMorale += change;
+        if(currentMorale <= 0)
+        {
+            currentMorale = 0;
+            broken = true;
+        }
     }
 }
 

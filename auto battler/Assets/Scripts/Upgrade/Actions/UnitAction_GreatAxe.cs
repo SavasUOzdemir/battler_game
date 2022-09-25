@@ -20,7 +20,7 @@ public class UnitAction_GreatAxe : UnitAction
         animPath = "Placeholder/animation_attack";
     }
 
-    protected override bool FindTargets()
+    public override bool FindTargets()
     {
         BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
         enemies = new List<GameObject>();

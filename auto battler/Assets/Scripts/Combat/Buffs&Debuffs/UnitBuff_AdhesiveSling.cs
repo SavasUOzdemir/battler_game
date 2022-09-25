@@ -12,7 +12,7 @@ public class UnitBuff_AdhesiveSling : UnitBuff
     {
         duration = 10f;
     }
-    public override void BuffEffect(Attributes attributes)
+    public override void EveryTick(Attributes attributes)
     {
         tickCooldown -= Time.deltaTime;
         if(tickCooldown <= 0f)

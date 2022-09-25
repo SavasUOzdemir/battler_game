@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Attributes : MonoBehaviour
 {
@@ -11,20 +12,24 @@ public class Attributes : MonoBehaviour
     public float maxEndurance = 100f;
     public float armor = 0f;
     public float discipline = 0f;
-    public float vigor = 0f; 
+    public float vigor = 1f; 
     public float knockbackResist = 0f;
+    public float attackSpeedMod = 1f;
 
-    float speed = 1f;
+    
 
     [SerializeField]int team;
 
     [SerializeField] float currentHP;
     [SerializeField] float currentEndurance;
+    [SerializeField] bool winded = false;
+    [SerializeField] float speed = 1f;
     [SerializeField] Vector3 facing = Vector3.right;
     [SerializeField] List<UnitBuff> buffList = new List<UnitBuff>();
     Company company;
     SpriteRenderer spriteRenderer;
     AIPath aIPath;
+    float perSecond = 1f;
     List<UnitPassive> passivesList = new List<UnitPassive>();
     Vector3 lastPos;
 
@@ -46,16 +51,26 @@ public class Attributes : MonoBehaviour
     private void Update()
     {
         //if(!company.InMelee())
-            updateFacing();
-        foreach(UnitBuff buff in buffList)
+            UpdateFacing();
+        foreach(UnitBuff buff in buffList.ToList())
         {
-            buff.BuffEffect(this);
+            buff.EveryTick(this);
             if(buff.BuffTick() <= 0f)
+            {
+                buff.OnExpire(this);
                 buffList.Remove(buff);
+            }
+        }
+        
+        perSecond -= Time.deltaTime;
+        if (perSecond <= 0f)
+        {
+            ChangeEndurance(vigor);
+            perSecond = 1f;
         }
     }
 
-    void updateFacing()
+    void UpdateFacing()
     {
         SetFacing((transform.position - lastPos).normalized);
     }
@@ -63,18 +78,29 @@ public class Attributes : MonoBehaviour
     public void ChangeSpeed(float change)
     {
         speed += change;
-        aIPath.maxSpeed = speed;
+        if(speed <= 0f)
+        {
+            aIPath.maxSpeed = 0f;
+        }
+        else
+        {
+            aIPath.maxSpeed = speed;
+        }
     }
   
 
     public void ChangeEndurance(float change)
     {
-        currentEndurance += change * (1 - vigor);
+        Debug.Log(change);
+        currentEndurance += change;
         if(currentEndurance > maxEndurance)
             currentEndurance = maxEndurance;
-        if(currentEndurance < 0f)
+        else if(currentEndurance < 0f)
             currentEndurance = 0f;
-        Debug.Log(change);
+        if(currentEndurance < maxEndurance * 0.2f)
+            winded = true;
+        else
+            winded = false;
     }
   
 
@@ -88,7 +114,7 @@ public class Attributes : MonoBehaviour
     {
         if(packet.Owner != null)
         {
-            aIPath.Move((transform.position - packet.Owner.transform.position).normalized * packet.KnockBack);
+            aIPath.Move((transform.position - packet.Owner.transform.position).normalized * packet.KnockBack * knockbackResist);
         }
     }
 
@@ -116,6 +142,7 @@ public class Attributes : MonoBehaviour
             {
                 if (buffList.Any(x => x.GetType() == buff.GetType()))
                     continue;
+                buff.OnApply(this);
                 buffList.Add(buff);
             }
         }
@@ -123,6 +150,7 @@ public class Attributes : MonoBehaviour
         {
             ChangeHP(packet);
             KnockBack(packet);
+            company.changeMorale(packet.MoraleChange);
         }    
     }
 
@@ -155,6 +183,11 @@ public class Attributes : MonoBehaviour
     public Company GetCompany()
     {
         return company;
+    }
+
+    public bool GetWinded()
+    {
+        return winded;
     }
 
     public void SetCompany(ModelAttributes modelAttributes)
