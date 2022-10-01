@@ -40,10 +40,8 @@ public class InventorySingleton : MonoBehaviour
     void UpdateDictionary()
     {
         itemsDictionary.Clear();
-        foreach (Squad squad in squads)
-        {
+        foreach (Squad squad in squads)        
             itemsDictionary.Add(squad, squad.heldItems);
-        }
     }
 
     void UpdateTotalSquadItemList()
