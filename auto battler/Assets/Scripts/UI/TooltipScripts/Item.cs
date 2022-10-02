@@ -10,6 +10,7 @@ namespace DapperDino.TooltipUI
         [SerializeField] private int energyCost = 999;
         [SerializeField] private Type type;
         [SerializeField] private Sprite thumbnail;
+        [SerializeField] private string upgrade;
 
         public string Name { get { return name; } }
         public abstract string ColouredName { get; }
@@ -17,6 +18,7 @@ namespace DapperDino.TooltipUI
         public Type Type { get { return type; } }
         public int EnergyCost { get { return energyCost; } }
         public Sprite Thumbnail { get { return thumbnail; } }
+        public System.Type Upgrade { get { return System.Type.GetType(upgrade); } }
 
         public abstract string GetTooltipInfoText();
     }
