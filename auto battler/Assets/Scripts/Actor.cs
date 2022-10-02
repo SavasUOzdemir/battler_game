@@ -41,11 +41,18 @@ public class Actor : MonoBehaviour
             brainTime += Time.deltaTime;
             return;
         }
-        if (attributes.GetWinded())
-            return;
         brainTime = 0f;
 
-        if (company.Moving() || busy)
+        if (attributes.GetWinded())
+            return;
+        
+        if (company.Moving())
+        {
+            attributes.UpdateFacing();
+            return;
+        }
+            
+        if (busy)
             return;
 
         if (company.InMelee())
@@ -58,6 +65,7 @@ public class Actor : MonoBehaviour
         }
         else if (IsInPosition()) 
         {
+            attributes.SetFacing(company.GetFacing());
             NotMeleeBehaviour();
         }
     }
@@ -180,6 +188,7 @@ public class Actor : MonoBehaviour
                 else
                 {
                     rangedWeapon = unitUpgrade as UnitAction;
+                    return;
                 }
             }          
             actionList.Add(unitUpgrade as UnitAction);

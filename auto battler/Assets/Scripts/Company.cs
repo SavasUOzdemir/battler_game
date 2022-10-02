@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -10,28 +11,35 @@ public class Company : MonoBehaviour
         Skirmish
     }
 
-
     public GameObject prefab;
-    public int modelCount = 16;
+    [SerializeField] public GameObject plane;
+    [SerializeField] public int ModelCount { get; set; } = 16;
 
     List<GameObject> models = new List<GameObject>();
     Formation formation = 0;
     Vector3[] modelPositions;
     Vector3 companyDir = Vector3.right;
     Vector3 currentTarget;
-    float range = 0;
+    [SerializeField] float range = 0;
     float modelColliderDia = 1;
     GameObject[] buffer = new GameObject[500];
-    List<GameObject> enemiesList = new List<GameObject>();
-    [SerializeField] int team = 0;
     float aiUpdateTime = 0.5f;
     float currentTime = 0;
     float attackArc = 60f;
     float aiFuse = 01f;
+    List<System.Type> modelUpgradeList = new List<System.Type>();
+    List<CompanyAction> companyActions = new List<CompanyAction>();
+    List<CompanyPassive> companyPassives = new List<CompanyPassive>();
+    float globalCooldown = 1f;
+    float currentGlobalCooldown = 0f;
+    Vector3 fleeDir;
+
+    public List<GameObject> enemiesList = new List<GameObject>();
 
 
     //TEMP
-    [SerializeField] float meleeRange = 5f;
+    [SerializeField] int team = 0;
+    [SerializeField] float meleeRange = 3f;
     [SerializeField] bool debug = false;
 
     //Formation Variables
@@ -41,6 +49,8 @@ public class Company : MonoBehaviour
     [SerializeField] bool inMelee = false;
     [SerializeField] bool inMeleeLastFrame = false;
     [SerializeField] bool moving = true;
+    [SerializeField] bool inRange = false;
+    [SerializeField] bool inFront = false;
 
     //GAMEPLAY STATS
     [SerializeField] float maxMorale = 100f;
@@ -49,7 +59,6 @@ public class Company : MonoBehaviour
 
     //Attach upgrades in editor
     [SerializeField] List<string> editorUpgrades = new List<string>();
-    bool addedEditorUpgrades = false;
 
     void AddEditorUpgrades()
     {
@@ -63,24 +72,21 @@ public class Company : MonoBehaviour
 
     void Start()
     {
+        AddEditorUpgrades();
         BattlefieldManager.AddCompany(gameObject);
-        modelPositions = new Vector3[modelCount];
+        modelPositions = new Vector3[ModelCount];
         Init();
     }
 
     void Update()
     {
-        if (!addedEditorUpgrades)
-        {
-            AddEditorUpgrades();
-            addedEditorUpgrades = true;
-        }
-            
         if (Time.timeSinceLevelLoad < aiFuse)
             return;
+
         UpdateBannerPosition();
+
         CheckMelee();
-        if (inMelee)
+        if (inMelee && !broken)
         {
             if (moving)
                 StopCompany();
@@ -88,10 +94,16 @@ public class Company : MonoBehaviour
             moving = false;
             return;
         }
-            
+
+        if (currentGlobalCooldown > 0f)
+            currentGlobalCooldown -= Time.deltaTime;
+        if(!broken)
+            ActionLoop();
+        
+        MovementStateMachine();
         if(currentTime <= 0)
         {
-            BehaviourLoop();
+            MovementLoop();
             currentTime = aiUpdateTime;
         }
         currentTime -= Time.deltaTime;
@@ -105,17 +117,18 @@ public class Company : MonoBehaviour
         ModelAttributes messagePar = new ModelAttributes(this, team);
         CalcModelPositions(transform.position, companyDir);
         var newParent = new GameObject();
-        for (int i = 0; i < modelCount; i++)
+        for (int i = 0; i < ModelCount; i++)
         {
             models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity, newParent.transform));
             models[i].GetComponent<Attributes>().SetCompany(messagePar);
         }
         modelColliderDia = models[0].GetComponent<CapsuleCollider>().radius * 2;
         CalcModelPositions(transform.position, companyDir);
-        for (int i = 0; i < modelCount; i++)
+        for (int i = 0; i < ModelCount; i++)
         {
             models[i].transform.position = modelPositions[i];
-        }      
+        }
+        AttachUpgradesToModels();
     }
 
     void CalcModelPositions(Vector3 companyPos, Vector3 direction)
@@ -170,6 +183,7 @@ public class Company : MonoBehaviour
 
     void StopCompany()
     {
+        Debug.Log("Stop");
         moving = false;
         Vector3 newDir = (currentTarget - transform.position).normalized;
         CalcModelPositions(transform.position + newDir, newDir);
@@ -192,11 +206,12 @@ public class Company : MonoBehaviour
         }
 
         Vector3 sum = Vector3.zero;
-        for(int i = 0; i < models.Count && i < columns; i++)
+        int i;
+        for (i = 0; i < models.Count && i < columns; i++)
         {
             sum += models[i].transform.position;
         }
-        transform.position = sum / models.Count;
+        transform.position = sum / i;
     }
 
     bool AreEnemiesInRange()
@@ -256,10 +271,31 @@ public class Company : MonoBehaviour
         }
     }
 
-    void BehaviourLoop()
+    void ActionLoop()
     {
+        if (currentGlobalCooldown <= 0)
+        {
+            foreach (CompanyAction action in companyActions)
+            {
+                if (action.GetCurrentCooldown() <= 0 && action.FindTarget())
+                {
+                    if (action.DoAction())
+                        currentGlobalCooldown = globalCooldown;
+                }
+            }
+        }
+    }
+
+    void MovementLoop()
+    {
+        if (broken)
+        {
+            MoveCompany(fleeDir);
+            return;
+        }
+
         FindEnemies();
-        if (!AreEnemiesInRange())
+        if (!inRange)
         {
             Vector3 enemyPos = FindClosestEnemyPosition();
             if (enemyPos == Vector3.zero)
@@ -268,7 +304,7 @@ public class Company : MonoBehaviour
             }
             MoveCompany(enemyPos);
         }
-        else if (!AreEnemiesInFront())
+        else if (!inFront)
         {
             RotateCompany((FindClosestEnemyPosition() - transform.position).normalized);
         }
@@ -278,9 +314,15 @@ public class Company : MonoBehaviour
         }
     }
 
+    void MovementStateMachine()
+    {
+        inRange = AreEnemiesInRange();
+        inFront = AreEnemiesInFront();
+    }
+
     void CheckMelee()
     {
-        if((FindClosestEnemyPosition()-transform.position).sqrMagnitude <= meleeRange * meleeRange)
+        if((FindClosestEnemyPosition() - transform.position).sqrMagnitude <= meleeRange * meleeRange)
         {
             inMelee = true;
             return;
@@ -296,16 +338,34 @@ public class Company : MonoBehaviour
             return;
         }
 
-        foreach (GameObject model in models)
+        if (type.IsSubclassOf(typeof(UnitAction)) || type.IsSubclassOf(typeof(UnitPassive)))
         {
-            model.GetComponent<Actor>().AddUnitAction(type);
+            modelUpgradeList.Add(type);
+        }else if (type.IsSubclassOf(typeof(CompanyAction)))
+        {
+            companyActions.Add(gameObject.AddComponent(type) as CompanyAction);
+        }else if (type.IsSubclassOf(typeof(CompanyPassive)))
+        {
+            companyPassives.Add(gameObject.AddComponent(type) as CompanyPassive);
+            companyPassives.Last().OnPurchase();
+        }
+    }
+
+    void AttachUpgradesToModels()
+    {
+        foreach (System.Type upg in modelUpgradeList)
+        {
+            foreach (GameObject model in models)
+            {
+                model.GetComponent<Actor>().AddUnitAction(upg);
+            }
+
+            UnitAction unitAction = models[0].GetComponent(upg) as UnitAction;
+            if (unitAction)
+                if (unitAction.GetRange() > range)
+                    range = unitAction.GetRange();
         }
 
-        UnitAction unitAction = models[0].GetComponent(type) as UnitAction;
-        if (unitAction)
-            if (unitAction.GetRange() > range)
-                range = unitAction.GetRange();
-            
     }
 
     void RemoveCompany()
@@ -343,13 +403,24 @@ public class Company : MonoBehaviour
         return moving;
     }
 
-    public void changeMorale(float change)
+    public void ChangeMorale(float change)
     {
         currentMorale += change;
         if(currentMorale <= 0)
         {
             currentMorale = 0;
             broken = true;
+            fleeDir = new Vector3(-100 + 200 * team, transform.position.y, 0);
+        }
+    }
+
+    public void ExhaustCompany(float exhaust)
+    {
+        foreach (GameObject model in models)
+        {
+            if(!model)
+                continue;
+            model.GetComponent<Attributes>().ChangeEndurance(exhaust);
         }
     }
 }

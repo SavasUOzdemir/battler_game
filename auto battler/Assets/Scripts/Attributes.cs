@@ -50,8 +50,6 @@ public class Attributes : MonoBehaviour
 
     private void Update()
     {
-        //if(!company.InMelee())
-            UpdateFacing();
         foreach(UnitBuff buff in buffList.ToList())
         {
             buff.EveryTick(this);
@@ -70,7 +68,7 @@ public class Attributes : MonoBehaviour
         }
     }
 
-    void UpdateFacing()
+    public void UpdateFacing()
     {
         SetFacing((transform.position - lastPos).normalized);
     }
@@ -91,7 +89,6 @@ public class Attributes : MonoBehaviour
 
     public void ChangeEndurance(float change)
     {
-        Debug.Log(change);
         currentEndurance += change;
         if(currentEndurance > maxEndurance)
             currentEndurance = maxEndurance;
@@ -150,7 +147,7 @@ public class Attributes : MonoBehaviour
         {
             ChangeHP(packet);
             KnockBack(packet);
-            company.changeMorale(packet.MoraleChange);
+            company.ChangeMorale(packet.MoraleChange);
         }    
     }
 
