@@ -31,12 +31,15 @@ public static class CompanyFormations
         Protective
     }
 
-    public static readonly int Columns = 8;
 
-    //Wedge variable
+
+    //Arrangement vars
     //WARNING:: Bad variables might break shit
+    public static readonly int Columns = 5;
     private static readonly int InnerWedge = 4;
     private static readonly int WedgeArmWidth = 2;
+    private static readonly float columnSkirmishDispersion = 2f;
+    private static readonly float rowSkirmishDispersion = 1.5f;
 
     public static Targets[] GetTargetingOptions(Formation formation, int team)
     {
@@ -75,14 +78,14 @@ public static class CompanyFormations
                 firstPosition = ((Columns - 1) / 2f * modelColliderDia) * localLeft + companyPos;
                 for (currentModel = 0; currentModel < rows * Columns; currentModel++)
                 {
-                    modelPositions[currentModel] = firstPosition - (currentModel % Columns) * localLeft + currentRow * localBack;
+                    modelPositions[currentModel] = firstPosition - (currentModel % Columns) * localLeft * modelColliderDia + currentRow * localBack * modelColliderDia;
                     if (currentModel > 0 && (currentModel + 1) % Columns == 0)
                         currentRow++;
                 }
                 firstPosition = ((leftOvers - 1) / 2 * modelColliderDia) * localLeft + rows * localBack + companyPos;
                 for (int i = 0; i < leftOvers; i++)
                 {
-                    modelPositions[currentModel + i] = firstPosition - i * localLeft;
+                    modelPositions[currentModel + i] = firstPosition - i * localLeft * modelColliderDia;
                 }
                 break;
             case Arrangement.Wedge:
@@ -100,6 +103,25 @@ public static class CompanyFormations
                 }
                 break;
             case Arrangement.Skirmish:
+                rows = models.Count / Columns;
+                firstPosition = ((Columns - 1) / 2f * modelColliderDia) * localLeft * columnSkirmishDispersion + companyPos;
+                for (currentModel = 0; currentModel < rows * Columns; currentModel++)
+                {
+                    modelPositions[currentModel] =
+                        firstPosition - (currentModel % Columns) * localLeft * modelColliderDia *
+                                      columnSkirmishDispersion
+                                      - localLeft * columnSkirmishDispersion * (currentRow % 2) / 2 
+                        + currentRow * localBack * modelColliderDia * rowSkirmishDispersion;
+                    if (currentModel > 0 && (currentModel + 1) % Columns == 0)
+                        currentRow++;
+                }
+                firstPosition = ((leftOvers - 1) / 2 * modelColliderDia) * localLeft * columnSkirmishDispersion / 2
+                                + rows * localBack * rowSkirmishDispersion
+                                + companyPos;
+                for (int i = 0; i < leftOvers; i++)
+                {
+                    modelPositions[currentModel + i] = firstPosition - i * localLeft * modelColliderDia * columnSkirmishDispersion;
+                }
                 break;
         }
     }
