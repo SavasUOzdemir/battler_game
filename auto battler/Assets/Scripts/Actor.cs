@@ -46,7 +46,7 @@ public class Actor : MonoBehaviour
         if (attributes.GetWinded())
             return;
         
-        if (company.Moving())
+        if (company.Moving)
         {
             attributes.UpdateFacing();
             return;
@@ -55,7 +55,7 @@ public class Actor : MonoBehaviour
         if (busy)
             return;
 
-        if (company.InMelee())
+        if (company.InMelee)
         {
             if (!meleeWeapon)
             {
@@ -65,7 +65,7 @@ public class Actor : MonoBehaviour
         }
         else if (IsInPosition()) 
         {
-            attributes.SetFacing(company.GetFacing());
+            attributes.SetFacing(company.CompanyDir);
             NotMeleeBehaviour();
         }
     }
@@ -127,7 +127,7 @@ public class Actor : MonoBehaviour
             {
                 StartCoroutine(action.DoAction());
                 busy = true;
-                attributes.SetFacing(company.GetFacing());
+                attributes.SetFacing(company.CompanyDir);
                 return;
             }
         }
@@ -154,7 +154,7 @@ public class Actor : MonoBehaviour
             {
                 StartCoroutine(action.DoAction());
                 busy = true;
-                attributes.SetFacing(company.GetFacing());
+                attributes.SetFacing(company.CompanyDir);
                 return;
             }
         }
@@ -164,7 +164,7 @@ public class Actor : MonoBehaviour
         {
             StartCoroutine(rangedWeapon.DoAction());
             busy = true;
-            attributes.SetFacing(company.GetFacing());
+            attributes.SetFacing(company.CompanyDir);
         }
     }
 

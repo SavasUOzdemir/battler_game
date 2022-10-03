@@ -5,60 +5,56 @@ using UnityEngine;
 
 public class Company : MonoBehaviour
 {
-    public enum Formation
-    {
-        Line,
-        Skirmish
-    }
-
-    public GameObject prefab;
-    [SerializeField] public GameObject plane;
-    [SerializeField] public int ModelCount { get; set; } = 16;
-
-    List<GameObject> models = new List<GameObject>();
-    Formation formation = 0;
-    Vector3[] modelPositions;
-    Vector3 companyDir = Vector3.right;
-    Vector3 currentTarget;
-    [SerializeField] float range = 0;
-    float modelColliderDia = 1;
+    //Misc
     GameObject[] buffer = new GameObject[500];
+    public List<GameObject> enemiesList = new();
+    public Vector3 CompanyDir { get; private set; } = Vector3.right;
+    Vector3 currentTarget;
+    Vector3 fleeDir;
+    float range = 0;
+    [field: SerializeField] public int Team { get; set; } = 0;
+    [SerializeField] float meleeRange = 3f;
+    [SerializeField] bool debug = false;
+
+    //Model Data
+    public GameObject modelPrefab;
+    [field: SerializeField] public int ModelCount { get; set; } = 16;
+    List<GameObject> models = new();
+    Vector3[] modelPositions;
+    float modelColliderDia = 1;
+
+    //Upgrades
+    List<System.Type> modelUpgradeList = new();
+    List<CompanyAction> companyActions = new();
+    List<CompanyPassive> companyPassives = new();
+    [SerializeField] float globalCooldown = 1f;
+    float currentGlobalCooldown = 0f;
+
+    //Formation Variables
+    [SerializeField] CompanyFormations.Formation formation = CompanyFormations.Formation.Square;
+    [SerializeField] CompanyFormations.Arrangement arrangement = CompanyFormations.Arrangement.Line;
+    [field: SerializeField] public CompanyFormations.Targets PrimaryTarget { get; set; } = CompanyFormations.Targets.ClosestSquad;
+    [field: SerializeField] public CompanyFormations.Targets SecondaryTarget { get; set; } = CompanyFormations.Targets.ClosestSquad;
+
+    //AI STATE
+    [field: SerializeField] public bool InMelee { get; private set; } = false;
+    [field: SerializeField] public bool Moving { get; private set; } = true;
+    [SerializeField] bool inRange = false;
+    [SerializeField] bool inFront = false;
     float aiUpdateTime = 0.5f;
     float currentTime = 0;
     float attackArc = 60f;
     float aiFuse = 01f;
-    List<System.Type> modelUpgradeList = new List<System.Type>();
-    List<CompanyAction> companyActions = new List<CompanyAction>();
-    List<CompanyPassive> companyPassives = new List<CompanyPassive>();
-    float globalCooldown = 1f;
-    float currentGlobalCooldown = 0f;
-    Vector3 fleeDir;
-
-    public List<GameObject> enemiesList = new List<GameObject>();
-
-
-    //TEMP
-    [SerializeField] int team = 0;
-    [SerializeField] float meleeRange = 3f;
-    [SerializeField] bool debug = false;
-
-    //Formation Variables
-    [SerializeField] int columns = 8;
-
-    //AI STATE
-    [SerializeField] bool inMelee = false;
-    [SerializeField] bool inMeleeLastFrame = false;
-    [SerializeField] bool moving = true;
-    [SerializeField] bool inRange = false;
-    [SerializeField] bool inFront = false;
 
     //GAMEPLAY STATS
     [SerializeField] float maxMorale = 100f;
     [SerializeField] float currentMorale;
     [SerializeField] bool broken = false;
+    bool meleeCompany = false;
+    bool rangedCompany = false;
 
     //Attach upgrades in editor
-    [SerializeField] List<string> editorUpgrades = new List<string>();
+    [SerializeField] List<string> editorUpgrades = new();
 
     void AddEditorUpgrades()
     {
@@ -86,12 +82,11 @@ public class Company : MonoBehaviour
         UpdateBannerPosition();
 
         CheckMelee();
-        if (inMelee && !broken)
+        if (InMelee && !broken)
         {
-            if (moving)
+            if (Moving)
                 StopCompany();
-            inMeleeLastFrame = true;
-            moving = false;
+            Moving = false;
             return;
         }
 
@@ -111,56 +106,25 @@ public class Company : MonoBehaviour
 
     private void Init()
     {
-        if (team == 1)
-            companyDir *= -1;
+        if (Team == 1)
+            CompanyDir *= -1;
+        ChangeFormation(formation);
         currentMorale = maxMorale;
-        ModelAttributes messagePar = new ModelAttributes(this, team);
-        CalcModelPositions(transform.position, companyDir);
+        ModelAttributes messagePar = new ModelAttributes(this, Team);
+        CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models, modelPositions, arrangement, modelColliderDia);
         var newParent = new GameObject();
         for (int i = 0; i < ModelCount; i++)
         {
-            models.Add(Instantiate(prefab, modelPositions[i], Quaternion.identity, newParent.transform));
+            models.Add(Instantiate(modelPrefab, modelPositions[i], Quaternion.identity, newParent.transform));
             models[i].GetComponent<Attributes>().SetCompany(messagePar);
         }
         modelColliderDia = models[0].GetComponent<CapsuleCollider>().radius * 2;
-        CalcModelPositions(transform.position, companyDir);
+        CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models, modelPositions, arrangement, modelColliderDia);
         for (int i = 0; i < ModelCount; i++)
         {
             models[i].transform.position = modelPositions[i];
         }
         AttachUpgradesToModels();
-    }
-
-    void CalcModelPositions(Vector3 companyPos, Vector3 direction)
-    {
-        Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
-        Vector3 localBack = -(direction.normalized);
-        Vector3 firstPosition;
-        int rows = models.Count / columns;
-        int currentRow = 0;
-        int currentModel;
-        int leftOvers = models.Count % columns;
-        switch (formation)
-        {
-            case Formation.Line:
-                firstPosition = ((columns - 1) / 2f * modelColliderDia) * localLeft + companyPos;
-                for(currentModel = 0; currentModel < rows * columns; currentModel++)
-                {
-                    modelPositions[currentModel] = firstPosition - (currentModel % columns) * localLeft + currentRow * localBack;
-                    if (currentModel > 0 && (currentModel + 1) % columns == 0)
-                        currentRow++;
-                }
-                firstPosition = ((leftOvers - 1) / 2 * modelColliderDia) * localLeft + rows * localBack + companyPos;
-                for(int i = 0; i < leftOvers; i++)
-                {
-                    modelPositions[currentModel + i] = firstPosition - i * localLeft;
-                }
-                break;
-            case Formation.Skirmish:
-                //TODO
-                break;
-
-        }
     }
 
     void MoveModels()
@@ -174,27 +138,26 @@ public class Company : MonoBehaviour
     void MoveCompany(Vector3 target)
     {
         currentTarget = target;
-        moving = true;
+        Moving = true;
         Vector3 dir = target - transform.position;
-        companyDir = dir.normalized;
-        CalcModelPositions(target, companyDir);
+        CompanyDir = dir.normalized;
+        CompanyFormations.CalcModelPositions(target, CompanyDir, models, modelPositions, arrangement, modelColliderDia);
         MoveModels();
     }
 
     void StopCompany()
     {
-        Debug.Log("Stop");
-        moving = false;
+        Moving = false;
         Vector3 newDir = (currentTarget - transform.position).normalized;
-        CalcModelPositions(transform.position + newDir, newDir);
+        CompanyFormations.CalcModelPositions(transform.position + newDir, newDir, models, modelPositions, arrangement, modelColliderDia);
         MoveModels();
     }
 
     
     void RotateCompany(Vector3 dir)
     {
-        companyDir = dir;
-        CalcModelPositions(transform.position, dir);
+        CompanyDir = dir;
+        CompanyFormations.CalcModelPositions(transform.position, dir, models, modelPositions, arrangement, modelColliderDia);
         MoveModels();
     }
 
@@ -207,7 +170,7 @@ public class Company : MonoBehaviour
 
         Vector3 sum = Vector3.zero;
         int i;
-        for (i = 0; i < models.Count && i < columns; i++)
+        for (i = 0; i < models.Count && i < CompanyFormations.Columns; i++)
         {
             sum += models[i].transform.position;
         }
@@ -233,7 +196,7 @@ public class Company : MonoBehaviour
         {
             if (!obj)
                 continue;
-            if (Vector3.Angle(obj.transform.position - transform.position, companyDir) < attackArc)
+            if (Vector3.Angle(obj.transform.position - transform.position, CompanyDir) < attackArc)
                 return true;
         }
         return false;
@@ -264,7 +227,7 @@ public class Company : MonoBehaviour
         enemiesList.Clear();
         foreach (GameObject company in buffer)
         {
-            if (!company || !company.GetComponent<Company>() || company.GetComponent<Company>().GetTeam() == team)
+            if (!company || !company.GetComponent<Company>() || company.GetComponent<Company>().Team == Team)
                 continue;
             else
                 enemiesList.Add(company);
@@ -308,7 +271,7 @@ public class Company : MonoBehaviour
         {
             RotateCompany((FindClosestEnemyPosition() - transform.position).normalized);
         }
-        else if(moving)
+        else if(Moving)
         {
             StopCompany();
         }
@@ -324,10 +287,10 @@ public class Company : MonoBehaviour
     {
         if((FindClosestEnemyPosition() - transform.position).sqrMagnitude <= meleeRange * meleeRange)
         {
-            inMelee = true;
+            InMelee = true;
             return;
         }
-        inMelee = false;
+        InMelee = false;
     }
 
     public void AddUnitUpgrade(System.Type type)
@@ -362,10 +325,20 @@ public class Company : MonoBehaviour
 
             UnitAction unitAction = models[0].GetComponent(upg) as UnitAction;
             if (unitAction)
+            {
                 if (unitAction.GetRange() > range)
                     range = unitAction.GetRange();
+                if (unitAction.IsMainWeapon())
+                {
+                    if (unitAction.IsActionMelee())
+                        meleeCompany = true;
+                    else
+                    {
+                        rangedCompany = true;
+                    }
+                }
+            }
         }
-
     }
 
     void RemoveCompany()
@@ -383,26 +356,6 @@ public class Company : MonoBehaviour
         }
     }
 
-    public int GetTeam()
-    {
-        return team;
-    }
-
-    public Vector3 GetFacing()
-    {
-        return companyDir;
-    }
-
-    public bool InMelee()
-    {
-        return inMelee;
-    }
-
-    public bool Moving()
-    {
-        return moving;
-    }
-
     public void ChangeMorale(float change)
     {
         currentMorale += change;
@@ -410,7 +363,7 @@ public class Company : MonoBehaviour
         {
             currentMorale = 0;
             broken = true;
-            fleeDir = new Vector3(-100 + 200 * team, transform.position.y, 0);
+            fleeDir = new Vector3(-100 + 200 * Team, transform.position.y, transform.position.z);
         }
     }
 
@@ -423,6 +376,36 @@ public class Company : MonoBehaviour
             model.GetComponent<Attributes>().ChangeEndurance(exhaust);
         }
     }
+
+    public void ChangeFormation(CompanyFormations.Formation _formation)
+    {
+        formation = _formation;
+        switch (formation)
+        {
+            case CompanyFormations.Formation.Square:
+                arrangement = CompanyFormations.Arrangement.Line;
+                break;
+            case CompanyFormations.Formation.Saw:
+                arrangement = CompanyFormations.Arrangement.Skirmish;
+                break;
+            case CompanyFormations.Formation.Wedge:
+                arrangement = CompanyFormations.Arrangement.Wedge;
+                break;
+            case CompanyFormations.Formation.RangedSquare:
+                arrangement = CompanyFormations.Arrangement.Line;
+                break;
+            case CompanyFormations.Formation.Dispersed:
+                arrangement = CompanyFormations.Arrangement.Skirmish;
+                break;
+        }
+        CompanyFormations.Targets[] possibleTargets = CompanyFormations.GetTargetingOptions(formation, Team);
+        if (possibleTargets == null)
+            return;
+        PrimaryTarget = possibleTargets[0];
+        if(possibleTargets.Length > 1)
+            SecondaryTarget = possibleTargets[1];
+    }
+
 }
 
 public class ModelAttributes

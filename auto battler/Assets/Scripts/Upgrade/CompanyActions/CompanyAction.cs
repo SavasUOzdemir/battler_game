@@ -32,6 +32,7 @@ public abstract class CompanyAction : UnitUpgrade
         if (ProduceEffect())
         {
             ProgressCooldown();
+            company.ExhaustCompany(exhaust);
             return true;
         }
 
