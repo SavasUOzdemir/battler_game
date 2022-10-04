@@ -9,7 +9,7 @@ public class Company : MonoBehaviour
     GameObject[] buffer = new GameObject[500];
     public List<GameObject> enemiesList = new();
     public Vector3 CompanyDir { get; private set; } = Vector3.right;
-    Vector3 currentTarget;
+    Vector3 currentMovementTarget;
     Vector3 fleeDir;
     float range = 0;
     [field: SerializeField] public int Team { get; set; } = 0;
@@ -33,8 +33,11 @@ public class Company : MonoBehaviour
     //Formation Variables
     [SerializeField] CompanyFormations.Formation formation = CompanyFormations.Formation.Square;
     [SerializeField] CompanyFormations.Arrangement arrangement = CompanyFormations.Arrangement.Line;
-    [field: SerializeField] public CompanyFormations.Targets PrimaryTarget { get; set; } = CompanyFormations.Targets.ClosestSquad;
-    [field: SerializeField] public CompanyFormations.Targets SecondaryTarget { get; set; } = CompanyFormations.Targets.ClosestSquad;
+
+    //Targeting vars
+    GameObject currentEnemyTarget = null;
+    [field: SerializeField] public CompanyFormations.TargetingMode primaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
+    [field: SerializeField] public CompanyFormations.TargetingMode secondaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
 
     //AI STATE
     [field: SerializeField] public bool InMelee { get; private set; } = false;
@@ -50,8 +53,9 @@ public class Company : MonoBehaviour
     [SerializeField] float maxMorale = 100f;
     [SerializeField] float currentMorale;
     [SerializeField] bool broken = false;
-    bool meleeCompany = false;
-    bool rangedCompany = false;
+    [field: SerializeField] public bool MeleeCompany { get; private set; } = false;
+    [field: SerializeField] public bool RangedCompany { get; private set; } = false;
+    [field: SerializeField] public bool FlyingCompany { get; private set; } = false;
 
     //Attach upgrades in editor
     [SerializeField] List<string> editorUpgrades = new();
@@ -137,7 +141,7 @@ public class Company : MonoBehaviour
 
     void MoveCompany(Vector3 target)
     {
-        currentTarget = target;
+        currentMovementTarget = target;
         Moving = true;
         Vector3 dir = target - transform.position;
         CompanyDir = dir.normalized;
@@ -148,7 +152,7 @@ public class Company : MonoBehaviour
     void StopCompany()
     {
         Moving = false;
-        Vector3 newDir = (currentTarget - transform.position).normalized;
+        Vector3 newDir = (currentMovementTarget - transform.position).normalized;
         CompanyFormations.CalcModelPositions(transform.position + newDir, newDir, models, modelPositions, arrangement, modelColliderDia);
         MoveModels();
     }
@@ -257,10 +261,27 @@ public class Company : MonoBehaviour
             return;
         }
 
-        FindEnemies();
+        if (!currentEnemyTarget)
+        {
+            FindEnemies();
+            if (!CompanyFormations.DetermineTarget(transform.position, enemiesList, primaryTargetingMode,
+                    ref currentEnemyTarget))
+            {
+                if (!CompanyFormations.DetermineTarget(transform.position, enemiesList, secondaryTargetingMode,
+                        ref currentEnemyTarget))
+                {
+                    if (!CompanyFormations.DetermineTarget(transform.position, enemiesList,
+                            CompanyFormations.TargetingMode.ClosestSquad,
+                            ref currentEnemyTarget))
+                        return;
+                }
+            }
+
+        }
+            
         if (!inRange)
         {
-            Vector3 enemyPos = FindClosestEnemyPosition();
+            Vector3 enemyPos = currentEnemyTarget.transform.position;
             if (enemyPos == Vector3.zero)
             {
                 return;
@@ -269,7 +290,7 @@ public class Company : MonoBehaviour
         }
         else if (!inFront)
         {
-            RotateCompany((FindClosestEnemyPosition() - transform.position).normalized);
+            RotateCompany((currentEnemyTarget.transform.position - transform.position).normalized);
         }
         else if(Moving)
         {
@@ -285,11 +306,17 @@ public class Company : MonoBehaviour
 
     void CheckMelee()
     {
-        if((FindClosestEnemyPosition() - transform.position).sqrMagnitude <= meleeRange * meleeRange)
+        foreach (GameObject enemyCompany in enemiesList)
         {
-            InMelee = true;
-            return;
+            if(!enemyCompany)
+                continue;
+            if ((enemyCompany.transform.position - transform.position).sqrMagnitude <= meleeRange * meleeRange)
+            {
+                InMelee = true;
+                return;
+            }
         }
+
         InMelee = false;
     }
 
@@ -331,10 +358,10 @@ public class Company : MonoBehaviour
                 if (unitAction.IsMainWeapon())
                 {
                     if (unitAction.IsActionMelee())
-                        meleeCompany = true;
+                        MeleeCompany = true;
                     else
                     {
-                        rangedCompany = true;
+                        RangedCompany = true;
                     }
                 }
             }
@@ -347,6 +374,16 @@ public class Company : MonoBehaviour
         BattlefieldManager.RemoveCompany(gameObject);
     }
 
+    public float AverageHealth()
+    {
+        float total = 0f;
+        foreach (GameObject model in models)
+        {
+            total += model.GetComponent<Attributes>().CurrentHp;
+        }
+        return total / models.Count;
+    }
+
     public void RemoveModel(GameObject model)
     {
         models.Remove(model);
@@ -354,6 +391,11 @@ public class Company : MonoBehaviour
         {
             RemoveCompany();
         }
+    }
+
+    public float GetMorale()
+    {
+        return currentMorale;
     }
 
     public void ChangeMorale(float change)
@@ -365,6 +407,16 @@ public class Company : MonoBehaviour
             broken = true;
             fleeDir = new Vector3(-100 + 200 * Team, transform.position.y, transform.position.z);
         }
+    }
+
+    public float AverageEndurance()
+    {
+        float total = 0f;
+        foreach (GameObject model in models)
+        {
+            total += model.GetComponent<Attributes>().GetEndurance();
+        }
+        return total / models.Count;
     }
 
     public void ExhaustCompany(float exhaust)
@@ -398,12 +450,12 @@ public class Company : MonoBehaviour
                 arrangement = CompanyFormations.Arrangement.Skirmish;
                 break;
         }
-        CompanyFormations.Targets[] possibleTargets = CompanyFormations.GetTargetingOptions(formation, Team);
+        CompanyFormations.TargetingMode[] possibleTargets = CompanyFormations.GetTargetingOptions(formation, Team);
         if (possibleTargets == null)
             return;
-        PrimaryTarget = possibleTargets[0];
+        primaryTargetingMode = possibleTargets[0];
         if(possibleTargets.Length > 1)
-            SecondaryTarget = possibleTargets[1];
+            secondaryTargetingMode = possibleTargets[1];
     }
 
 }

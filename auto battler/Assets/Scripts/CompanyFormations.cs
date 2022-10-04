@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 
 public static class CompanyFormations
 {
@@ -19,7 +22,7 @@ public static class CompanyFormations
         Skirmish,
     }
 
-    public enum Targets
+    public enum TargetingMode
     {
         ClosestSquad,
         LowestHealth,
@@ -33,30 +36,33 @@ public static class CompanyFormations
 
 
 
-    //Arrangement vars
+    //ARRANGEMENT VARIABLES
     //WARNING:: Bad variables might break shit
+    //Line and skirmish arrangement
     public static readonly int Columns = 5;
+    //Wedge arrangement
     private static readonly int InnerWedge = 4;
     private static readonly int WedgeArmWidth = 2;
+    //Skirmish arrangement
     private static readonly float columnSkirmishDispersion = 2f;
     private static readonly float rowSkirmishDispersion = 1.5f;
 
-    public static Targets[] GetTargetingOptions(Formation formation, int team)
+    public static TargetingMode[] GetTargetingOptions(Formation formation, int team)
     {
         switch (formation)
         {
             case Formation.Square:
-                return new Targets[] { Targets.ClosestSquad };
+                return new TargetingMode[] { TargetingMode.ClosestSquad };
             case Formation.Saw:
-                return new Targets[] { Targets.Protective, Targets.HighestHealth };
+                return new TargetingMode[] { TargetingMode.Protective, TargetingMode.HighestHealth };
             case Formation.Wedge:
-                return new Targets[] { Targets.RangedSquad, Targets.LowestHealth, Targets.LowestEndurance };
+                return new TargetingMode[] { TargetingMode.RangedSquad, TargetingMode.LowestHealth, TargetingMode.LowestEndurance };
             case Formation.RangedSquare:
-                return new Targets[]
-                    { Targets.FlyingSquad, Targets.LowestHealth, Targets.LowestMorale, Targets.LowestEndurance };
+                return new TargetingMode[]
+                    { TargetingMode.FlyingSquad, TargetingMode.LowestHealth, TargetingMode.LowestMorale, TargetingMode.LowestEndurance };
             case Formation.Dispersed:
-                return new Targets[]
-                    { Targets.FlyingSquad, Targets.LowestHealth, Targets.LowestMorale, Targets.LowestEndurance };
+                return new TargetingMode[]
+                    { TargetingMode.FlyingSquad, TargetingMode.LowestHealth, TargetingMode.LowestMorale, TargetingMode.LowestEndurance };
         }
         return null;
     }
@@ -124,5 +130,153 @@ public static class CompanyFormations
                 }
                 break;
         }
+    }
+
+    public static bool DetermineTarget(Vector3 companyPosition, List<GameObject> enemiesList, TargetingMode targetingMode, ref GameObject target)
+    {
+        GameObject currentTarget = null;
+        float distSqr;
+        float shortestDistSqr = Mathf.Infinity;
+        switch (targetingMode)
+        {
+            case TargetingMode.ClosestSquad:
+                
+                foreach (GameObject enemyCompany in enemiesList)
+                {
+                    if(!enemyCompany)
+                        continue;
+                    distSqr = (companyPosition - enemyCompany.transform.position).sqrMagnitude;
+                    if (distSqr < shortestDistSqr)
+                    {
+                        shortestDistSqr = distSqr;
+                        currentTarget = enemyCompany;
+                    }
+                }
+
+                break;
+            case TargetingMode.LowestHealth:
+                float companyAverageHP;
+                float currentTargetAverageHP = Mathf.Infinity;
+                foreach (GameObject enemyCompany in enemiesList)
+                {
+                    if(!enemyCompany)
+                        continue;
+                    companyAverageHP = enemyCompany.GetComponent<Company>().AverageHealth();
+                    if (currentTargetAverageHP >= companyAverageHP)
+                    {
+                        distSqr = (companyPosition - enemyCompany.transform.position).sqrMagnitude;
+                        if (distSqr < shortestDistSqr)
+                        {
+                            shortestDistSqr = distSqr;
+                            currentTargetAverageHP = companyAverageHP;
+                            currentTarget = enemyCompany;
+                        }
+                    }
+                }
+
+                break;
+            case TargetingMode.LowestMorale:
+                float currentTargetMorale =Mathf.Infinity;
+                foreach (GameObject enemyCompany in enemiesList)
+                {
+                    if (!enemyCompany)
+                        continue;
+                    float currentMorale = enemyCompany.GetComponent<Company>().GetMorale();
+                    if (currentTargetMorale > currentMorale)
+                    {
+                        distSqr = (companyPosition - enemyCompany.transform.position).sqrMagnitude;
+                        if (distSqr < shortestDistSqr)
+                        {
+                            shortestDistSqr = distSqr;
+                            currentTargetMorale = currentMorale;
+                            currentTarget = enemyCompany;
+                        }
+                    }
+                }
+
+                break;
+            case TargetingMode.LowestEndurance:
+                float currentTargetEndurance = Mathf.Infinity;
+                foreach (GameObject enemyCompany in enemiesList)
+                {
+                    if (!enemyCompany)
+                        continue;
+                    float currentEndurance = enemyCompany.GetComponent<Company>().AverageEndurance();
+                    if (currentTargetEndurance > currentEndurance)
+                    {
+                        distSqr = (companyPosition - enemyCompany.transform.position).sqrMagnitude;
+                        if (distSqr < shortestDistSqr)
+                        {
+                            shortestDistSqr = distSqr;
+                            currentTargetEndurance = currentEndurance;
+                            currentTarget = enemyCompany;
+                        }
+                    }
+                }
+
+                break;
+            case TargetingMode.RangedSquad:
+                foreach (GameObject enemyCompany in enemiesList)
+                {
+                    if (!enemyCompany)
+                        continue;
+                    if (enemyCompany.GetComponent<Company>().RangedCompany)
+                    {
+                        distSqr = (companyPosition - enemyCompany.transform.position).sqrMagnitude;
+                        if (distSqr < shortestDistSqr)
+                        {
+                            shortestDistSqr = distSqr;
+                            currentTarget = enemyCompany;
+                        }
+                    }
+                }
+
+                break;
+            case TargetingMode.FlyingSquad:
+                foreach (GameObject enemyCompany in enemiesList)
+                {
+                    if (!enemyCompany)
+                        continue;
+                    if (enemyCompany.GetComponent<Company>().FlyingCompany)
+                    {
+                        distSqr = (companyPosition - enemyCompany.transform.position).sqrMagnitude;
+                        if (distSqr < shortestDistSqr)
+                        {
+                            shortestDistSqr = distSqr;
+                            currentTarget = enemyCompany;
+                        }
+                    }
+                }
+
+                break;
+            case TargetingMode.HighestHealth:
+                float AverageHP;
+                float TargetAverageHP = 0f;
+                foreach (GameObject enemyCompany in enemiesList)
+                {
+                    if (!enemyCompany)
+                        continue;
+                    AverageHP = enemyCompany.GetComponent<Company>().AverageHealth();
+                    if (TargetAverageHP <= AverageHP)
+                    {
+                        distSqr = (companyPosition - enemyCompany.transform.position).sqrMagnitude;
+                        if (distSqr < shortestDistSqr)
+                        {
+                            shortestDistSqr = distSqr;
+                            TargetAverageHP = AverageHP;
+                            currentTarget = enemyCompany;
+                        }
+                    }
+                }
+
+                break;
+            case TargetingMode.Protective:
+                //TODO
+                break;
+        }
+
+        if (!currentTarget) return false;
+        target = currentTarget;
+        return true;
     }
 }

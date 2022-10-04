@@ -186,6 +186,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: formation
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: meleeRange
       value: 3
       objectReference: {fileID: 0}
@@ -194,12 +198,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: arrangement
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: <Team>k__BackingField
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: <ModelCount>k__BackingField
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.data[0]
@@ -448,6 +460,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: formation
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: meleeRange
       value: 3
       objectReference: {fileID: 0}
@@ -456,8 +472,16 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: arrangement
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.size
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: <ModelCount>k__BackingField
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: editorUpgrades.Array.data[0]

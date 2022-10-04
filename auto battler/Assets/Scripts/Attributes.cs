@@ -20,7 +20,7 @@ public class Attributes : MonoBehaviour
 
     [SerializeField]int team;
 
-    [SerializeField] float currentHP;
+    [field: SerializeField] public float CurrentHp { get; private set; }
     [SerializeField] float currentEndurance;
     [SerializeField] bool winded = false;
     [SerializeField] float speed = 1f;
@@ -42,7 +42,7 @@ public class Attributes : MonoBehaviour
     void Start()
     {
         BattlefieldManager.AddModel(gameObject);
-        currentHP = maxHP;
+        CurrentHp = maxHP;
         currentEndurance = maxEndurance;
         aIPath.maxSpeed = speed;
         lastPos = transform.position;
@@ -85,7 +85,11 @@ public class Attributes : MonoBehaviour
             aIPath.maxSpeed = speed;
         }
     }
-  
+
+    public float GetEndurance()
+    {
+        return currentEndurance;
+    }
 
     public void ChangeEndurance(float change)
     {
@@ -118,10 +122,10 @@ public class Attributes : MonoBehaviour
     void ChangeHP(AttackPacket packet)
     {
         if (packet.HpChange < 0f)
-            currentHP += packet.HpChange * (1 - Mathf.Clamp(armor - packet.Piercing, 0f, 1f));
+            CurrentHp += packet.HpChange * (1 - Mathf.Clamp(armor - packet.Piercing, 0f, 1f));
         else
-            currentHP += packet.HpChange;
-        if (currentHP <= 0)
+            CurrentHp += packet.HpChange;
+        if (CurrentHp <= 0)
             Die();
     }
 
