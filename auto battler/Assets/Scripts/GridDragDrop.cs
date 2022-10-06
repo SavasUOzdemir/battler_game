@@ -17,7 +17,7 @@ public class GridDragDrop : MonoBehaviour, IBeginDragHandler, IEndDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        objectToSwapWith = EventSystem.current.currentSelectedGameObject;
+        //objectToSwapWith = EventSystem.current.;
         int indexOfObject = objectToSwapWith.transform.GetSiblingIndex();
         int indexOfDrag = gameObject.transform.GetSiblingIndex();
         objectToSwapWith.transform.SetSiblingIndex(indexOfDrag);

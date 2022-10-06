@@ -12,16 +12,16 @@ public class Squad : ScriptableObject
     [SerializeField] private Sprite sprite;
 
     [SerializeField] private int availableSlots = 4;
-    [SerializeField] private string targetPreferencePrimary;
-    [SerializeField] private string targetPreferenceSecondary;
+    //[SerializeField] private string targetPreferencePrimary;
+    //[SerializeField] private string targetPreferenceSecondary;
     [SerializeField] internal Item[] heldItems = new Item[4];
 
     public Sprite Sprite { get { return sprite; } set { sprite = value; } }
     public string Name { get { return name; } }
     public int AvailableSlots { get { return availableSlots; } set { availableSlots = value; } }
     public int CurrentEnergy { get { return currentEnergy; } set { currentEnergy = value; } }
-    public string TargetPreferencePrimary { get { return targetPreferencePrimary; } set { targetPreferencePrimary = value; } }
-    public string TargetPreferenceSecondary { get { return targetPreferenceSecondary; } set { targetPreferenceSecondary = value; } }
+    //public string TargetPreferencePrimary { get { return targetPreferencePrimary; } set { targetPreferencePrimary = value; } }
+    //public string TargetPreferenceSecondary { get { return targetPreferenceSecondary; } set { targetPreferenceSecondary = value; } }
 
     public class ItemsList : Squad
     {
