@@ -24,7 +24,7 @@ public class Company : MonoBehaviour
     //Model Data
     public GameObject modelPrefab;
     [field: SerializeField] public int ModelCount { get; set; } = 16;
-    List<GameObject> models = new();
+    public List<GameObject> models = new();
     Vector3[] modelPositions;
     float modelColliderDia = 1;
 
@@ -42,6 +42,7 @@ public class Company : MonoBehaviour
     [field: SerializeField] public CompanyFormations.TargetingMode primaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
     [field: SerializeField] public CompanyFormations.TargetingMode secondaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
     CompanyPathfinding companyPathfinding;
+    CompanyMover companyMover;
     Vector3 currentMovementTarget;
 
     //AI STATE
@@ -69,7 +70,6 @@ public class Company : MonoBehaviour
     {
         foreach(string upgrade in editorUpgrades)
         {
-            Debug.Log(System.Type.GetType(upgrade));
             AddUnitUpgrade(System.Type.GetType(upgrade));
         }
     }
@@ -77,6 +77,7 @@ public class Company : MonoBehaviour
     void Awake()
     {
         BattlefieldManager.AddCompany(gameObject);
+        companyMover = gameObject.AddComponent<CompanyMover>();
     }
 
     void Start()
@@ -96,7 +97,7 @@ public class Company : MonoBehaviour
             float distanceToCam;
             battleFloor.Raycast(ray, out distanceToCam);
             CompanyFormations.CalcModelPositions(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distanceToCam)),
-                CompanyDir, models, modelPositions, arrangement, modelColliderDia);
+                CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
             for (int i = 0; i < ModelCount; i++)
             {
                 models[i].transform.position = new Vector3(modelPositions[i].x, 0, modelPositions[i].z);
@@ -141,7 +142,7 @@ public class Company : MonoBehaviour
         ChangeFormation(formation);
         currentMorale = maxMorale;
         ModelAttributes messagePar = new ModelAttributes(this, Team);
-        CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models, modelPositions, arrangement, modelColliderDia);
+        CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
         var newParent = new GameObject();
         for (int i = 0; i < ModelCount; i++)
         {
@@ -149,7 +150,7 @@ public class Company : MonoBehaviour
             models[i].GetComponent<Attributes>().SetCompany(messagePar);
         }
         modelColliderDia = models[0].GetComponent<CapsuleCollider>().radius * 2;
-        CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models, modelPositions, arrangement, modelColliderDia);
+        CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
         for (int i = 0; i < ModelCount; i++)
         {
             models[i].transform.position = modelPositions[i];
@@ -171,7 +172,7 @@ public class Company : MonoBehaviour
         Moving = true;
         Vector3 dir = target - transform.position;
         CompanyDir = dir.normalized;
-        CompanyFormations.CalcModelPositions(target, CompanyDir, models, modelPositions, arrangement, modelColliderDia);
+        CompanyFormations.CalcModelPositions(target, CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
         MoveModels();
     }
 
@@ -179,7 +180,7 @@ public class Company : MonoBehaviour
     {
         Moving = false;
         Vector3 newDir = (currentMovementTarget - transform.position).normalized;
-        CompanyFormations.CalcModelPositions(transform.position + newDir, newDir, models, modelPositions, arrangement, modelColliderDia);
+        CompanyFormations.CalcModelPositions(transform.position + newDir, newDir, models.Count, modelPositions, arrangement, modelColliderDia);
         MoveModels();
     }
 
@@ -187,7 +188,7 @@ public class Company : MonoBehaviour
     void RotateCompany(Vector3 dir)
     {
         CompanyDir = dir;
-        CompanyFormations.CalcModelPositions(transform.position, dir, models, modelPositions, arrangement, modelColliderDia);
+        CompanyFormations.CalcModelPositions(transform.position, dir, models.Count, modelPositions, arrangement, modelColliderDia);
         MoveModels();
     }
 

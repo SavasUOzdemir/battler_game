@@ -96,7 +96,7 @@ public static class CompanyFormations
     }
 
 
-    public static void CalcModelPositions(Vector3 companyPos, Vector3 direction, List<GameObject> models, Vector3[] modelPositions, Arrangement arrangement, float modelColliderDia)
+    public static void CalcModelPositions(Vector3 companyPos, Vector3 direction, int modelCount, Vector3[] modelPositions, Arrangement arrangement, float modelColliderDia)
     {
         Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
         Vector3 localBack = -(direction.normalized);
@@ -104,11 +104,11 @@ public static class CompanyFormations
         int rows;
         int currentRow = 0;
         int currentModel;
-        int leftOvers = models.Count % Columns;
+        int leftOvers = modelCount % Columns;
         switch (arrangement)
         {
             case Arrangement.Line:
-                rows = models.Count / Columns;
+                rows = modelCount / Columns;
                 firstPosition = ((Columns - 1) / 2f * modelColliderDia) * localLeft + companyPos;
                 for (currentModel = 0; currentModel < rows * Columns; currentModel++)
                 {
@@ -125,9 +125,9 @@ public static class CompanyFormations
             case Arrangement.Wedge:
                 firstPosition = companyPos;
                 currentModel = 0;
-                for (currentRow = 0; currentRow < models.Count; currentRow++)
+                for (currentRow = 0; currentRow < modelCount; currentRow++)
                 {
-                    for (int currentColumn = 0; currentColumn <= currentRow && currentModel < models.Count; currentColumn++)
+                    for (int currentColumn = 0; currentColumn <= currentRow && currentModel < modelCount; currentColumn++)
                     {
                         if(currentRow >= InnerWedge && (currentColumn >= WedgeArmWidth && currentColumn - WedgeArmWidth < currentRow - InnerWedge + 1))
                             continue;
@@ -137,7 +137,7 @@ public static class CompanyFormations
                 }
                 break;
             case Arrangement.Skirmish:
-                rows = models.Count / Columns;
+                rows = modelCount / Columns;
                 firstPosition = ((Columns - 1) / 2f * modelColliderDia) * localLeft * columnSkirmishDispersion + companyPos;
                 for (currentModel = 0; currentModel < rows * Columns; currentModel++)
                 {
