@@ -15,7 +15,10 @@ MonoBehaviour:
   name: Squad 7
   maxEnergy: 6
   currentEnergy: 6
+  sprite: {fileID: 21300000, guid: c0c7b91eb00246142bdddff2e1c78e84, type: 3}
   availableSlots: 4
+  targetPreferencePrimary: 
+  targetPreferenceSecondary: 
   heldItems:
   - {fileID: 0}
   - {fileID: 0}
