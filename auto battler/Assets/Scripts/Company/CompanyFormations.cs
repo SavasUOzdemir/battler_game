@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
+using static CompanyFormations;
 using Vector3 = UnityEngine.Vector3;
 
 public static class CompanyFormations
@@ -34,8 +35,6 @@ public static class CompanyFormations
         Protective
     }
 
-
-
     //ARRANGEMENT VARIABLES
     //WARNING:: Bad variables might break shit
     //Line and skirmish arrangement
@@ -65,6 +64,35 @@ public static class CompanyFormations
                     { TargetingMode.FlyingSquad, TargetingMode.LowestHealth, TargetingMode.LowestMorale, TargetingMode.LowestEndurance };
         }
         return null;
+    }
+
+    public static Arrangement GetArrangement(Formation formation)
+    {
+        switch (formation)
+        {
+            case CompanyFormations.Formation.Square:
+                return Arrangement.Line;
+            case CompanyFormations.Formation.Saw:
+                return Arrangement.Skirmish;
+            case CompanyFormations.Formation.Wedge:
+                return Arrangement.Wedge;
+            case CompanyFormations.Formation.RangedSquare:
+                return Arrangement.Line;
+            case CompanyFormations.Formation.Dispersed:
+                return Arrangement.Skirmish;
+        }
+        return Arrangement.Line;
+    }
+
+    public static System.Type GetCompanyPathfinder(Formation formation)
+    {
+        switch (formation)
+        {
+            case Formation.Square:
+                return typeof(CompanyPathfinding_ShortestPath);
+                //TODO
+        }
+        return typeof(CompanyPathfinding_ShortestPath);
     }
 
 
