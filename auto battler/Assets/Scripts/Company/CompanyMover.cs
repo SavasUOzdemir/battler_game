@@ -59,7 +59,6 @@ public class CompanyMover : MonoBehaviour
         MoveModels();
     }
 
-
     public void RotateCompany(Vector3 dir)
     {
         CompanyDir = dir;

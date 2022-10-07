@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class CompanyPathfinding : MonoBehaviour
 {
+
     public abstract Vector3 GetMovementTarget();
 
     public virtual void OnTargetReached()

@@ -36,6 +36,7 @@ public static class CompanyFormations
         Protective
     }
 
+
     //ARRANGEMENT VARIABLES
     //WARNING:: Bad variables might break shit
     //Line and skirmish arrangement
@@ -61,7 +62,6 @@ public static class CompanyFormations
             formations.Add(Formation.RangedSquare);
             formations.Add(Formation.Dispersed);
         }
-
         return formations;
     }
 

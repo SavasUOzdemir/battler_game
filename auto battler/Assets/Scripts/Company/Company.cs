@@ -46,7 +46,10 @@ public class Company : MonoBehaviour
 
     //AI STATE
     [field: SerializeField] public bool InMelee { get; private set; } = false;
-    [field: SerializeField] public bool Moving { get; private set; } = true;
+
+    [field: SerializeField]
+    [SerializeField] public bool Moving => companyMover.Moving;
+
     [SerializeField] bool inRange = false;
     [SerializeField] bool inFront = false;
     float aiUpdateTime = 0.5f;
@@ -113,7 +116,6 @@ public class Company : MonoBehaviour
         {
             if (Moving)
                 companyMover.StopCompany();
-            Moving = false;
             return;
         }
 
@@ -131,7 +133,7 @@ public class Company : MonoBehaviour
         currentTime -= Time.deltaTime;
     }
 
-    private void Init()
+    private void Init() //Temp function for editor initialization
     {
         if (Team == 1)
             CompanyDir *= -1;
