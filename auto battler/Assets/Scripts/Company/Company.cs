@@ -12,14 +12,13 @@ public class Company : MonoBehaviour
     GameObject[] buffer = new GameObject[500];
     public List<GameObject> enemiesList = new();
     public Vector3 CompanyDir { get; private set; } = Vector3.right;
-    
     Vector3 fleeDir;
     float range = 0;
     [field: SerializeField] bool GameStarted { get; set; } = true;
     [field: SerializeField] public int Team { get; set; } = 0;
     [SerializeField] float meleeRange = 3f;
     [SerializeField] bool debug = false;
-    [SerializeField] bool mouseControl = false;
+    [field: SerializeField] public bool MouseControl { get; private set; } = false;
 
     //Model Data
     public GameObject modelPrefab;
@@ -39,8 +38,8 @@ public class Company : MonoBehaviour
     [SerializeField] CompanyFormations.Formation formation = CompanyFormations.Formation.Square;
     [SerializeField] CompanyFormations.Arrangement arrangement = CompanyFormations.Arrangement.Line;
     public GameObject CurrentEnemyTarget { get; private set; } = null;
-    [field: SerializeField] public CompanyFormations.TargetingMode primaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
-    [field: SerializeField] public CompanyFormations.TargetingMode secondaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
+    [field: SerializeField] public CompanyFormations.TargetingMode PrimaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
+    [field: SerializeField] public CompanyFormations.TargetingMode SecondaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
     CompanyPathfinding companyPathfinding;
     CompanyMover companyMover;
     Vector3 currentMovementTarget;
@@ -89,7 +88,7 @@ public class Company : MonoBehaviour
 
     void Update()
     {
-        if (mouseControl)
+        if (MouseControl)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Debug.DrawRay(ray.origin, ray.direction * 500, Color.red);
@@ -102,10 +101,7 @@ public class Company : MonoBehaviour
             {
                 models[i].transform.position = new Vector3(modelPositions[i].x, 0, modelPositions[i].z);
             }
-
         }
-
-        UpdateBannerPosition();
 
         if (!GameStarted)
             return;
@@ -116,7 +112,7 @@ public class Company : MonoBehaviour
         if (InMelee && !broken)
         {
             if (Moving)
-                StopCompany();
+                companyMover.StopCompany();
             Moving = false;
             return;
         }
@@ -150,67 +146,13 @@ public class Company : MonoBehaviour
             models[i].GetComponent<Attributes>().SetCompany(messagePar);
         }
         modelColliderDia = models[0].GetComponent<CapsuleCollider>().radius * 2;
+        companyMover.ModelColliderDia = modelColliderDia;
         CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
         for (int i = 0; i < ModelCount; i++)
         {
             models[i].transform.position = modelPositions[i];
         }
         AttachUpgradesToModels();
-    }
-
-    void MoveModels()
-    {
-        for (int i = 0; i < models.Count; i++)
-        {
-            models[i].GetComponent<Actor>().Move(modelPositions[i]);
-        }
-    }
-
-    void MoveCompany(Vector3 target)
-    {
-        currentMovementTarget = target;
-        Moving = true;
-        Vector3 dir = target - transform.position;
-        CompanyDir = dir.normalized;
-        CompanyFormations.CalcModelPositions(target, CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
-        MoveModels();
-    }
-
-    void StopCompany()
-    {
-        Moving = false;
-        Vector3 newDir = (currentMovementTarget - transform.position).normalized;
-        CompanyFormations.CalcModelPositions(transform.position + newDir, newDir, models.Count, modelPositions, arrangement, modelColliderDia);
-        MoveModels();
-    }
-
-    
-    void RotateCompany(Vector3 dir)
-    {
-        CompanyDir = dir;
-        CompanyFormations.CalcModelPositions(transform.position, dir, models.Count, modelPositions, arrangement, modelColliderDia);
-        MoveModels();
-    }
-
-    void UpdateBannerPosition()
-    {
-        if (models.Count == 0)
-        {
-            RemoveCompany();
-        }
-
-        Vector3 sum = Vector3.zero;
-        int i;
-        for (i = 0; i < models.Count && i < CompanyFormations.Columns; i++)
-        {
-            sum += models[i].transform.position;
-        }
-        transform.position = sum / i;
-
-        if ((transform.position - currentMovementTarget).sqrMagnitude < 2)
-        {
-            companyPathfinding.OnTargetReached();
-        }
     }
 
     bool AreEnemiesInRange()
@@ -269,7 +211,7 @@ public class Company : MonoBehaviour
     {
         if (broken)
         {
-            MoveCompany(fleeDir);
+            companyMover.MoveCompany(fleeDir);
             return;
         }
 
@@ -282,15 +224,15 @@ public class Company : MonoBehaviour
 
         if (!inRange)
         {
-            MoveCompany(currentMovementTarget);
+            companyMover.MoveCompany(currentMovementTarget);
         }
         else if (!inFront)
         {
-            RotateCompany((CurrentEnemyTarget.transform.position - transform.position).normalized);
+            companyMover.RotateCompany((CurrentEnemyTarget.transform.position - transform.position).normalized);
         }
-        else if(Moving)
+        else if(companyMover.Moving)
         {
-            StopCompany();
+            companyMover.StopCompany();
         }
     }
 
@@ -298,10 +240,10 @@ public class Company : MonoBehaviour
     {
         GameObject newTarget = null;
         FindEnemies();
-        if (!CompanyFormations.DetermineTarget(transform.position, enemiesList, primaryTargetingMode,
+        if (!CompanyFormations.DetermineTarget(transform.position, enemiesList, PrimaryTargetingMode,
                 ref newTarget))
         {
-            if (!CompanyFormations.DetermineTarget(transform.position, enemiesList, secondaryTargetingMode,
+            if (!CompanyFormations.DetermineTarget(transform.position, enemiesList, SecondaryTargetingMode,
                     ref newTarget))
             {
                 if (!CompanyFormations.DetermineTarget(transform.position, enemiesList,
@@ -448,16 +390,15 @@ public class Company : MonoBehaviour
     public void ChangeFormation(CompanyFormations.Formation _formation)
     {
         formation = _formation;
-        arrangement = CompanyFormations.GetArrangement(formation);
+        companyMover.Arrangement = CompanyFormations.GetArrangement(formation);
         CompanyFormations.TargetingMode[] possibleTargets = CompanyFormations.GetTargetingOptions(formation, Team);
         companyPathfinding = gameObject.AddComponent(CompanyFormations.GetCompanyPathfinder(formation)) as CompanyPathfinding;
         if (possibleTargets == null)
             return;
-        primaryTargetingMode = possibleTargets[0];
+        PrimaryTargetingMode = possibleTargets[0];
         if(possibleTargets.Length > 1)
-            secondaryTargetingMode = possibleTargets[1];
+            SecondaryTargetingMode = possibleTargets[1];
     }
-
 }
 
 public class ModelAttributes
