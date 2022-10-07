@@ -8,6 +8,9 @@ using Vector3 = UnityEngine.Vector3;
 
 public class Company : MonoBehaviour
 {
+    //UI
+    public bool selected = false;
+    public bool done = false;
     //Misc
     GameObject[] buffer = new GameObject[500];
     public List<GameObject> enemiesList = new();
