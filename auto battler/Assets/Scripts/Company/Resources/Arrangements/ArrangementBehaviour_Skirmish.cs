@@ -51,6 +51,20 @@ public class ArrangementBehaviour_Skirmish : ArrangementBehaviour
             sum += company.models[i].transform.position;
         }
         transform.position = sum / i;
+        
+    }
 
+    protected override void UpdateColliderSize()
+    {
+        float rows = Mathf.Ceil(company.models.Count / (float)Columns);
+        float colliderSizeX = rows * companyMover.ModelColliderDia * RowSkirmishDispersion;
+        float colliderSizeZ;
+        if (company.models.Count >= Columns)
+            colliderSizeZ = Columns * companyMover.ModelColliderDia * ColumnSkirmishDispersion;
+        else
+        {
+            colliderSizeZ = company.models.Count;
+        }
+        collider.size = new Vector3(colliderSizeX, 1f, colliderSizeZ);
     }
 }

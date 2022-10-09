@@ -29,4 +29,9 @@ public class ArrangementBehaviour_Wedge : ArrangementBehaviour
         transform.position = company.models[0].transform.position;
 
     }
+
+    protected override void UpdateColliderSize()
+    {
+        
+    }
 }

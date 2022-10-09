@@ -21,6 +21,7 @@ public class Company : MonoBehaviour
     public Vector3 CompanyDir { get; private set; } = Vector3.right;
     Vector3 fleeDir;
     [SerializeField] float range = 0;
+    [SerializeField] float rangeBuffer = 0.1f;
     [field: SerializeField] bool GameStarted { get; set; } = true;
     [field: SerializeField] public int Team { get; set; } = 0;
     [SerializeField] float meleeRange = 3f;
@@ -160,7 +161,7 @@ public class Company : MonoBehaviour
 
     bool IsCurrentTargetInRange()
     {
-        return (CurrentEnemyTarget.transform.position - transform.position).sqrMagnitude < range * range;
+        return (CurrentEnemyTarget.transform.position - transform.position).sqrMagnitude < range * (1 - rangeBuffer) * range * (1 - rangeBuffer);
     }
 
     bool IsCurrentTargetInFront()

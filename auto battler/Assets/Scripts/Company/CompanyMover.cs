@@ -18,8 +18,10 @@ public class CompanyMover : MonoBehaviour
     public Vector3[] ModelPositions { get; private set; }
     public float ModelColliderDia { get; set; }
     [field: SerializeField] public Vector3 CurrentMovementTarget { get; private set; }
-    [field: SerializeField] public Vector3 CompanyDir { get; private set; } = Vector3.right;
+    [field: SerializeField] public Vector3 FinalCompanyDir { get; private set; }
+    [field: SerializeField] public Vector3 CurrentCompanyDir { get; private set; }
     [field: SerializeField] public bool Moving { get; private set; } = true;
+    private Vector3 posLastFrame;
 
     public void init()
     {
@@ -28,11 +30,18 @@ public class CompanyMover : MonoBehaviour
     void Awake()
     {
         company = GetComponent<Company>();
+        FinalCompanyDir = Vector3.right - Vector3.right * 2 * company.Team;
     }
 
     void Start()
     {
+        posLastFrame = transform.position;
+    }
 
+    void Update()
+    {
+        if(Moving)
+            UpdateCurrentDirection();
     }
 
     void MoveModels()
@@ -43,13 +52,19 @@ public class CompanyMover : MonoBehaviour
         }
     }
 
+    void UpdateCurrentDirection()
+    {
+        CurrentCompanyDir = (transform.position - posLastFrame).normalized;
+        posLastFrame = transform.position;
+    }
+
     public void MoveCompany(Vector3 target)
     {
         CurrentMovementTarget = target;
         Moving = true;
         Vector3 dir = target - transform.position;
-        CompanyDir = dir.normalized;
-        arranger.ArrangeModels(target, CompanyDir);
+        FinalCompanyDir = dir.normalized;
+        arranger.ArrangeModels(target, FinalCompanyDir);
         MoveModels();
     }
 
@@ -63,7 +78,7 @@ public class CompanyMover : MonoBehaviour
 
     public void RotateCompany(Vector3 dir)
     {
-        CompanyDir = dir;
+        FinalCompanyDir = dir;
         arranger.ArrangeModels(transform.position, dir);
         MoveModels();
     }
