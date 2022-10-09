@@ -35,7 +35,7 @@ public class ArrangementBehaviour_Line : ArrangementBehaviour
     {
         Vector3 sum = Vector3.zero;
         int i;
-        for (i = 0; i < company.models.Count && i < CompanyFormations.Columns; i++)
+        for (i = 0; i < company.models.Count && i < Columns; i++)
         {
             sum += company.models[i].transform.position;
         }

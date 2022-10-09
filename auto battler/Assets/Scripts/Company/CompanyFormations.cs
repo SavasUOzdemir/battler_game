@@ -18,17 +18,6 @@ public static class CompanyFormations
     static Dictionary<string, List<string>> FormationToTargetingMode = new();
     static Dictionary<string, string> FormationToPathfinder = new();
 
-    //ARRANGEMENT VARIABLES
-    //WARNING:: Bad variables might break shit
-    //Line and skirmish arrangement
-    public static readonly int Columns = 5;
-    //Wedge arrangement
-    private static readonly int InnerWedge = 4;
-    private static readonly int WedgeArmWidth = 2;
-    //Skirmish arrangement
-    private static readonly float ColumnSkirmishDispersion = 2f;
-    private static readonly float RowSkirmishDispersion = 1.5f;
-
     public static void AddArrangementToFormation(string formation, string arrangement)
     {
         if (FormationToArrangement.ContainsKey(formation))

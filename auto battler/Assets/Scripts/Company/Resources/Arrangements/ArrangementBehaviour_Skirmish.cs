@@ -46,7 +46,7 @@ public class ArrangementBehaviour_Skirmish : ArrangementBehaviour
     {
         Vector3 sum = Vector3.zero;
         int i;
-        for (i = 0; i < company.models.Count && i < CompanyFormations.Columns; i++)
+        for (i = 0; i < company.models.Count && i < Columns; i++)
         {
             sum += company.models[i].transform.position;
         }
