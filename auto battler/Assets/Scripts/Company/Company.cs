@@ -17,7 +17,7 @@ public class Company : MonoBehaviour
     public List<GameObject> enemiesList = new();
     public Vector3 CompanyDir { get; private set; } = Vector3.right;
     Vector3 fleeDir;
-    float range = 0;
+    [SerializeField] float range = 0;
     [field: SerializeField] bool GameStarted { get; set; } = true;
     [field: SerializeField] public int Team { get; set; } = 0;
     [SerializeField] float meleeRange = 3f;
@@ -123,7 +123,6 @@ public class Company : MonoBehaviour
         if(!broken)
             ActionLoop();
         
-        MovementStateMachine();
         if(currentTime <= 0)
         {
             MovementLoop();
@@ -156,29 +155,14 @@ public class Company : MonoBehaviour
         AttachUpgradesToModels();
     }
 
-    bool AreEnemiesInRange()
+    bool IsCurrentTargetInRange()
     {
-        foreach (GameObject obj in enemiesList)
-        {
-            if (!obj)
-                continue;
-            if ((obj.transform.position - transform.position).sqrMagnitude <= (range * range * 0.81))
-                return true;
-        }
-        return false;
+        return (CurrentEnemyTarget.transform.position - transform.position).sqrMagnitude < range * range;
     }
 
-    bool AreEnemiesInFront()
+    bool IsCurrentTargetInFront()
     {
-        BattlefieldManager.CompaniesInRadius(transform.position, 1000, buffer);
-        foreach (GameObject obj in enemiesList)
-        {
-            if (!obj)
-                continue;
-            if (Vector3.Angle(obj.transform.position - transform.position, CompanyDir) < attackArc)
-                return true;
-        }
-        return false;
+        return (Vector3.Angle(CurrentEnemyTarget.transform.position - transform.position, CompanyDir) < attackArc);
     }
 
     void FindEnemies()
@@ -221,6 +205,7 @@ public class Company : MonoBehaviour
             FindTarget();
         }
 
+        MovementStateMachine();
         currentMovementTarget = _companyPathfinderBehaviour.GetMovementTarget();
 
         if (!inRange)
@@ -254,8 +239,8 @@ public class Company : MonoBehaviour
 
     void MovementStateMachine()
     {
-        inRange = AreEnemiesInRange();
-        inFront = AreEnemiesInFront();
+        inRange = IsCurrentTargetInRange();
+        inFront = IsCurrentTargetInFront();
     }
 
     void CheckMelee()
