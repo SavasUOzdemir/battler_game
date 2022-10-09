@@ -7,9 +7,4 @@ public abstract class CompanyPathfinderBehaviour : MonoBehaviour
 
     public abstract Vector3 GetMovementTarget();
 
-    public virtual void OnTargetReached()
-    {
-
-    }
-
 }

@@ -23,4 +23,10 @@ public class ArrangementBehaviour_Wedge : ArrangementBehaviour
             }
         }
     }
+
+    protected override void UpdateBannerPosition()
+    {
+        transform.position = company.models[0].transform.position;
+
+    }
 }

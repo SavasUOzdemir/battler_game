@@ -18,6 +18,14 @@ public abstract class ArrangementBehaviour : MonoBehaviour
         company = GetComponent<Company>();
         companyMover = GetComponent<CompanyMover>();
     }
+
+    void Update()
+    {
+        UpdateBannerPosition();
+    }
+
     public abstract void ArrangeModels(Vector3 companyPos, Vector3 direction);
+
+    protected abstract void UpdateBannerPosition();
 
 }

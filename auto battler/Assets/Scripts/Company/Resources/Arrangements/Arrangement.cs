@@ -15,4 +15,5 @@ public class Arrangement : ScriptableObject
             CompanyFormations.AddArrangementToFormation(formation, arrangementName);
         }
     }
+
 }

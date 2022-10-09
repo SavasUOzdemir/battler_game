@@ -41,4 +41,16 @@ public class ArrangementBehaviour_Skirmish : ArrangementBehaviour
                                                             ColumnSkirmishDispersion;
         }
     }
+
+    protected override void UpdateBannerPosition()
+    {
+        Vector3 sum = Vector3.zero;
+        int i;
+        for (i = 0; i < company.models.Count && i < CompanyFormations.Columns; i++)
+        {
+            sum += company.models[i].transform.position;
+        }
+        transform.position = sum / i;
+
+    }
 }

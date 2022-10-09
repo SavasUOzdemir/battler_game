@@ -18,15 +18,6 @@ public static class CompanyFormations
     static Dictionary<string, List<string>> FormationToTargetingMode = new();
     static Dictionary<string, string> FormationToPathfinder = new();
 
-    public enum Formation
-    {
-        Square,
-        Wedge,
-        Saw,
-        RangedSquare,
-        Dispersed
-    }
-
     //ARRANGEMENT VARIABLES
     //WARNING:: Bad variables might break shit
     //Line and skirmish arrangement

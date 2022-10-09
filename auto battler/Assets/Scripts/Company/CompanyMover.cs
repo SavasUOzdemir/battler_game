@@ -35,11 +35,6 @@ public class CompanyMover : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        UpdateBannerPosition();
-    }
-
     void MoveModels()
     {
         for (int i = 0; i < company.models.Count; i++)
@@ -73,19 +68,4 @@ public class CompanyMover : MonoBehaviour
         MoveModels();
     }
 
-    void UpdateBannerPosition()
-    {
-        Vector3 sum = Vector3.zero;
-        int i;
-        for (i = 0; i < company.models.Count && i < CompanyFormations.Columns; i++)
-        {
-            sum += company.models[i].transform.position;
-        }
-        transform.position = sum / i;
-
-        if ((transform.position - CurrentMovementTarget).sqrMagnitude < 2)
-        {
-            companyPathfinderBehaviour.OnTargetReached();
-        }
-    }
 }

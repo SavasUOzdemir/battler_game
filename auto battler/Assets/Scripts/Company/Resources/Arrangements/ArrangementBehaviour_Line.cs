@@ -30,4 +30,16 @@ public class ArrangementBehaviour_Line : ArrangementBehaviour
             companyMover.ModelPositions[currentModel + i] = firstPosition - i * localLeft * companyMover.ModelColliderDia;
         }
     }
+
+    protected override void UpdateBannerPosition()
+    {
+        Vector3 sum = Vector3.zero;
+        int i;
+        for (i = 0; i < company.models.Count && i < CompanyFormations.Columns; i++)
+        {
+            sum += company.models[i].transform.position;
+        }
+        transform.position = sum / i;
+
+    }
 }
