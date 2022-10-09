@@ -14,7 +14,6 @@ public class Company : MonoBehaviour
     //UI
     public bool selected = false;
     public bool done = false;
-    [field: SerializeField] private GameObject canvas;
     //Misc
     GameObject[] buffer = new GameObject[500];
     public List<GameObject> enemiesList = new();
@@ -412,17 +411,21 @@ public class ModelAttributes
     }
 }
 
-public class CompanyClickHandler : IPointerClickHandler
+public class CompanyClickHandler : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField] Canvas canvas;
+    Canvas canvas;
 
-    
+    private void Awake()
+    {
+        if (canvas == null)
+            canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>();
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
 
         canvas.GetComponent<FormationOptions>().Company = null;
-        Company.selected = true;
-        FormationOptions.Company = this.gameObject.GetComponent<Company>();
+        this.GetComponent<Company>().selected = true;
+        canvas.GetComponent<FormationOptions>().Company = this.gameObject.GetComponent<Company>();
     }
 }
