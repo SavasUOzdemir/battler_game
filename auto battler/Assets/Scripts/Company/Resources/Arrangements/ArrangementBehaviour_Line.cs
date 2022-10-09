@@ -42,4 +42,18 @@ public class ArrangementBehaviour_Line : ArrangementBehaviour
         transform.position = sum / i;
 
     }
+
+    protected override void UpdateColliderSize()
+    {
+        float rows = Mathf.Ceil(company.models.Count / (float)Columns);
+        float colliderSizeX = rows * companyMover.ModelColliderDia;
+        float colliderSizeZ;
+        if (company.models.Count >= Columns)
+            colliderSizeZ = Columns * companyMover.ModelColliderDia;
+        else
+        {
+            colliderSizeZ = company.models.Count;
+        }
+        collider.size = new Vector3(colliderSizeX, 1f, colliderSizeZ);
+    }
 }
