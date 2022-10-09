@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Unity.VisualScripting;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
@@ -24,7 +25,6 @@ public class Company : MonoBehaviour
     public GameObject modelPrefab;
     [field: SerializeField] public int ModelCount { get; set; } = 16;
     public List<GameObject> models = new();
-    Vector3[] modelPositions;
     float modelColliderDia = 1;
 
     //Upgrades
@@ -35,21 +35,17 @@ public class Company : MonoBehaviour
     float currentGlobalCooldown = 0f;
 
     //Formation, Targeting and Pathfinding
-    [SerializeField] CompanyFormations.Formation formation = CompanyFormations.Formation.Square;
-    [SerializeField] CompanyFormations.Arrangement arrangement = CompanyFormations.Arrangement.Line;
+    [SerializeField] string formation = "Square";
     public GameObject CurrentEnemyTarget { get; private set; } = null;
-    [field: SerializeField] public CompanyFormations.TargetingMode PrimaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
-    [field: SerializeField] public CompanyFormations.TargetingMode SecondaryTargetingMode { get; set; } = CompanyFormations.TargetingMode.ClosestSquad;
+    TargetingModeBehaviour primaryTargetingMode;
+    TargetingModeBehaviour secondaryTargetingMode;
     CompanyPathfinding companyPathfinding;
     CompanyMover companyMover;
     Vector3 currentMovementTarget;
 
     //AI STATE
     [field: SerializeField] public bool InMelee { get; private set; } = false;
-
-    [field: SerializeField]
     [SerializeField] public bool Moving => companyMover.Moving;
-
     [SerializeField] bool inRange = false;
     [SerializeField] bool inFront = false;
     float aiUpdateTime = 0.5f;
@@ -85,7 +81,7 @@ public class Company : MonoBehaviour
     void Start()
     {
         AddEditorUpgrades();
-        modelPositions = new Vector3[ModelCount];
+        companyMover.init();
         Init();
     }
 
@@ -98,11 +94,11 @@ public class Company : MonoBehaviour
             UnityEngine.Plane battleFloor = new UnityEngine.Plane(Vector3.up, Vector3.zero);
             float distanceToCam;
             battleFloor.Raycast(ray, out distanceToCam);
-            CompanyFormations.CalcModelPositions(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distanceToCam)),
-                CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
+            GetComponent<ArrangementBehaviour>().ArrangeModels(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distanceToCam)),
+                CompanyDir);
             for (int i = 0; i < ModelCount; i++)
             {
-                models[i].transform.position = new Vector3(modelPositions[i].x, 0, modelPositions[i].z);
+                models[i].transform.position = new Vector3(companyMover.ModelPositions[i].x, 0, companyMover.ModelPositions[i].z);
             }
         }
 
@@ -140,19 +136,19 @@ public class Company : MonoBehaviour
         ChangeFormation(formation);
         currentMorale = maxMorale;
         ModelAttributes messagePar = new ModelAttributes(this, Team);
-        CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
+        GetComponent<ArrangementBehaviour>().ArrangeModels(transform.position,CompanyDir);
         var newParent = new GameObject();
         for (int i = 0; i < ModelCount; i++)
         {
-            models.Add(Instantiate(modelPrefab, modelPositions[i], Quaternion.identity, newParent.transform));
+            models.Add(Instantiate(modelPrefab, companyMover.ModelPositions[i], Quaternion.identity, newParent.transform));
             models[i].GetComponent<Attributes>().SetCompany(messagePar);
         }
         modelColliderDia = models[0].GetComponent<CapsuleCollider>().radius * 2;
         companyMover.ModelColliderDia = modelColliderDia;
-        CompanyFormations.CalcModelPositions(transform.position, CompanyDir, models.Count, modelPositions, arrangement, modelColliderDia);
+        GetComponent<ArrangementBehaviour>().ArrangeModels(transform.position, CompanyDir);
         for (int i = 0; i < ModelCount; i++)
         {
-            models[i].transform.position = modelPositions[i];
+            models[i].transform.position = companyMover.ModelPositions[i];
         }
         AttachUpgradesToModels();
     }
@@ -242,16 +238,11 @@ public class Company : MonoBehaviour
     {
         GameObject newTarget = null;
         FindEnemies();
-        if (!CompanyFormations.DetermineTarget(transform.position, enemiesList, PrimaryTargetingMode,
-                ref newTarget))
+        if (!primaryTargetingMode.DetermineTarget(transform.position, ref newTarget))
         {
-            if (!CompanyFormations.DetermineTarget(transform.position, enemiesList, SecondaryTargetingMode,
-                    ref newTarget))
+            if (!secondaryTargetingMode.DetermineTarget(transform.position, ref newTarget))
             {
-                if (!CompanyFormations.DetermineTarget(transform.position, enemiesList,
-                        CompanyFormations.TargetingMode.ClosestSquad,
-                        ref newTarget))
-                    return;
+                return;
             }
         }
 
@@ -389,17 +380,31 @@ public class Company : MonoBehaviour
         }
     }
 
-    public void ChangeFormation(CompanyFormations.Formation _formation)
+    public void ChangeFormation(string _formation)
     {
         formation = _formation;
-        companyMover.Arrangement = CompanyFormations.GetArrangement(formation);
-        CompanyFormations.TargetingMode[] possibleTargets = CompanyFormations.GetTargetingOptions(formation, Team);
-        companyPathfinding = gameObject.AddComponent(CompanyFormations.GetCompanyPathfinder(formation)) as CompanyPathfinding;
+        companyMover.arranger = gameObject.AddComponent(System.Type.GetType(CompanyFormations.GetArrangement(_formation))) as ArrangementBehaviour;
+        List<string> possibleTargets = CompanyFormations.GetTargetingOptions(_formation, Team);
+        companyPathfinding = gameObject.AddComponent(CompanyFormations.GetCompanyPathfinder(CompanyFormations.Formation.Square)) as CompanyPathfinding;
         if (possibleTargets == null)
             return;
-        PrimaryTargetingMode = possibleTargets[0];
-        if(possibleTargets.Length > 1)
-            SecondaryTargetingMode = possibleTargets[1];
+        ChangePrimaryTargetingMode(possibleTargets[0]);
+        if(possibleTargets.Count > 1)
+            ChangeSecondaryTargetingMode(possibleTargets[1]);
+    }
+
+    public void ChangePrimaryTargetingMode(string newTargetingMode)
+    {
+        if(primaryTargetingMode)
+            Destroy(primaryTargetingMode);
+        primaryTargetingMode = gameObject.AddComponent(System.Type.GetType(newTargetingMode)) as TargetingModeBehaviour;
+    }
+
+    public void ChangeSecondaryTargetingMode(string newTargetingMode)
+    {
+        if (secondaryTargetingMode)
+            Destroy(secondaryTargetingMode);
+        secondaryTargetingMode = gameObject.AddComponent(System.Type.GetType(newTargetingMode)) as TargetingModeBehaviour;
     }
 }
 

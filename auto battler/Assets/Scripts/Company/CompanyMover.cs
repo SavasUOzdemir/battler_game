@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static CompanyFormations;
+using static UnityEngine.GraphicsBuffer;
 
 public class CompanyMover : MonoBehaviour
 {
@@ -11,13 +12,19 @@ public class CompanyMover : MonoBehaviour
     {
         get => _companyPathfinding = _companyPathfinding != null ? _companyPathfinding : GetComponent<CompanyPathfinding>();
     }
-    Vector3[] modelPositions;
+
+    public ArrangementBehaviour arranger;
+
+    public Vector3[] ModelPositions { get; private set; }
     public float ModelColliderDia { get; set; }
     [field: SerializeField] public Vector3 CurrentMovementTarget { get; private set; }
     [field: SerializeField] public Vector3 CompanyDir { get; private set; } = Vector3.right;
     [field: SerializeField] public bool Moving { get; private set; } = true;
-    [field: SerializeField] public Arrangement Arrangement { get; set; } = CompanyFormations.Arrangement.Line;
 
+    public void init()
+    {
+        ModelPositions = new Vector3[company.ModelCount];
+    }
     void Awake()
     {
         company = GetComponent<Company>();
@@ -25,7 +32,7 @@ public class CompanyMover : MonoBehaviour
 
     void Start()
     {
-        modelPositions = new Vector3[company.models.Count];
+
     }
 
     void Update()
@@ -37,7 +44,7 @@ public class CompanyMover : MonoBehaviour
     {
         for (int i = 0; i < company.models.Count; i++)
         {
-            company.models[i].GetComponent<Actor>().Move(modelPositions[i]);
+            company.models[i].GetComponent<Actor>().Move(ModelPositions[i]);
         }
     }
 
@@ -47,7 +54,7 @@ public class CompanyMover : MonoBehaviour
         Moving = true;
         Vector3 dir = target - transform.position;
         CompanyDir = dir.normalized;
-        CompanyFormations.CalcModelPositions(target, CompanyDir, company.models.Count, modelPositions, Arrangement, ModelColliderDia);
+        arranger.ArrangeModels(target, CompanyDir);
         MoveModels();
     }
 
@@ -55,14 +62,14 @@ public class CompanyMover : MonoBehaviour
     {
         Moving = false;
         Vector3 newDir = (CurrentMovementTarget - transform.position).normalized;
-        CompanyFormations.CalcModelPositions(transform.position + newDir, newDir, company.models.Count, modelPositions, Arrangement, ModelColliderDia);
+        arranger.ArrangeModels(transform.position + newDir, newDir);
         MoveModels();
     }
 
     public void RotateCompany(Vector3 dir)
     {
         CompanyDir = dir;
-        CompanyFormations.CalcModelPositions(transform.position, dir, company.models.Count, modelPositions, Arrangement, ModelColliderDia);
+        arranger.ArrangeModels(transform.position, dir);
         MoveModels();
     }
 
