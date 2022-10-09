@@ -11,7 +11,20 @@ public class FormationOptions : MonoBehaviour
     [SerializeField] GameObject meleeSquare;
     [SerializeField] GameObject rangedSaw;
     [SerializeField] GameObject rangedDispersed;
-    Company company;
+    [SerializeField] Company company;
+
+    public Company Company 
+    {
+        get
+        {
+            return company;
+        }
+
+        set
+        {
+            company = value;
+        } 
+    }
 
     void UpdateFormationOptions()
     {
@@ -33,7 +46,6 @@ public class FormationOptions : MonoBehaviour
                 }
             }
         }
-
     }
 
    

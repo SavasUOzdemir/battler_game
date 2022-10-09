@@ -4,6 +4,9 @@ using System.Numerics;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
+
 
 
 public class Company : MonoBehaviour
@@ -416,4 +419,14 @@ public class ModelAttributes
         company = _company;
         team = _team;
     }
+}
+
+public class CompanyClickHandler: IPointerClickHandler
+{
+     public void OnPointerClick (PointerEventData eventData)
+     {
+        FormationOptions.Company = null;
+        Company.selected = true;
+        FormationOptions.Company = this.gameObject.GetComponent<Company>();
+     }
 }
