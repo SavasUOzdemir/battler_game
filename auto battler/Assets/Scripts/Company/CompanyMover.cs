@@ -7,10 +7,10 @@ using static UnityEngine.GraphicsBuffer;
 public class CompanyMover : MonoBehaviour
 {
     Company company;
-    private CompanyPathfinding _companyPathfinding;
-    public CompanyPathfinding CompanyPathfinding
+    private CompanyPathfinderBehaviour _companyPathfinderBehaviour;
+    public CompanyPathfinderBehaviour companyPathfinderBehaviour
     {
-        get => _companyPathfinding = _companyPathfinding != null ? _companyPathfinding : GetComponent<CompanyPathfinding>();
+        get => _companyPathfinderBehaviour = _companyPathfinderBehaviour != null ? _companyPathfinderBehaviour : GetComponent<CompanyPathfinderBehaviour>();
     }
 
     public ArrangementBehaviour arranger;
@@ -85,7 +85,7 @@ public class CompanyMover : MonoBehaviour
 
         if ((transform.position - CurrentMovementTarget).sqrMagnitude < 2)
         {
-            CompanyPathfinding.OnTargetReached();
+            companyPathfinderBehaviour.OnTargetReached();
         }
     }
 }

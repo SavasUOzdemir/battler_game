@@ -13,8 +13,10 @@ public static class CompanyFormations
     public static Object[] Formations = Resources.LoadAll("Formations");
     public static Object[] Arrangements = Resources.LoadAll("Arrangements");
     public static Object[] TargetingModes = Resources.LoadAll("TargetingModes");
+    public static Object[] CompanyPathfindings = Resources.LoadAll("CompanyPathfinders");
     static Dictionary<string, string> FormationToArrangement = new();
     static Dictionary<string, List<string>> FormationToTargetingMode = new();
+    static Dictionary<string, string> FormationToPathfinder = new();
 
     public enum Formation
     {
@@ -38,7 +40,6 @@ public static class CompanyFormations
 
     public static void AddArrangementToFormation(string formation, string arrangement)
     {
-        string value;
         if (FormationToArrangement.ContainsKey(formation))
         {
             FormationToArrangement[formation] = arrangement;
@@ -67,6 +68,18 @@ public static class CompanyFormations
         }
     }
 
+    public static void AddPathfinderToFormation(string formation, string pathfinder)
+    {
+        if (FormationToPathfinder.ContainsKey(formation))
+        {
+            FormationToPathfinder[formation] = pathfinder;
+        }
+        else
+        {
+            FormationToPathfinder.Add(formation, pathfinder);
+        }
+    }
+
     public static List<string> GetTargetingOptions(string formation, int team)
     {
         List<string> values;
@@ -87,14 +100,11 @@ public static class CompanyFormations
         return null;
     }
 
-    public static System.Type GetCompanyPathfinder(Formation formation)
+    public static string GetCompanyPathfinder(string formation)
     {
-        switch (formation)
-        {
-            case Formation.Square:
-                return typeof(CompanyPathfinding_ShortestPath);
-                //TODO
-        }
-        return typeof(CompanyPathfinding_ShortestPath);
+        string value;
+        if (FormationToPathfinder.TryGetValue(formation, out value))
+            return ("CompanyPathfinderBehaviour_" + value);
+        return ("CompanyPathfinderBehaviour_ShortestPath");
     }
 }

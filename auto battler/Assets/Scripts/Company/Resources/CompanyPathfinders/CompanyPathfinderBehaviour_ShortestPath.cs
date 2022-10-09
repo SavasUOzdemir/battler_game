@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CompanyPathfinding_ShortestPath : CompanyPathfinding
+public class CompanyPathfinderBehaviour_ShortestPath : CompanyPathfinderBehaviour
 {
     private Company company;
 

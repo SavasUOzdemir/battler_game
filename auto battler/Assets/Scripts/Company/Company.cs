@@ -42,7 +42,7 @@ public class Company : MonoBehaviour
     public GameObject CurrentEnemyTarget { get; private set; } = null;
     TargetingModeBehaviour primaryTargetingMode;
     TargetingModeBehaviour secondaryTargetingMode;
-    CompanyPathfinding companyPathfinding;
+    CompanyPathfinderBehaviour _companyPathfinderBehaviour;
     CompanyMover companyMover;
     Vector3 currentMovementTarget;
 
@@ -221,7 +221,7 @@ public class Company : MonoBehaviour
             FindTarget();
         }
 
-        currentMovementTarget = companyPathfinding.GetMovementTarget();
+        currentMovementTarget = _companyPathfinderBehaviour.GetMovementTarget();
 
         if (!inRange)
         {
@@ -388,7 +388,7 @@ public class Company : MonoBehaviour
         formation = _formation;
         companyMover.arranger = gameObject.AddComponent(System.Type.GetType(CompanyFormations.GetArrangement(_formation))) as ArrangementBehaviour;
         List<string> possibleTargets = CompanyFormations.GetTargetingOptions(_formation, Team);
-        companyPathfinding = gameObject.AddComponent(CompanyFormations.GetCompanyPathfinder(CompanyFormations.Formation.Square)) as CompanyPathfinding;
+        _companyPathfinderBehaviour = gameObject.AddComponent(System.Type.GetType(CompanyFormations.GetCompanyPathfinder(_formation))) as CompanyPathfinderBehaviour;
         if (possibleTargets == null)
             return;
         ChangePrimaryTargetingMode(possibleTargets[0]);

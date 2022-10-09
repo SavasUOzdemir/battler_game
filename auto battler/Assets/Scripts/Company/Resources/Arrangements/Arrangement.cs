@@ -7,7 +7,6 @@ public class Arrangement : ScriptableObject
 {
     public string arrangementName;
     public string[] availableToFormations;
-    public string behaviourScript;
 
     void OnEnable()
     {
