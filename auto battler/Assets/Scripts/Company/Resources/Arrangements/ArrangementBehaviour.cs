@@ -8,11 +8,7 @@ public abstract class ArrangementBehaviour : MonoBehaviour
     protected CompanyMover companyMover;
     protected BoxCollider collider;
 
-    //ARRANGEMENT VARIABLES
-    //WARNING:: Bad variables might break shit
-    //Wedge arrangement
-    protected static readonly int InnerWedge = 4;
-    protected static readonly int WedgeArmWidth = 2;
+    
 
     void Awake()
     {
@@ -25,6 +21,8 @@ public abstract class ArrangementBehaviour : MonoBehaviour
     {
         UpdateBannerPosition();
         UpdateColliderSize();
+        collider.size = new Vector3(collider.size.x + company.MeleeRange * 2, 0f,
+            collider.size.z + company.MeleeRange * 2);
         UpdateColliderCenter();
         UpdateCompanyRotation();
     }
