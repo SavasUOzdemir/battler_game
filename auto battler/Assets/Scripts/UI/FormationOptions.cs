@@ -11,6 +11,7 @@ public class FormationOptions : MonoBehaviour
     [SerializeField] GameObject meleeSquare;
     [SerializeField] GameObject rangedSaw;
     [SerializeField] GameObject rangedDispersed;
+    [SerializeField] Company_UI company_ui;
     [SerializeField] Company company;
 
     public Company Company 
@@ -28,9 +29,9 @@ public class FormationOptions : MonoBehaviour
 
     void UpdateFormationOptions()
     {
-        if (company != null)
+        if (company_ui != null)
         {
-            if (company.selected)
+            if (company_ui.selected)
             {
                 if (company.MeleeCompany)
                 {

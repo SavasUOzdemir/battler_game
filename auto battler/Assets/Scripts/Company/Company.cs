@@ -5,15 +5,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 
 public class Company : MonoBehaviour
 {
-    //UI
-    public bool selected = false;
-    public bool done = false;
     //Misc
     GameObject[] buffer = new GameObject[500];
     public List<GameObject> enemiesList = new();
@@ -408,24 +403,5 @@ public class ModelAttributes
     {
         company = _company;
         team = _team;
-    }
-}
-
-public class CompanyClickHandler : MonoBehaviour, IPointerClickHandler
-{
-    Canvas canvas;
-
-    private void Awake()
-    {
-        if (canvas == null)
-            canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>();
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-
-        canvas.GetComponent<FormationOptions>().Company = null;
-        this.GetComponent<Company>().selected = true;
-        canvas.GetComponent<FormationOptions>().Company = this.gameObject.GetComponent<Company>();
     }
 }
