@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class ArrangementBehaviour_Wedge : ArrangementBehaviour
 {
+    //ARRANGEMENT VARIABLES
+    //WARNING:: Bad variables might break shit
+    //Wedge arrangement
+    protected static readonly int InnerWedge = 4;
+    protected static readonly int WedgeArmWidth = 2;
+
     public override void ArrangeModels(Vector3 companyPos, Vector3 direction)
     {
         Vector3 localLeft = Vector3.Cross(direction, Vector3.up).normalized;
