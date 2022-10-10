@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 1134582683347770737}
   - component: {fileID: 1134582683347770736}
   - component: {fileID: -6465811474957131811}
-  m_Layer: 0
+  - component: {fileID: 7826242714576972466}
+  m_Layer: 8
   m_Name: Company
   m_TagString: Company
   m_Icon: {fileID: 0}
@@ -46,20 +47,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemiesList: []
-  team: 0
+  range: 0
+  rangeBuffer: 0.1
+  <GameStarted>k__BackingField: 1
+  <Team>k__BackingField: 0
   meleeRange: 5
   debug: 0
+  <MouseControl>k__BackingField: 0
   modelPrefab: {fileID: 4790909944199296502, guid: 42f79eb5b0a32a0438fd1bb88467ecf8, type: 3}
+  <ModelCount>k__BackingField: 16
+  models: []
   globalCooldown: 1
   formation: 0
-  arrangement: 0
-  primaryTarget: 0
-  secondaryTarget: 0
+  <InMelee>k__BackingField: 0
   inRange: 0
   inFront: 0
   maxMorale: 100
   currentMorale: 0
   broken: 0
+  <MeleeCompany>k__BackingField: 0
+  <RangedCompany>k__BackingField: 0
+  <FlyingCompany>k__BackingField: 0
   editorUpgrades: []
 --- !u!65 &-6465811474957131811
 BoxCollider:
@@ -72,5 +80,19 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7826242714576972466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1134582683347770743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f71977da068c4cc47b8f87eaeffe7257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selected: 0
+  done: 0

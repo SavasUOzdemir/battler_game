@@ -16,7 +16,7 @@ public class Company : MonoBehaviour
     Vector3 fleeDir;
     [SerializeField] float range = 0;
     [SerializeField] float rangeBuffer = 0.1f;
-    [field: SerializeField] bool GameStarted { get; set; } = true;
+    [field: SerializeField] public bool GameStarted {get; set; } = true;
     [field: SerializeField] public int Team { get; set; } = 0;
     [SerializeField] float meleeRange = 3f;
     [SerializeField] bool debug = false;
