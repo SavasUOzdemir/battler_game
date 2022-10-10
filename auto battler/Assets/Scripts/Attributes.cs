@@ -32,6 +32,8 @@ public class Attributes : MonoBehaviour
     float perSecond = 1f;
     List<UnitPassive> passivesList = new List<UnitPassive>();
     Vector3 lastPos;
+    public delegate void OnDeathExitMelee(Company company, GameObject model);
+    public OnDeathExitMelee onDeathExitMelee;
 
     void Awake()
     {
@@ -110,6 +112,8 @@ public class Attributes : MonoBehaviour
         Destroy(gameObject);
         company.RemoveModel(gameObject);
         BattlefieldManager.RemoveModel(gameObject);
+        if (onDeathExitMelee != null)
+            onDeathExitMelee(company, gameObject);
     }
     void KnockBack(AttackPacket packet)
     {
