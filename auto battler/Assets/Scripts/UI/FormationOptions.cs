@@ -26,7 +26,18 @@ public class FormationOptions : MonoBehaviour
             company_ui = value;
         } 
     }
+    public Company Company
+    {
+        get
+        {
+            return company;
+        }
 
+        set
+        {
+            company = value;
+        }
+    }
     void UpdateFormationOptions()
     {
         if (company_ui != null)

@@ -12,7 +12,7 @@ public class Company_UI : MonoBehaviour
     Company company;
     GameObject[] allCompanies;
     [SerializeField] Camera camera_;
-    [SerializeField] Transform objectHit;
+    [SerializeField] RaycastHit hit;
 
 
     private void Awake()
@@ -27,20 +27,41 @@ public class Company_UI : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire1"))
         {
-            RaycastHit hit;
+            RaycastHit[] hits;
             Ray ray = camera_.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
-                objectHit = hit.transform;
+            hits = Physics.RaycastAll(ray);
+
+            for (int i = 0; i < hits.Length; i++)
+            {
+                hit = hits[i];
+                if (hit.transform.gameObject.layer == 8 && hit.transform == gameObject.transform)
+                {
+                    Debug.Log("You hit " + hit.transform.name);
+                    break;
+                }
+            }
         }
 
-        if (Input.GetButtonDown("Fire1") && !company.GameStarted && objectHit == gameObject.transform)
+        //    if (Input.GetButtonDown("Fire1"))
+        //{
+        //    RaycastHit hit;
+        //    Ray ray = camera_.ScreenPointToRay(Input.mousePosition);
+
+        //    if (Physics.Raycast(ray, out hit))
+        //        objectHit = hit.transform;
+        //}
+
+        if (Input.GetButtonDown("Fire1") && !company.GameStarted && hit.transform == gameObject.transform)
         {
             Debug.Log("Clicked on Company");
             canvas.GetComponent<FormationOptions>().Company_UI = null;
+            canvas.GetComponent<FormationOptions>().Company = null;
+
             UnselectAll();
             selected = true;
-            canvas.GetComponent<FormationOptions>().Company_UI = objectHit.GetComponent<Company_UI>();
+            canvas.GetComponent<FormationOptions>().Company_UI = hit.transform.GetComponent<Company_UI>();
+            canvas.GetComponent<FormationOptions>().Company = hit.transform.GetComponent<Company>();
         }
     }
 
