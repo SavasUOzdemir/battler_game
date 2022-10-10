@@ -14,7 +14,7 @@ public class Company : MonoBehaviour
     public List<GameObject> enemiesList = new();
     public Vector3 CompanyDir { get; private set; } = Vector3.right;
     Vector3 fleeDir;
-    [field: SerializeField] bool GameStarted { get; set; } = true;
+    [field: SerializeField] public bool GameStarted { get; set; } = true;
     [field: SerializeField] public float MeleeRange { get; private set; } = 3f;
     [SerializeField] bool debug = false;
     [field: SerializeField] public bool MouseControl { get; private set; } = false;
@@ -241,22 +241,6 @@ public class Company : MonoBehaviour
         inRange = IsCurrentTargetInRange();
         inFront = IsCurrentTargetInFront();
     }
-
-    //void CheckMelee()
-    //{
-    //    foreach (GameObject enemyCompany in enemiesList)
-    //    {
-    //        if(!enemyCompany)
-    //            continue;
-    //        if ((enemyCompany.transform.position - transform.position).sqrMagnitude <= MeleeRange * MeleeRange)
-    //        {
-    //            InMelee = true;
-    //            return;
-    //        }
-    //    }
-
-    //    InMelee = false;
-    //}
 
     void OnTriggerEnter(Collider other)
     {
