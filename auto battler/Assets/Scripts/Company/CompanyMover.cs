@@ -20,7 +20,7 @@ public class CompanyMover : MonoBehaviour
     [field: SerializeField] public Vector3 CurrentMovementTarget { get; private set; }
     [field: SerializeField] public Vector3 FinalCompanyDir { get; private set; }
     [field: SerializeField] public Vector3 CurrentCompanyDir { get; private set; }
-    [field: SerializeField] public bool Moving { get; private set; } = true;
+    [field: SerializeField] public bool Moving { get; private set; } = false;
     private Vector3 posLastFrame;
 
     public void init()
@@ -31,6 +31,8 @@ public class CompanyMover : MonoBehaviour
     {
         company = GetComponent<Company>();
         FinalCompanyDir = Vector3.right - Vector3.right * 2 * company.Team;
+        CurrentCompanyDir = FinalCompanyDir;
+        CurrentMovementTarget = transform.position;
     }
 
     void Start()
@@ -42,6 +44,7 @@ public class CompanyMover : MonoBehaviour
     {
         if(Moving)
             UpdateCurrentDirection();
+        CurrentMovementTarget = companyPathfinderBehaviour.GetMovementTarget();
     }
 
     void MoveModels()
@@ -54,10 +57,21 @@ public class CompanyMover : MonoBehaviour
 
     void UpdateCurrentDirection()
     {
-        CurrentCompanyDir = (transform.position - posLastFrame).normalized;
+        if(Moving)
+            CurrentCompanyDir = (transform.position - posLastFrame).normalized;
         posLastFrame = transform.position;
     }
 
+    //This method is called for moving on the path drawn by the pathfinder
+    public void MoveOnPath()
+    {
+        if (CurrentCompanyDir != FinalCompanyDir)
+            RotateCompany(FinalCompanyDir);
+        else
+            MoveCompany(CurrentMovementTarget);
+    }
+
+    //Calling this method forces the company to move straight towards the target
     public void MoveCompany(Vector3 target)
     {
         CurrentMovementTarget = target;

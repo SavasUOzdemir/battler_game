@@ -12,7 +12,6 @@ public class Company : MonoBehaviour
     //Misc
     GameObject[] buffer = new GameObject[500];
     public List<GameObject> enemiesList = new();
-    public Vector3 CompanyDir { get; private set; } = Vector3.right;
     Vector3 fleeDir;
     [field: SerializeField] public bool GameStarted { get; set; } = true;
     [field: SerializeField] public float MeleeRange { get; private set; } = 3f;
@@ -37,9 +36,7 @@ public class Company : MonoBehaviour
     public GameObject CurrentEnemyTarget { get; private set; } = null;
     TargetingModeBehaviour primaryTargetingMode;
     TargetingModeBehaviour secondaryTargetingMode;
-    CompanyPathfinderBehaviour _companyPathfinderBehaviour;
     CompanyMover companyMover;
-    Vector3 currentMovementTarget;
 
     //AI STATE
     [field: SerializeField] public bool InMelee { get; private set; } = false;
@@ -98,7 +95,7 @@ public class Company : MonoBehaviour
             float distanceToCam;
             battleFloor.Raycast(ray, out distanceToCam);
             GetComponent<ArrangementBehaviour>().ArrangeModels(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distanceToCam)),
-                CompanyDir);
+                companyMover.CurrentCompanyDir);
             for (int i = 0; i < ModelCount; i++)
             {
                 models[i].transform.position = new Vector3(companyMover.ModelPositions[i].x, 0, companyMover.ModelPositions[i].z);
@@ -132,12 +129,10 @@ public class Company : MonoBehaviour
 
     private void Init() //Temp function for editor initialization
     {
-        if (Team == 1)
-            CompanyDir *= -1;
         ChangeFormation(formation);
         currentMorale = maxMorale;
         ModelAttributes messagePar = new ModelAttributes(this, Team);
-        GetComponent<ArrangementBehaviour>().ArrangeModels(transform.position,CompanyDir);
+        GetComponent<ArrangementBehaviour>().ArrangeModels(transform.position,companyMover.CurrentCompanyDir);
         var newParent = new GameObject();
         for (int i = 0; i < ModelCount; i++)
         {
@@ -146,7 +141,7 @@ public class Company : MonoBehaviour
         }
         modelColliderDia = models[0].GetComponent<CapsuleCollider>().radius * 2;
         companyMover.ModelColliderDia = modelColliderDia;
-        GetComponent<ArrangementBehaviour>().ArrangeModels(transform.position, CompanyDir);
+        GetComponent<ArrangementBehaviour>().ArrangeModels(transform.position, companyMover.CurrentCompanyDir);
         for (int i = 0; i < ModelCount; i++)
         {
             models[i].transform.position = companyMover.ModelPositions[i];
@@ -161,7 +156,7 @@ public class Company : MonoBehaviour
 
     bool IsCurrentTargetInFront()
     {
-        return (Vector3.Angle(CurrentEnemyTarget.transform.position - transform.position, CompanyDir) < attackArc);
+        return (Vector3.Angle(CurrentEnemyTarget.transform.position - transform.position, companyMover.CurrentCompanyDir) < attackArc);
     }
 
     void FindEnemies()
@@ -205,11 +200,10 @@ public class Company : MonoBehaviour
         }
 
         MovementStateMachine();
-        currentMovementTarget = _companyPathfinderBehaviour.GetMovementTarget();
 
         if (!inRange)
         {
-            companyMover.MoveCompany(currentMovementTarget);
+            companyMover.MoveOnPath();
         }
         else if (!inFront)
         {
@@ -397,9 +391,11 @@ public class Company : MonoBehaviour
     public void ChangeFormation(string _formation)
     {
         formation = _formation;
+        Destroy(GetComponent(typeof(ArrangementBehaviour)));
         companyMover.arranger = gameObject.AddComponent(System.Type.GetType(CompanyFormations.GetArrangement(_formation))) as ArrangementBehaviour;
         List<string> possibleTargets = CompanyFormations.GetTargetingOptions(_formation, Team);
-        _companyPathfinderBehaviour = gameObject.AddComponent(System.Type.GetType(CompanyFormations.GetCompanyPathfinder(_formation))) as CompanyPathfinderBehaviour;
+        Destroy(GetComponent(typeof(CompanyPathfinderBehaviour)));
+        gameObject.AddComponent(System.Type.GetType(CompanyFormations.GetCompanyPathfinder(_formation)));
         if (possibleTargets == null)
             return;
         ChangePrimaryTargetingMode(possibleTargets[0]);

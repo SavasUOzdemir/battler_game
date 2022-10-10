@@ -12,6 +12,8 @@ public class CompanyPathfinderBehaviour_ShortestPath : CompanyPathfinderBehaviou
     }
     public override Vector3 GetMovementTarget()
     {
-        return company.CurrentEnemyTarget.transform.position;
+        if(company.CurrentEnemyTarget)
+            return company.CurrentEnemyTarget.transform.position;
+        return transform.position;
     }
 }

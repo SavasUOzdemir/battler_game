@@ -15,6 +15,7 @@ public class Actor : MonoBehaviour
     AnimatorOverrideController animatorOverrideController;
     Attributes attributes;
     AIDestinationSetter aiDest;
+    CompanyMover companyMover;
     Company company;
     float brainLag = 0.2f;
     float brainTime = 0;
@@ -27,6 +28,7 @@ public class Actor : MonoBehaviour
         animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
         attributes = GetComponent<Attributes>();
         aiDest = GetComponent<AIDestinationSetter>();
+        companyMover = GetComponent<CompanyMover>();
     }
 
     void Start()
@@ -65,7 +67,7 @@ public class Actor : MonoBehaviour
         }
         else if (IsInPosition()) 
         {
-            attributes.SetFacing(company.CompanyDir);
+            attributes.SetFacing(companyMover.CurrentCompanyDir);
             NotMeleeBehaviour();
         }
     }
@@ -127,7 +129,7 @@ public class Actor : MonoBehaviour
             {
                 StartCoroutine(action.DoAction());
                 busy = true;
-                attributes.SetFacing(company.CompanyDir);
+                attributes.SetFacing(companyMover.CurrentCompanyDir);
                 return;
             }
         }
@@ -154,7 +156,7 @@ public class Actor : MonoBehaviour
             {
                 StartCoroutine(action.DoAction());
                 busy = true;
-                attributes.SetFacing(company.CompanyDir);
+                attributes.SetFacing(companyMover.CurrentCompanyDir);
                 return;
             }
         }
@@ -164,7 +166,7 @@ public class Actor : MonoBehaviour
         {
             StartCoroutine(rangedWeapon.DoAction());
             busy = true;
-            attributes.SetFacing(company.CompanyDir);
+            attributes.SetFacing(companyMover.CurrentCompanyDir);
         }
     }
 
