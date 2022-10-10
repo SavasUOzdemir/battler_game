@@ -14,7 +14,6 @@ public class BattlefieldManager : MonoBehaviour
 
     static List<GameObject> companiesOnField = new List<GameObject>();
     static List<GameObject> modelsOnField = new List<GameObject>();
-    static List<GameObject> deadCompanies = new();
 
     void Awake()
     {
@@ -74,15 +73,6 @@ public class BattlefieldManager : MonoBehaviour
     {
         if(companiesOnField.Contains(company))
             companiesOnField.Remove(company);
-    }
-
-    public static void KillCompany(GameObject company)
-    {
-        if (companiesOnField.Contains(company))
-        {
-            companiesOnField.Remove(company);
-            deadCompanies.Add(company);
-        }
     }
 
     public static void AddModel(GameObject model)

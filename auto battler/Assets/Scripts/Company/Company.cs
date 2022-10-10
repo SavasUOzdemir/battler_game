@@ -14,8 +14,11 @@ public class Company : MonoBehaviour
     public List<GameObject> enemiesList = new();
     public Vector3 CompanyDir { get; private set; } = Vector3.right;
     Vector3 fleeDir;
-    [field: SerializeField] public bool GameStarted { get; set; } = true;
-    [field: SerializeField] public float MeleeRange { get; private set; } = 3f;
+    [SerializeField] float range = 0;
+    [SerializeField] float rangeBuffer = 0.1f;
+    [field: SerializeField] public bool GameStarted {get; set; } = true;
+    [field: SerializeField] public int Team { get; set; } = 0;
+    [SerializeField] float meleeRange = 3f;
     [SerializeField] bool debug = false;
     [field: SerializeField] public bool MouseControl { get; private set; } = false;
 
@@ -50,16 +53,11 @@ public class Company : MonoBehaviour
     float currentTime = 0;
     float attackArc = 60f;
     float aiFuse = 01f;
-    [SerializeField] List<Company> inMeleeCompaniesList = new();
-    [SerializeField] List<GameObject> inMeleeModels = new();
 
     //GAMEPLAY STATS
-    [field: SerializeField] public int Team { get; set; } = 0;
     [SerializeField] float maxMorale = 100f;
     [SerializeField] float currentMorale;
     [SerializeField] bool broken = false;
-    [SerializeField] float range = 0;
-    [SerializeField] float rangeBuffer = 0.1f;
     [field: SerializeField] public bool MeleeCompany { get; private set; } = false;
     [field: SerializeField] public bool RangedCompany { get; private set; } = false;
     [field: SerializeField] public bool FlyingCompany { get; private set; } = false;
@@ -110,6 +108,7 @@ public class Company : MonoBehaviour
         if (Time.timeSinceLevelLoad < aiFuse)
             return;
 
+        CheckMelee();
         if (InMelee && !broken)
         {
             if (Moving)
@@ -242,45 +241,20 @@ public class Company : MonoBehaviour
         inFront = IsCurrentTargetInFront();
     }
 
-    void OnTriggerEnter(Collider other)
+    void CheckMelee()
     {
-        Attributes otherAtt = other.GetComponent(typeof(Attributes)) as Attributes;
-        Company otherCompany = otherAtt.GetCompany();
-        if (!otherAtt || !otherCompany)
-            return;
-        if (otherAtt.GetTeam() != Team)
+        foreach (GameObject enemyCompany in enemiesList)
         {
-            InMelee = true;
-            inMeleeModels.Add(other.gameObject);
-            if (!inMeleeCompaniesList.Contains(otherCompany))
-                inMeleeCompaniesList.Add(otherCompany);
-            Debug.Log("New Company in list " + inMeleeCompaniesList.Count);
-            otherAtt.onDeathExitMelee += ExitMelee;
+            if(!enemyCompany)
+                continue;
+            if ((enemyCompany.transform.position - transform.position).sqrMagnitude <= meleeRange * meleeRange)
+            {
+                InMelee = true;
+                return;
+            }
         }
-        
-    }
 
-    void OnTriggerExit(Collider other)
-    {
-        inMeleeModels.Remove(other.gameObject);
-        Attributes otherAtt = other.GetComponent(typeof(Attributes)) as Attributes;
-        if (!otherAtt)
-           return;
-        if (!inMeleeModels.Exists(x => ReferenceEquals((x.GetComponent(typeof(Attributes)) as Attributes).GetCompany(),otherAtt.GetCompany()))) 
-            inMeleeCompaniesList.Remove(otherAtt.GetCompany());
-        if (inMeleeCompaniesList.Count == 0)
-            InMelee = false;
-        Debug.Log("Models " + inMeleeModels.Count);
-        Debug.Log("Companies " + inMeleeCompaniesList.Count);
-    }
-
-    void ExitMelee(Company company, GameObject model)
-    {
-        inMeleeModels.Remove(model);
-        if (!inMeleeModels.Exists(x => ReferenceEquals((x.GetComponent(typeof(Attributes)) as Attributes).GetCompany(), company)))
-            inMeleeCompaniesList.Remove(company);
-        if (inMeleeCompaniesList.Count == 0)
-            InMelee = false;
+        InMelee = false;
     }
 
     public void AddUnitUpgrade(System.Type type)
@@ -297,9 +271,7 @@ public class Company : MonoBehaviour
         }else if (type.IsSubclassOf(typeof(CompanyAction)))
         {
             companyActions.Add(gameObject.AddComponent(type) as CompanyAction);
-            companyActions.Sort((x, y) => x.GetPrio().CompareTo(y.GetPrio()));
-        }
-        else if (type.IsSubclassOf(typeof(CompanyPassive)))
+        }else if (type.IsSubclassOf(typeof(CompanyPassive)))
         {
             companyPassives.Add(gameObject.AddComponent(type) as CompanyPassive);
             companyPassives.Last().OnPurchase();
@@ -333,10 +305,10 @@ public class Company : MonoBehaviour
         }
     }
 
-    void KillCompany()
+    void RemoveCompany()
     {
-        BattlefieldManager.KillCompany(gameObject);
-        gameObject.SetActive(false);
+        Destroy(gameObject);
+        BattlefieldManager.RemoveCompany(gameObject);
     }
 
     public float AverageHealth()
@@ -354,7 +326,7 @@ public class Company : MonoBehaviour
         models.Remove(model);
         if(models.Count == 0)
         {
-            KillCompany();
+            RemoveCompany();
         }
     }
 
