@@ -14,16 +14,16 @@ public class FormationOptions : MonoBehaviour
     [SerializeField] Company_UI company_ui;
     [SerializeField] Company company;
 
-    public Company Company 
+    public Company_UI Company_UI 
     {
         get
         {
-            return company;
+            return company_ui;
         }
 
         set
         {
-            company = value;
+            company_ui = value;
         } 
     }
 
