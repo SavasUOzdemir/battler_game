@@ -13,6 +13,16 @@ public class FormationOptions : MonoBehaviour
     [SerializeField] GameObject rangedDispersed;
     [SerializeField] Company_UI company_ui;
     [SerializeField] Company company;
+    GameObject[] formationOpts = new GameObject[5];
+
+    private void Awake()
+    {
+        formationOpts[0] = meleeWedge;
+        formationOpts[1] = meleeSaw;
+        formationOpts[2] = meleeSquare;
+        formationOpts[3] = rangedSaw;
+        formationOpts[4] = rangedDispersed;
+    }
 
     public Company_UI Company_UI 
     {
@@ -40,6 +50,11 @@ public class FormationOptions : MonoBehaviour
     }
     void UpdateFormationOptions()
     {
+        foreach (GameObject go in formationOpts)
+        {
+            go.SetActive(false);
+        }
+
         if (company_ui != null)
         {
             if (company_ui.selected)

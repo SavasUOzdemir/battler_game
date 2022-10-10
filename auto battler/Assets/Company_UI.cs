@@ -25,7 +25,7 @@ public class Company_UI : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1")) //add "!gamestarted" check here//
         {
             RaycastHit[] hits;
             Ray ray = camera_.ScreenPointToRay(Input.mousePosition);
@@ -41,30 +41,19 @@ public class Company_UI : MonoBehaviour
                     break;
                 }
             }
-        }
+            if (!company.GameStarted && hit.transform == gameObject.transform)
+            {
+                canvas.GetComponent<FormationOptions>().Company_UI = null;
+                canvas.GetComponent<FormationOptions>().Company = null;
 
-        //    if (Input.GetButtonDown("Fire1"))
-        //{
-        //    RaycastHit hit;
-        //    Ray ray = camera_.ScreenPointToRay(Input.mousePosition);
-
-        //    if (Physics.Raycast(ray, out hit))
-        //        objectHit = hit.transform;
-        //}
-
-        if (Input.GetButtonDown("Fire1") && !company.GameStarted && hit.transform == gameObject.transform)
-        {
-            Debug.Log("Clicked on Company");
-            canvas.GetComponent<FormationOptions>().Company_UI = null;
-            canvas.GetComponent<FormationOptions>().Company = null;
-
-            UnselectAll();
-            selected = true;
-            canvas.GetComponent<FormationOptions>().Company_UI = hit.transform.GetComponent<Company_UI>();
-            canvas.GetComponent<FormationOptions>().Company = hit.transform.GetComponent<Company>();
+                UnselectAll();
+                selected = true;
+                canvas.GetComponent<FormationOptions>().Company_UI = hit.transform.GetComponent<Company_UI>();
+                canvas.GetComponent<FormationOptions>().Company = hit.transform.GetComponent<Company>();
+                canvas.SendMessage("UpdateFormationOptions",null,SendMessageOptions.RequireReceiver);
+            }
         }
     }
-
     void UnselectAll()
     {
         foreach (GameObject go in allCompanies)
