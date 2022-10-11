@@ -1291,6 +1291,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   formationName: Square
   targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
 --- !u!1 &614544326
 GameObject:
   m_ObjectHideFlags: 0
@@ -1969,6 +1970,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   formationName: RangedDispersed
   targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
 --- !u!1 &817754318
 GameObject:
   m_ObjectHideFlags: 0
@@ -2611,6 +2613,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   formationName: Saw
   targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
 --- !u!1 &1021509941
 GameObject:
   m_ObjectHideFlags: 0
@@ -3445,6 +3448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   formationName: RangedSquare
   targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
 --- !u!1001 &1266305425
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5261,6 +5265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   formationName: Wedge
   targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
 --- !u!1 &2005921145
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,7 +19,8 @@ public class FormationOptions : MonoBehaviour
     
     private void Awake()
     {
-        formationOpts = new GameObject[5] { meleeWedge, meleeSaw, meleeSquare, rangedSquare, rangedDispersed};        
+        formationOpts = new GameObject[5] { meleeWedge, meleeSaw, meleeSquare, rangedSquare, rangedDispersed};
+        UpdateFormationOptions();
     }    
 
     public Company_UI Company_UI 

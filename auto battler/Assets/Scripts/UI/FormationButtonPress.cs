@@ -14,6 +14,7 @@ public class FormationButtonPress : MonoBehaviour
     {
         targetingPanel.GetComponent<TargetingOptions>().Formation = formationName;
         company = formationsPanel.GetComponent<FormationOptions>().Company;
-        company.SendMessage("ChangeFormation", formationName, SendMessageOptions.RequireReceiver);
+        if (formationName != null)
+            company.SendMessage("ChangeFormation", formationName, SendMessageOptions.RequireReceiver);                    
     }
 }
