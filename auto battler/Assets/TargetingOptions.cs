@@ -13,7 +13,7 @@ public class TargetingOptions : MonoBehaviour
     [SerializeField] GameObject highestHP;
     [SerializeField] GameObject protective;
     GameObject[] buttons;
-    string formation_ = null;
+    [SerializeField] string formation_ = null;
     List<string> targetOpts;
 
     public string Formation
@@ -26,6 +26,7 @@ public class TargetingOptions : MonoBehaviour
         {
             formation_ = value;
             UpdateTargetingOptions(formation_);
+            Debug.Log("Formation set to: " + formation_);
         }
     }
     
@@ -45,9 +46,8 @@ public class TargetingOptions : MonoBehaviour
     void UpdateTargetingOptions(string formation)
     {
         targetOpts = CompanyFormations.GetTargetingOptions(formation, 0);
+        Debug.Log(targetOpts.Count);
         foreach (var opt in targetOpts)
-        {
             Debug.Log(opt);
-        }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class FormationOptions : MonoBehaviour, IPointerDownHandler
+public class FormationOptions : MonoBehaviour
 {
     [SerializeField] GameObject meleeWedge;
     [SerializeField] GameObject meleeSaw;
@@ -18,22 +18,11 @@ public class FormationOptions : MonoBehaviour, IPointerDownHandler
 
     GameObject[] formationOpts;
     string[] formationStrs;
-    Dictionary<GameObject, string> formationDict;
     int i = 0;
-
-    public Dictionary<GameObject, string> FormationDict { get { return formationDict; } }
     
     private void Awake()
     {
-        formationOpts = new GameObject[5] { meleeWedge, meleeSaw, meleeSquare, rangedSquare, rangedDispersed};
-        formationStrs = new string[5] { "Formation_Wedge", "Formation_Saw", "Formation_Square", "Formation_RangedSquare", "Formation_RangedDispersed" };
-        formationDict = new();
-
-        foreach (GameObject go in formationOpts)
-        {
-            formationDict.Add(go, formationStrs[i]);
-            i++;
-        }
+        formationOpts = new GameObject[5] { meleeWedge, meleeSaw, meleeSquare, rangedSquare, rangedDispersed};        
     }    
 
     public Company_UI Company_UI 
@@ -86,19 +75,4 @@ public class FormationOptions : MonoBehaviour, IPointerDownHandler
             }
         }
     }
-
-    public void OnPointerDown(PointerEventData pointerEventData)
-    {
-        foreach (GameObject go in formationOpts)
-        {
-            if (go.gameObject == pointerEventData.pointerPress)
-            {
-                targetingPanel.GetComponent<TargetingOptions>().Formation = formationDict[go];
-                Debug.Log("Sth else is wrong"); //this be broken
-            }
-        }
-    }
-
-
-
 }
