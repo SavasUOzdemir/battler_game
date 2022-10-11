@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,6 +39,21 @@ public class ArrangementBehaviour_Wedge : ArrangementBehaviour
 
     protected override void UpdateColliderSize()
     {
-        
+        int remainingModelCount = company.models.Count;
+        int rows = 0;
+        while (remainingModelCount > 0)
+        {
+            if (rows == InnerWedge) break;
+            rows++;
+            remainingModelCount -= rows;
+        }
+
+        while (remainingModelCount > 0)
+        {
+            rows++;
+            remainingModelCount -= WedgeArmWidth * 2;
+        }
+        float colliderSizeXZ = rows * companyMover.ModelColliderDia;
+        collider.size = new Vector3(colliderSizeXZ, 1f, colliderSizeXZ);
     }
 }
