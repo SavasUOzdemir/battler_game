@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Company_UI : MonoBehaviour
 {
-    Canvas canvas;
+    [SerializeField] GameObject formationButtons;
     public bool selected = false;
     public bool done = false;
     Company company;
@@ -17,8 +17,6 @@ public class Company_UI : MonoBehaviour
 
     private void Awake()
     {
-        if (canvas == null)
-            canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>();
         company = gameObject.GetComponent<Company>();
         allCompanies = GameObject.FindGameObjectsWithTag("Company");
     }
@@ -43,14 +41,14 @@ public class Company_UI : MonoBehaviour
             }
             if (!company.GameStarted && hit.transform == gameObject.transform)
             {
-                canvas.GetComponent<FormationOptions>().Company_UI = null;
-                canvas.GetComponent<FormationOptions>().Company = null;
+                formationButtons.GetComponent<FormationOptions>().Company_UI = null;
+                formationButtons.GetComponent<FormationOptions>().Company = null;
 
                 UnselectAll();
                 selected = true;
-                canvas.GetComponent<FormationOptions>().Company_UI = hit.transform.GetComponent<Company_UI>();
-                canvas.GetComponent<FormationOptions>().Company = hit.transform.GetComponent<Company>();
-                canvas.SendMessage("UpdateFormationOptions",null,SendMessageOptions.RequireReceiver);
+                formationButtons.GetComponent<FormationOptions>().Company_UI = hit.transform.GetComponent<Company_UI>();
+                formationButtons.GetComponent<FormationOptions>().Company = hit.transform.GetComponent<Company>();
+                formationButtons.SendMessage("UpdateFormationOptions",null,SendMessageOptions.RequireReceiver);
             }
         }
     }
