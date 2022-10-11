@@ -30,10 +30,10 @@ public class TargetingOptions : MonoBehaviour
             Debug.Log("Formation set to: " + formation_);
         }
     }
-    
+
     private void Awake()
     {
-        buttons = new GameObject[8] {closestSquad, lowestHealth, lowestMorale, lowestEndurance, rangedSquads, flyingSquads, highestHP, protective};
+        buttons = new GameObject[8] { closestSquad, lowestHealth, lowestMorale, lowestEndurance, rangedSquads, flyingSquads, highestHP, protective };
         DisableAllButtons();
     }
 
@@ -41,14 +41,20 @@ public class TargetingOptions : MonoBehaviour
     void DisableAllButtons()
     {
         foreach (GameObject button in buttons)
-            button.SetActive(false);        
+            button.SetActive(false);
     }
 
     void UpdateTargetingOptions(string formation)
     {
         targetOpts = CompanyFormations.GetTargetingOptions(formation, 0);
-        Debug.Log(targetOpts.Count);
-        foreach (var opt in targetOpts)
-            Debug.Log(opt);
+        UpdateButtons(targetOpts);
+    }
+
+    void UpdateButtons(List<string> options)
+    {
+        DisableAllButtons();
+        foreach (var go in buttons)
+            if (options.Contains(go.GetComponent<TargetingModeHook>().TargetingModeName))
+                go.SetActive(true);
     }
 }

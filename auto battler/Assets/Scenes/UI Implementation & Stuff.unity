@@ -505,6 +505,7 @@ GameObject:
   - component: {fileID: 291507478}
   - component: {fileID: 291507477}
   - component: {fileID: 291507476}
+  - component: {fileID: 291507479}
   m_Layer: 5
   m_Name: LowestEndurance
   m_TagString: Untagged
@@ -615,6 +616,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 291507474}
   m_CullTransparentMesh: 1
+--- !u!114 &291507479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 291507474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3b9a0311050a045a73ed5ce8c5b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetingModeName: TargetingModeBehaviour_LowestEndurance
 --- !u!1 &295526545
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,6 +911,7 @@ GameObject:
   - component: {fileID: 489956416}
   - component: {fileID: 489956415}
   - component: {fileID: 489956414}
+  - component: {fileID: 489956417}
   m_Layer: 5
   m_Name: Protective
   m_TagString: Untagged
@@ -1007,6 +1022,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 489956412}
   m_CullTransparentMesh: 1
+--- !u!114 &489956417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489956412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3b9a0311050a045a73ed5ce8c5b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetingModeName: TargetingModeBehaviour_Protective
 --- !u!1 &531974192
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,6 +1739,7 @@ GameObject:
   - component: {fileID: 765301583}
   - component: {fileID: 765301582}
   - component: {fileID: 765301581}
+  - component: {fileID: 765301584}
   m_Layer: 5
   m_Name: LowestMorale
   m_TagString: Untagged
@@ -1821,6 +1850,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 765301579}
   m_CullTransparentMesh: 1
+--- !u!114 &765301584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765301579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3b9a0311050a045a73ed5ce8c5b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetingModeName: TargetingModeBehaviour_LowestMorale
 --- !u!1 &809446634
 GameObject:
   m_ObjectHideFlags: 0
@@ -2354,6 +2396,7 @@ GameObject:
   - component: {fileID: 894128497}
   - component: {fileID: 894128496}
   - component: {fileID: 894128495}
+  - component: {fileID: 894128498}
   m_Layer: 5
   m_Name: Flying
   m_TagString: Untagged
@@ -2464,6 +2507,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 894128493}
   m_CullTransparentMesh: 1
+--- !u!114 &894128498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894128493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3b9a0311050a045a73ed5ce8c5b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetingModeName: TargetingModeBehaviour_FlyingSquad
 --- !u!1 &928029811
 GameObject:
   m_ObjectHideFlags: 0
@@ -2753,6 +2809,7 @@ GameObject:
   - component: {fileID: 1024890606}
   - component: {fileID: 1024890605}
   - component: {fileID: 1024890604}
+  - component: {fileID: 1024890607}
   m_Layer: 5
   m_Name: LowestHealth
   m_TagString: Untagged
@@ -2863,6 +2920,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1024890602}
   m_CullTransparentMesh: 1
+--- !u!114 &1024890607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024890602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3b9a0311050a045a73ed5ce8c5b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetingModeName: TargetingModeBehaviour_LowestHealth
 --- !u!1 &1037892067
 GameObject:
   m_ObjectHideFlags: 0
@@ -3894,6 +3964,7 @@ GameObject:
   - component: {fileID: 1363305233}
   - component: {fileID: 1363305232}
   - component: {fileID: 1363305231}
+  - component: {fileID: 1363305234}
   m_Layer: 5
   m_Name: ClosestSquad
   m_TagString: Untagged
@@ -4004,6 +4075,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1363305229}
   m_CullTransparentMesh: 1
+--- !u!114 &1363305234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1363305229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3b9a0311050a045a73ed5ce8c5b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetingModeName: TargetingModeBehaviour_ClosestSquad
 --- !u!1 &1656246010
 GameObject:
   m_ObjectHideFlags: 0
@@ -4121,6 +4205,7 @@ GameObject:
   - component: {fileID: 1664962828}
   - component: {fileID: 1664962827}
   - component: {fileID: 1664962826}
+  - component: {fileID: 1664962829}
   m_Layer: 5
   m_Name: RangedSquads
   m_TagString: Untagged
@@ -4231,6 +4316,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1664962824}
   m_CullTransparentMesh: 1
+--- !u!114 &1664962829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664962824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3b9a0311050a045a73ed5ce8c5b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetingModeName: TargetingModeBehaviour_RangedSquad
 --- !u!1 &1756282505
 GameObject:
   m_ObjectHideFlags: 0
@@ -4795,6 +4893,7 @@ GameObject:
   - component: {fileID: 1937899188}
   - component: {fileID: 1937899187}
   - component: {fileID: 1937899186}
+  - component: {fileID: 1937899189}
   m_Layer: 5
   m_Name: HighestHealth
   m_TagString: Untagged
@@ -4905,6 +5004,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1937899184}
   m_CullTransparentMesh: 1
+--- !u!114 &1937899189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937899184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3b9a0311050a045a73ed5ce8c5b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetingModeName: TargetingModeBehaviour_HighestHealth
 --- !u!1 &1946912044
 GameObject:
   m_ObjectHideFlags: 0
