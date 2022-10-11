@@ -808,7 +808,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: RSaw
+  m_text: RSq
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2060,7 +2060,6 @@ GameObject:
   m_Component:
   - component: {fileID: 840460488}
   - component: {fileID: 840460487}
-  - component: {fileID: 840460489}
   - component: {fileID: 840460486}
   - component: {fileID: 840460485}
   m_Layer: 5
@@ -2152,25 +2151,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &840460489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 840460484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e6c2c7e6a9b4b7489e9eb5c0df14b35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meleeWedge: {fileID: 2001597289}
-  meleeSaw: {fileID: 928029811}
-  meleeSquare: {fileID: 557811466}
-  rangedSaw: {fileID: 1233641775}
-  rangedDispersed: {fileID: 809446634}
-  company_ui: {fileID: 0}
-  company: {fileID: 0}
 --- !u!1 &873453557
 GameObject:
   m_ObjectHideFlags: 0
@@ -3247,7 +3227,7 @@ GameObject:
   - component: {fileID: 1233641778}
   - component: {fileID: 1233641777}
   m_Layer: 5
-  m_Name: RangedSaw
+  m_Name: RangedSquare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3389,7 +3369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: formation
-      value: Wedge
+      value: Square
       objectReference: {fileID: 0}
     - target: {fileID: 1134582683347770736, guid: bea26357afe360646877d514e9f688a9, type: 3}
       propertyPath: meleeRange
@@ -3495,6 +3475,10 @@ PrefabInstance:
       propertyPath: camera_
       value: 
       objectReference: {fileID: 1336298806}
+    - target: {fileID: 7826242714576972466, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: formationButtons
+      value: 
+      objectReference: {fileID: 1929333107}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bea26357afe360646877d514e9f688a9, type: 3}
 --- !u!1 &1336298804
@@ -4392,6 +4376,10 @@ PrefabInstance:
       propertyPath: camera_
       value: 
       objectReference: {fileID: 1336298806}
+    - target: {fileID: 7826242714576972466, guid: bea26357afe360646877d514e9f688a9, type: 3}
+      propertyPath: formationButtons
+      value: 
+      objectReference: {fileID: 1929333107}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bea26357afe360646877d514e9f688a9, type: 3}
 --- !u!1001 &1870429247
@@ -4677,10 +4665,11 @@ MonoBehaviour:
   meleeWedge: {fileID: 2001597289}
   meleeSaw: {fileID: 928029811}
   meleeSquare: {fileID: 557811466}
-  rangedSaw: {fileID: 1233641775}
+  rangedSquare: {fileID: 1233641775}
   rangedDispersed: {fileID: 809446634}
   company_ui: {fileID: 0}
   company: {fileID: 0}
+  targetingPanel: {fileID: 1021509941}
 --- !u!1 &1937899184
 GameObject:
   m_ObjectHideFlags: 0
@@ -5097,7 +5086,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2001597292}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1929333107}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2001597292
 MonoBehaviour:
   m_ObjectHideFlags: 0
