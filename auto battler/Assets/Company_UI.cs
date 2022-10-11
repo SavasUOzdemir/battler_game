@@ -13,12 +13,19 @@ public class Company_UI : MonoBehaviour
     GameObject[] allCompanies;
     [SerializeField] Camera camera_;
     [SerializeField] RaycastHit hit;
+    string formation = null;
 
 
     private void Awake()
     {
         company = gameObject.GetComponent<Company>();
         allCompanies = GameObject.FindGameObjectsWithTag("Company");
+    }
+
+    public string Formation
+    {
+        get {return formation; } 
+        set {formation = value; }
     }
 
     void Update()

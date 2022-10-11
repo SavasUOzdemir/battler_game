@@ -15,6 +15,7 @@ public class TargetingOptions : MonoBehaviour
     GameObject[] buttons;
     [SerializeField] string formation_ = null;
     List<string> targetOpts;
+    Company company;
 
     public string Formation
     {

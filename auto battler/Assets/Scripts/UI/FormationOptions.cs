@@ -15,10 +15,7 @@ public class FormationOptions : MonoBehaviour
     [SerializeField] Company_UI company_ui;
     [SerializeField] Company company;
     [SerializeField] GameObject targetingPanel;
-
     GameObject[] formationOpts;
-    string[] formationStrs;
-    int i = 0;
     
     private void Awake()
     {
