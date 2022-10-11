@@ -28,12 +28,12 @@ public class Actor : MonoBehaviour
         animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
         attributes = GetComponent<Attributes>();
         aiDest = GetComponent<AIDestinationSetter>();
-        companyMover = GetComponent<CompanyMover>();
     }
 
     void Start()
     {
         company = attributes.GetCompany();
+        companyMover = company.GetComponent<CompanyMover>();
     }
 
     void Update()
@@ -51,6 +51,11 @@ public class Actor : MonoBehaviour
         if (company.Moving)
         {
             attributes.UpdateFacing();
+            if (IsInPosition())
+            {
+                attributes.SetFacing(companyMover.FinalCompanyDir);
+            }
+                
             return;
         }
             
@@ -67,7 +72,7 @@ public class Actor : MonoBehaviour
         }
         else if (IsInPosition()) 
         {
-            attributes.SetFacing(companyMover.CurrentCompanyDir);
+            attributes.SetFacing(companyMover.FinalCompanyDir);
             NotMeleeBehaviour();
         }
     }

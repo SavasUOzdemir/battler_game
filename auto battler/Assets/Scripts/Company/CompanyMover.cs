@@ -21,6 +21,7 @@ public class CompanyMover : MonoBehaviour
     [field: SerializeField] public Vector3 FinalCompanyDir { get; private set; }
     [field: SerializeField] public Vector3 CurrentCompanyDir { get; private set; }
     [field: SerializeField] public bool Moving { get; private set; } = false;
+    [field: SerializeField] public bool Rotating { get; private set; } = false;
     private Vector3 posLastFrame;
 
     public void init()
@@ -42,9 +43,8 @@ public class CompanyMover : MonoBehaviour
 
     void Update()
     {
-        if(Moving)
+        if(Moving && !company.InMelee)
             UpdateCurrentDirection();
-        CurrentMovementTarget = companyPathfinderBehaviour.GetMovementTarget();
     }
 
     void MoveModels()
@@ -57,14 +57,31 @@ public class CompanyMover : MonoBehaviour
 
     void UpdateCurrentDirection()
     {
-        if(Moving)
-            CurrentCompanyDir = (transform.position - posLastFrame).normalized;
+        if (Rotating)
+        {
+            Vector3 sum = Vector3.zero;
+            foreach (GameObject model in company.models)
+            {
+               sum += (model.GetComponent(typeof(Attributes)) as Attributes).GetFacing();
+            }
+
+            CurrentCompanyDir = sum / company.models.Count;
+            if (CurrentCompanyDir == FinalCompanyDir)
+            {
+                Rotating = false;
+                Moving = false;
+            }
+                
+            return;
+        }
+        CurrentCompanyDir = (transform.position - posLastFrame).normalized;
         posLastFrame = transform.position;
     }
 
     //This method is called for moving on the path drawn by the pathfinder
     public void MoveOnPath()
     {
+        CurrentMovementTarget = companyPathfinderBehaviour.GetMovementTarget();
         if (CurrentCompanyDir != FinalCompanyDir)
             RotateCompany(FinalCompanyDir);
         else
@@ -77,6 +94,8 @@ public class CompanyMover : MonoBehaviour
         CurrentMovementTarget = target;
         Moving = true;
         Vector3 dir = target - transform.position;
+        if (dir.normalized == Vector3.zero)
+            FinalCompanyDir = (dir * 10f).normalized;
         FinalCompanyDir = dir.normalized;
         arranger.ArrangeModels(target, FinalCompanyDir);
         MoveModels();
@@ -85,6 +104,7 @@ public class CompanyMover : MonoBehaviour
     public void StopCompany()
     {
         Moving = false;
+        Rotating = false;
         Vector3 newDir = (CurrentMovementTarget - transform.position).normalized;
         arranger.ArrangeModels(transform.position + newDir, newDir);
         MoveModels();
@@ -92,6 +112,8 @@ public class CompanyMover : MonoBehaviour
 
     public void RotateCompany(Vector3 dir)
     {
+        Moving = true;
+        Rotating = true;
         FinalCompanyDir = dir;
         arranger.ArrangeModels(transform.position, dir);
         MoveModels();

@@ -248,7 +248,6 @@ public class Company : MonoBehaviour
             inMeleeModels.Add(other.gameObject);
             if (!inMeleeCompaniesList.Contains(otherCompany))
                 inMeleeCompaniesList.Add(otherCompany);
-            Debug.Log("New Company in list " + inMeleeCompaniesList.Count);
             otherAtt.onDeathExitMelee += ExitMelee;
         }
         
@@ -264,8 +263,6 @@ public class Company : MonoBehaviour
             inMeleeCompaniesList.Remove(otherAtt.GetCompany());
         if (inMeleeCompaniesList.Count == 0)
             InMelee = false;
-        Debug.Log("Models " + inMeleeModels.Count);
-        Debug.Log("Companies " + inMeleeCompaniesList.Count);
     }
 
     void ExitMelee(Company company, GameObject model)

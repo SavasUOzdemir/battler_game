@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ea99686350c5e64cb94ba6d747b76f3, type: 3}
   m_Name: CompanyPathfinder_ShortestPath
   m_EditorClassIdentifier: 
-  companyPathfinderName: 
-  availableToFormations: []
+  companyPathfinderName: ShortestPath
+  availableToFormations:
+  - Square

@@ -20,11 +20,14 @@ public abstract class ArrangementBehaviour : MonoBehaviour
     void Update()
     {
         UpdateBannerPosition();
-        UpdateColliderSize();
-        collider.size = new Vector3(collider.size.x + company.MeleeRange * 2, 0f,
-            collider.size.z + company.MeleeRange * 2);
-        UpdateColliderCenter();
-        UpdateCompanyRotation();
+        if (!company.InMelee)
+        {
+            UpdateColliderSize();
+            collider.size = new Vector3(collider.size.x + company.MeleeRange * 2, 0f,
+                collider.size.z + company.MeleeRange * 2);
+            UpdateColliderCenter();
+            UpdateCompanyRotation();
+        }
     }
 
     public abstract void ArrangeModels(Vector3 companyPos, Vector3 direction);

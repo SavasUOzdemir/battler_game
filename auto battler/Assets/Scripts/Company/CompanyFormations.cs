@@ -10,13 +10,14 @@ using Vector3 = UnityEngine.Vector3;
 public static class CompanyFormations
 {
     public static List<temp.Formation> tempList = new();
+    static Dictionary<string, string> FormationToArrangement = new();
+    static Dictionary<string, List<string>> FormationToTargetingMode = new();
+    static Dictionary<string, string> FormationToPathfinder = new();
     public static Object[] Formations = Resources.LoadAll("Formations");
     public static Object[] Arrangements = Resources.LoadAll("Arrangements");
     public static Object[] TargetingModes = Resources.LoadAll("TargetingModes");
     public static Object[] CompanyPathfindings = Resources.LoadAll("CompanyPathfinders");
-    static Dictionary<string, string> FormationToArrangement = new();
-    static Dictionary<string, List<string>> FormationToTargetingMode = new();
-    static Dictionary<string, string> FormationToPathfinder = new();
+    
 
     public static void AddArrangementToFormation(string formation, string arrangement)
     {
