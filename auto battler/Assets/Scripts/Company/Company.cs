@@ -33,6 +33,7 @@ public class Company : MonoBehaviour
 
     //Formation, Targeting and Pathfinding
     [SerializeField] string formation = "Square";
+    public string Formation { get { return formation; } }
     public GameObject CurrentEnemyTarget { get; private set; } = null;
     TargetingModeBehaviour primaryTargetingMode;
     TargetingModeBehaviour secondaryTargetingMode;

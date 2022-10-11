@@ -17,6 +17,7 @@ public class TargetingOptions : MonoBehaviour
     List<string> targetOpts;
     Company company;
 
+    public List<string> TargetOptions { get { return targetOpts; }}
     public string Formation
     {
         get
@@ -44,17 +45,19 @@ public class TargetingOptions : MonoBehaviour
             button.SetActive(false);
     }
 
-    void UpdateTargetingOptions(string formation)
+    public List<string> UpdateTargetingOptions(string formation)
     {
         targetOpts = CompanyFormations.GetTargetingOptions(formation, 0);
         UpdateButtons(targetOpts);
+        return targetOpts;
     }
 
     void UpdateButtons(List<string> options)
     {
         DisableAllButtons();
-        foreach (var go in buttons)
-            if (options.Contains(go.GetComponent<TargetingModeHook>().TargetingModeName))
-                go.SetActive(true);
+        if (options != null)
+            foreach (var go in buttons)
+                if (options.Contains(go.GetComponent<TargetingModeHook>().TargetingModeName))
+                    go.SetActive(true);
     }
 }

@@ -7,25 +7,40 @@ using UnityEngine.UI;
 public class Company_UI : MonoBehaviour
 {
     [SerializeField] GameObject formationButtons;
+    [SerializeField] GameObject targetingButtons;
+
     public bool selected = false;
     public bool done = false;
     Company company;
     GameObject[] allCompanies;
     [SerializeField] Camera camera_;
     [SerializeField] RaycastHit hit;
-    string formation = null;
+    [SerializeField] string formation = null;
+    [SerializeField] string targeting_primary = null;
+    [SerializeField] string targeting_secondary = null;
 
 
     private void Awake()
     {
         company = gameObject.GetComponent<Company>();
         allCompanies = GameObject.FindGameObjectsWithTag("Company");
+        formation = company.Formation;
     }
 
     public string Formation
     {
         get {return formation; } 
         set {formation = value; }
+    }
+    public string Targeting_Primary
+    {
+        get { return targeting_primary; }
+        set { targeting_primary = value; }
+    }
+    public string Targeting_Secondary
+    {
+        get { return targeting_secondary; }
+        set { targeting_secondary = value; }
     }
 
     void Update()
@@ -56,6 +71,9 @@ public class Company_UI : MonoBehaviour
                 formationButtons.GetComponent<FormationOptions>().Company_UI = hit.transform.GetComponent<Company_UI>();
                 formationButtons.GetComponent<FormationOptions>().Company = hit.transform.GetComponent<Company>();
                 formationButtons.SendMessage("UpdateFormationOptions",null,SendMessageOptions.RequireReceiver);
+                formation = company.Formation;
+                if (targetingButtons.GetComponent<TargetingOptions>().Formation != formation)
+                    targetingButtons.GetComponent<TargetingOptions>().Formation = formation;
             }
         }
     }
