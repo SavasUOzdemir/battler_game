@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class CompanyPathfinderBehaviour_ShortestPath : CompanyPathfinderBehaviour
 {
-    private Company company;
-
-    void Awake()
+    
+    public override Vector3 GetMovementTarget(out Vector3 direction)
     {
-        company = GetComponent<Company>();
-    }
-    public override Vector3 GetMovementTarget()
-    {
-        if(company.CurrentEnemyTarget)
+        if (company.CurrentEnemyTarget)
+        {
+            direction = (company.CurrentEnemyTarget.transform.position - transform.position).normalized;
             return company.CurrentEnemyTarget.transform.position;
+        }
+
+        direction = mover.CurrentCompanyDir;
         return transform.position;
     }
 }

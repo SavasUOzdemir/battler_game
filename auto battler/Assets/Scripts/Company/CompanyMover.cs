@@ -22,6 +22,8 @@ public class CompanyMover : MonoBehaviour
     [field: SerializeField] public Vector3 CurrentCompanyDir { get; private set; }
     [field: SerializeField] public bool Moving { get; private set; } = false;
     [field: SerializeField] public bool Rotating { get; private set; } = false;
+    [field: SerializeField] public float CompanyRotateSensivity { get; } = 2f;
+    [field: SerializeField] public bool MovingOnPath { get; private set; } = false;
     private Vector3 posLastFrame;
 
     public void init()
@@ -31,8 +33,8 @@ public class CompanyMover : MonoBehaviour
     void Awake()
     {
         company = GetComponent<Company>();
-        FinalCompanyDir = Vector3.right - Vector3.right * 2 * company.Team;
-        CurrentCompanyDir = FinalCompanyDir;
+        CurrentCompanyDir = Vector3.right - Vector3.right * 2 * company.Team;
+        FinalCompanyDir = -CurrentCompanyDir;
         CurrentMovementTarget = transform.position;
     }
 
@@ -68,24 +70,27 @@ public class CompanyMover : MonoBehaviour
             CurrentCompanyDir = sum / company.models.Count;
             if (CurrentCompanyDir == FinalCompanyDir)
             {
-                Rotating = false;
-                Moving = false;
+                StopCompany();
             }
                 
             return;
         }
-        CurrentCompanyDir = (transform.position - posLastFrame).normalized;
+        if ((posLastFrame - transform.position).sqrMagnitude > 1)
+            CurrentCompanyDir = (transform.position - posLastFrame).normalized;
         posLastFrame = transform.position;
     }
 
     //This method is called for moving on the path drawn by the pathfinder
     public void MoveOnPath()
     {
-        CurrentMovementTarget = companyPathfinderBehaviour.GetMovementTarget();
-        if (CurrentCompanyDir != FinalCompanyDir)
+        Vector3 direction;
+        CurrentMovementTarget = companyPathfinderBehaviour.GetMovementTarget(out direction);
+        FinalCompanyDir = direction;
+        if (Vector3.Angle(CurrentCompanyDir, FinalCompanyDir) > CompanyRotateSensivity && !Rotating)
             RotateCompany(FinalCompanyDir);
-        else
+        else if(!Moving)
             MoveCompany(CurrentMovementTarget);
+        MovingOnPath = true;
     }
 
     //Calling this method forces the company to move straight towards the target

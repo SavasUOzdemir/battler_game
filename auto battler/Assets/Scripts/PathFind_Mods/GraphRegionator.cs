@@ -11,10 +11,11 @@ public class GraphRegionator : MonoBehaviour
     public class NavRegion
     {
         private static int idCounter = 0;
-        private int regionID;
+        public readonly int regionID;
         public Vector3 regionStart { get; private set; }
         public Vector3 regionEnd { get; private set; }
         public List<GridNode> nodes;
+        
 
         public NavRegion(Vector3 regionStart, Vector3 regionEnd, List<GridNode> nodes)
         {
@@ -23,17 +24,29 @@ public class GraphRegionator : MonoBehaviour
             this.regionEnd = regionEnd;
             this.nodes = nodes;
             idCounter++;
+            foreach (GridNode node in nodes)
+            {
+                GraphRegionator.nodeToRegion.Add(node,regionID);
+            }
         }
     }
+
+    public static GraphRegionator instance;
+    public static Dictionary<GridNode, int> nodeToRegion = new(); 
 
     private GridGraph gridGraph;
     public List<NavRegion> navRegions = new();
     public GameObject toolStart;
     public GameObject toolEnd;
+    public bool drawGizmos = false;
 
     void Awake()
     {
         gridGraph = AstarPath.active.data.gridGraph;
+
+        //TODO: Make better singleton
+        if (!instance)
+            instance = this;
     }
 
     void Start()
@@ -70,14 +83,12 @@ public class GraphRegionator : MonoBehaviour
             return;
 
         float maxX = graph.Width - 1;
-        Debug.Log(maxX);
         int currentIndex = startIndex;
         GridNode currentNode = graph.nodes[currentIndex];
         List<GridNode> currentNodes = new();
         List<GridNode> nodesInRow = new();
         bool firstRow = true;
         bool running = true;
-        Debug.Log("Start: " + currentNode.position);
         while (running && currentIndex < graph.nodes.Length )
         {
             currentNodes.AddRange(nodesInRow);
@@ -127,19 +138,21 @@ public class GraphRegionator : MonoBehaviour
         return unwalkables;
     }
 
-    public bool IsNodeInARegion(GraphNode node)
+    public bool IsNodeInARegion(GridNode node)
     {
-        foreach (NavRegion region in navRegions)
-        {
-            if (region.nodes.Contains(node))
-                return true;
-        }
+        if (nodeToRegion.ContainsKey(node))
+            return true;
         return false;
+    }
+
+    public bool IsNodeInARegion(GridNode node, out int regionid)
+    {
+        return nodeToRegion.TryGetValue(node, out regionid);
     }
 
     void OnDrawGizmos()
     {
-        if (!Application.isPlaying)
+        if (!Application.isPlaying || !drawGizmos)
             return;
         Gizmos.color = Color.red;
         foreach (GraphNode node in GetUnwalkableNodes(gridGraph))

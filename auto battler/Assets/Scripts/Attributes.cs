@@ -38,7 +38,7 @@ public class Attributes : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        aIPath = GetComponent<AIPath>();
+        aIPath = GetComponent<AIBase>() as AIPath;
     }
 
     void Start()
