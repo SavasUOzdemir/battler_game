@@ -208,8 +208,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 15.54
+  m_fontSizeBase: 15.54
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -712,7 +712,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 291507477}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 291507479}
+        m_TargetAssemblyTypeName: TargetingModeHook, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &291507477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -764,6 +776,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingModeName: TargetingModeBehaviour_LowestEndurance
+  targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
+  company: {fileID: 0}
 --- !u!1 &295526545
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,7 +1133,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 489956415}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 489956417}
+        m_TargetAssemblyTypeName: TargetingModeHook, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &489956415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1170,6 +1197,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingModeName: TargetingModeBehaviour_Protective
+  targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
+  company: {fileID: 0}
 --- !u!1 &531974192
 GameObject:
   m_ObjectHideFlags: 0
@@ -1946,7 +1976,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 765301582}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 765301584}
+        m_TargetAssemblyTypeName: TargetingModeHook, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &765301582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1998,6 +2040,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingModeName: TargetingModeBehaviour_LowestMorale
+  targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
+  company: {fileID: 0}
 --- !u!1 &809446634
 GameObject:
   m_ObjectHideFlags: 0
@@ -2603,7 +2648,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 894128496}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 894128498}
+        m_TargetAssemblyTypeName: TargetingModeHook, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &894128496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2655,6 +2712,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingModeName: TargetingModeBehaviour_FlyingSquad
+  targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
+  company: {fileID: 0}
 --- !u!1 &928029811
 GameObject:
   m_ObjectHideFlags: 0
@@ -3017,7 +3077,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1024890605}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1024890607}
+        m_TargetAssemblyTypeName: TargetingModeHook, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1024890605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3069,6 +3141,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingModeName: TargetingModeBehaviour_LowestHealth
+  targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
+  company: {fileID: 0}
 --- !u!1 &1037892067
 GameObject:
   m_ObjectHideFlags: 0
@@ -4319,7 +4394,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1363305232}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1363305234}
+        m_TargetAssemblyTypeName: TargetingModeHook, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1363305232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4371,6 +4458,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingModeName: TargetingModeBehaviour_ClosestSquad
+  targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
+  company: {fileID: 0}
 --- !u!1 &1656246010
 GameObject:
   m_ObjectHideFlags: 0
@@ -4560,7 +4650,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1664962827}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1664962829}
+        m_TargetAssemblyTypeName: TargetingModeHook, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1664962827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4612,6 +4714,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingModeName: TargetingModeBehaviour_RangedSquad
+  targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
+  company: {fileID: 0}
 --- !u!1 &1756282505
 GameObject:
   m_ObjectHideFlags: 0
@@ -5252,7 +5357,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1937899187}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1937899189}
+        m_TargetAssemblyTypeName: TargetingModeHook, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1937899187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5304,6 +5421,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingModeName: TargetingModeBehaviour_HighestHealth
+  targetingPanel: {fileID: 1021509941}
+  formationsPanel: {fileID: 1929333107}
+  company: {fileID: 0}
 --- !u!1 &1946912044
 GameObject:
   m_ObjectHideFlags: 0
