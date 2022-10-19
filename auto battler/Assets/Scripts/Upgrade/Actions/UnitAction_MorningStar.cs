@@ -22,7 +22,7 @@ public class UnitAction_MorningStar : UnitAction
         animPath = "Placeholder/animation_attack";
     }
 
-    protected override bool FindTargets()
+    public override bool FindTargets()
     {
         BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
         foreach (GameObject model in unitsBuffer)

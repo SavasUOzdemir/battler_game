@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Bson;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,20 @@ public abstract class UnitBuff
 {
     protected float duration = 0f;
 
-    public abstract void BuffEffect(Attributes attribute);
+    public virtual void OnApply(Attributes attributes)
+    {
+
+    }
+
+    public virtual void EveryTick(Attributes attributes)
+    {
+
+    }
+
+    public virtual void OnExpire(Attributes attributes)
+    {
+
+    }
 
     public float BuffTick()
     {

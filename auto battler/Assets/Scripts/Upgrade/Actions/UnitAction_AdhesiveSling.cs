@@ -27,7 +27,7 @@ public class UnitAction_AdhesiveSling : UnitAction
         projectile = Resources.Load("Projectiles/AdhesiveSling/Prefab_AdhesiveSling") as GameObject;
     }
 
-    protected override bool FindTargets()
+    public override bool FindTargets()
     {
         BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
         foreach (GameObject obj in unitsBuffer)
@@ -48,8 +48,9 @@ public class UnitAction_AdhesiveSling : UnitAction
     {
         if (target != null)
         {
-            GameObject firedProjectile = Instantiate(projectile, transform.position, Quaternion.identity);
-            firedProjectile.GetComponent<Projectile_AdhesiveSling>().Init(projectileSpeed, ySpeed, target, damage, attributes.GetTeam());
+            Projectile_AdhesiveSling firedProjectile = Instantiate(projectile, transform.position, Quaternion.identity).GetComponent<Projectile_AdhesiveSling>();
+            firedProjectile.Init(projectileSpeed, ySpeed, target, attributes.GetTeam());
+            firedProjectile.SetStats(damage);
             return true;
         }
         return false;

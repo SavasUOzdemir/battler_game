@@ -17,5 +17,6 @@ MonoBehaviour:
   energyCost: 3
   type: {fileID: 11400000, guid: a4acf8e1f2be35c4188bf37aa50e729c, type: 2}
   thumbnail: {fileID: 21300000, guid: b1a6d3ab54dcc7a49b257eba97719fc0, type: 3}
+  upgrade: UnitAction_ShortBow
   rarity: {fileID: 11400000, guid: 35f08bce9e62807488cb1932e2a0174e, type: 2}
   useText: This be a bow. It is not a tie.

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class Projectile : MonoBehaviour
 {
-    protected float damage;
     protected Vector3 velocity;
     protected Vector3 gravity = Vector3.zero;
     protected Animator animator;
@@ -25,12 +24,11 @@ public abstract class Projectile : MonoBehaviour
         }
     }
 
-    public void Init(float speed, float ySpeed, Transform target, float damage, int team)
+    public void Init(float speed, float ySpeed, Transform target, int team)
     {
         velocity = Vector3.Normalize(target.position - transform.position) * speed;
         velocity.y = ySpeed;
         gravity.y = -2 * speed * velocity.y / (transform.position - target.position).magnitude;
-        this.damage = damage;
         this.team = team;
     }
 

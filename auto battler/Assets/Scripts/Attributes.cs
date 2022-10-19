@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Attributes : MonoBehaviour
 {
@@ -11,22 +12,28 @@ public class Attributes : MonoBehaviour
     public float maxEndurance = 100f;
     public float armor = 0f;
     public float discipline = 0f;
-    public float vigor = 0f; 
+    public float vigor = 1f; 
     public float knockbackResist = 0f;
+    public float attackSpeedMod = 1f;
 
-    float speed = 1f;
+    
 
     [SerializeField]int team;
 
-    [SerializeField] float currentHP;
+    [field: SerializeField] public float CurrentHp { get; private set; }
     [SerializeField] float currentEndurance;
+    [SerializeField] bool winded = false;
+    [SerializeField] float speed = 1f;
     [SerializeField] Vector3 facing = Vector3.right;
     [SerializeField] List<UnitBuff> buffList = new List<UnitBuff>();
     Company company;
     SpriteRenderer spriteRenderer;
     AIPath aIPath;
+    float perSecond = 1f;
     List<UnitPassive> passivesList = new List<UnitPassive>();
     Vector3 lastPos;
+    public delegate void OnDeathExitMelee(Company company, GameObject model);
+    public OnDeathExitMelee onDeathExitMelee;
 
     void Awake()
     {
@@ -37,7 +44,7 @@ public class Attributes : MonoBehaviour
     void Start()
     {
         BattlefieldManager.AddModel(gameObject);
-        currentHP = maxHP;
+        CurrentHp = maxHP;
         currentEndurance = maxEndurance;
         aIPath.maxSpeed = speed;
         lastPos = transform.position;
@@ -45,17 +52,25 @@ public class Attributes : MonoBehaviour
 
     private void Update()
     {
-        //if(!company.InMelee())
-            updateFacing();
-        foreach(UnitBuff buff in buffList)
+        foreach(UnitBuff buff in buffList.ToList())
         {
-            buff.BuffEffect(this);
+            buff.EveryTick(this);
             if(buff.BuffTick() <= 0f)
+            {
+                buff.OnExpire(this);
                 buffList.Remove(buff);
+            }
+        }
+        
+        perSecond -= Time.deltaTime;
+        if (perSecond <= 0f)
+        {
+            ChangeEndurance(vigor);
+            perSecond = 1f;
         }
     }
 
-    void updateFacing()
+    public void UpdateFacing()
     {
         SetFacing((transform.position - lastPos).normalized);
     }
@@ -63,18 +78,32 @@ public class Attributes : MonoBehaviour
     public void ChangeSpeed(float change)
     {
         speed += change;
-        aIPath.maxSpeed = speed;
+        if(speed <= 0f)
+        {
+            aIPath.maxSpeed = 0f;
+        }
+        else
+        {
+            aIPath.maxSpeed = speed;
+        }
     }
-  
+
+    public float GetEndurance()
+    {
+        return currentEndurance;
+    }
 
     public void ChangeEndurance(float change)
     {
-        currentEndurance += change * (1 - vigor);
+        currentEndurance += change;
         if(currentEndurance > maxEndurance)
             currentEndurance = maxEndurance;
-        if(currentEndurance < 0f)
+        else if(currentEndurance < 0f)
             currentEndurance = 0f;
-        Debug.Log(change);
+        if(currentEndurance < maxEndurance * 0.2f)
+            winded = true;
+        else
+            winded = false;
     }
   
 
@@ -83,22 +112,24 @@ public class Attributes : MonoBehaviour
         Destroy(gameObject);
         company.RemoveModel(gameObject);
         BattlefieldManager.RemoveModel(gameObject);
+        if (onDeathExitMelee != null)
+            onDeathExitMelee(company, gameObject);
     }
     void KnockBack(AttackPacket packet)
     {
         if(packet.Owner != null)
         {
-            aIPath.Move((transform.position - packet.Owner.transform.position).normalized * packet.KnockBack);
+            aIPath.Move((transform.position - packet.Owner.transform.position).normalized * packet.KnockBack * knockbackResist);
         }
     }
 
     void ChangeHP(AttackPacket packet)
     {
         if (packet.HpChange < 0f)
-            currentHP += packet.HpChange * (1 - Mathf.Clamp(armor - packet.Piercing, 0f, 1f));
+            CurrentHp += packet.HpChange * (1 - Mathf.Clamp(armor - packet.Piercing, 0f, 1f));
         else
-            currentHP += packet.HpChange;
-        if (currentHP <= 0)
+            CurrentHp += packet.HpChange;
+        if (CurrentHp <= 0)
             Die();
     }
 
@@ -116,6 +147,7 @@ public class Attributes : MonoBehaviour
             {
                 if (buffList.Any(x => x.GetType() == buff.GetType()))
                     continue;
+                buff.OnApply(this);
                 buffList.Add(buff);
             }
         }
@@ -123,6 +155,7 @@ public class Attributes : MonoBehaviour
         {
             ChangeHP(packet);
             KnockBack(packet);
+            company.ChangeMorale(packet.MoraleChange);
         }    
     }
 
@@ -155,6 +188,11 @@ public class Attributes : MonoBehaviour
     public Company GetCompany()
     {
         return company;
+    }
+
+    public bool GetWinded()
+    {
+        return winded;
     }
 
     public void SetCompany(ModelAttributes modelAttributes)

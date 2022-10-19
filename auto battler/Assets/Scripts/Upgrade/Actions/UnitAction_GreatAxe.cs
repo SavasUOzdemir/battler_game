@@ -20,7 +20,7 @@ public class UnitAction_GreatAxe : UnitAction
         animPath = "Placeholder/animation_attack";
     }
 
-    protected override bool FindTargets()
+    public override bool FindTargets()
     {
         BattlefieldManager.ModelsInRadius(transform.position, range, unitsBuffer);
         enemies = new List<GameObject>();
@@ -43,6 +43,8 @@ public class UnitAction_GreatAxe : UnitAction
         AttackPacket attack = new AttackPacket(damage, gameObject);
         foreach (GameObject enemy in enemies)
         {
+            if(!enemy)
+                continue;
             enemy.GetComponent<Attributes>().ReceiveAttack(attack);
         }
         return true;

@@ -16,6 +16,7 @@ public class UI_Squad : MonoBehaviour, IDropHandler
     [SerializeField] int availableEnergy = 6;
     [SerializeField] Squad squad;
 
+
     private void Awake()
     {
         UpdateItemObject();
