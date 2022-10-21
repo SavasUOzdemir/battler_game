@@ -15,6 +15,8 @@ public class BattlefieldManager : MonoBehaviour
     static List<GameObject> companiesOnField = new List<GameObject>();
     static List<GameObject> modelsOnField = new List<GameObject>();
     static List<GameObject> deadCompanies = new();
+    [SerializeField] bool gameStarted = false;
+    [SerializeField] bool allCompaniesDone = false;
 
     void Awake()
     {

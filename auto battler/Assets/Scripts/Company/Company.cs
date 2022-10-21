@@ -16,7 +16,7 @@ public class Company : MonoBehaviour
     [field: SerializeField] public bool GameStarted { get; set; } = true;
     [field: SerializeField] public float MeleeRange { get; private set; } = 3f;
     [SerializeField] bool debug = false;
-    [field: SerializeField] public bool MouseControl { get; private set; } = false;
+    [field: SerializeField] public bool MouseControl { get; /*private */set; } = false;
 
     //Model Data
     public GameObject modelPrefab;
