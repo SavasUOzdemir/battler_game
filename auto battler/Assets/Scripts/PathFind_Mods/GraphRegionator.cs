@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Pathfinding;
+using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -15,14 +16,15 @@ public class GraphRegionator : MonoBehaviour
         public Vector3 regionStart { get; private set; }
         public Vector3 regionEnd { get; private set; }
         public List<GridNode> nodes;
-        
+        public Color regionColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1), Random.Range(0f, 1));
+
 
         public NavRegion(Vector3 regionStart, Vector3 regionEnd, List<GridNode> nodes)
         {
-            this.regionID = idCounter;
+            regionID = idCounter;
             this.regionStart = regionStart;
             this.regionEnd = regionEnd;
-            this.nodes = nodes;
+            this.nodes = new(nodes);
             idCounter++;
             foreach (GridNode node in nodes)
             {
@@ -52,7 +54,11 @@ public class GraphRegionator : MonoBehaviour
     void Start()
     {
         Regionate(gridGraph);
-        
+        foreach (NavRegion region in navRegions)
+        {
+            Debug.Log(region.regionID + "||" + region.nodes.Count);
+        }
+
     }
 
     void Update()
@@ -67,62 +73,97 @@ public class GraphRegionator : MonoBehaviour
         Vector3 currentRegionEnd = new();
         GridNode regionStartNode = null;
         List<GraphNode> unwalkables = GetUnwalkableNodes(gridGraph);
-        int startIndex = 0;
-        for (int i = 0; i < graph.nodes.Length; i++)
+        List<GridNode> remainingNodes = new(graph.nodes);
+        foreach (GridNode node in unwalkables)
         {
-            if (graph.nodes[i].Walkable)
-            {
-                currentRegionStart = (Vector3)graph.nodes[i].position;
-                regionStartNode = graph.nodes[i];
-                startIndex = i;
-                break;
-            }
+            remainingNodes.Remove(node);
         }
 
-        if (regionStartNode == null || currentRegionStart == null)
-            return;
-
-        float maxX = graph.Width - 1;
-        int currentIndex = startIndex;
-        GridNode currentNode = graph.nodes[currentIndex];
         List<GridNode> currentNodes = new();
         List<GridNode> nodesInRow = new();
-        bool firstRow = true;
-        bool running = true;
-        while (running && currentIndex < graph.nodes.Length )
+        GridNode currentNode;
+
+        int iteration = 0;
+
+        while (remainingNodes.Count > 0)
         {
-            currentNodes.AddRange(nodesInRow);
-            nodesInRow.Clear();
-            for(int i = currentIndex; true; i++)
+
+
+            int startIndex = 0;
+            for (int i = 0; i < remainingNodes.Count; i++)
             {
-                currentNode = graph.nodes[i];
-                if (currentNode.XCoordinateInGrid >= maxX)
+                if (remainingNodes[i].Walkable)
                 {
+                    currentRegionStart = (Vector3)remainingNodes[i].position;
+                    regionStartNode = remainingNodes[i];
+                    startIndex = remainingNodes[i].NodeInGridIndex;
                     break;
                 }
-                if (IsNodeInARegion(currentNode) || !currentNode.Walkable)
-                {
-                    if (firstRow)
-                    {
-                        Debug.Log(IsNodeInARegion(currentNode) + " " + currentNode.Walkable);
-                        maxX = currentNode.XCoordinateInGrid;
-                        firstRow = false;
-                        break;
-                    }
-                    toolStart.transform.position = (Vector3)currentNode.position;
-                    currentRegionEnd = (Vector3)currentNodes.Last().position;
-                    running = false;
-                    break;
-                }
-                nodesInRow.Add(currentNode);
             }
 
-            currentIndex += graph.width;
+            if (regionStartNode == null || currentRegionStart == null)
+                return;
+
+            float maxX = graph.Width - 1;
+            int currentIndex = startIndex;
+            currentNodes.Clear();
+            nodesInRow.Clear();
+            bool firstRow = true;
+            bool running = true;
+            toolStart.transform.position = (Vector3)graph.nodes[startIndex].position;
+            while (running && currentIndex < graph.nodes.Length)
+            {
+                currentNodes.AddRange(nodesInRow);
+                nodesInRow.Clear();
+                for (int i = currentIndex; true; i++)
+                {
+                    currentNode = graph.nodes[i];
+                    if (currentNode.XCoordinateInGrid >= maxX)
+                    {
+                        break;
+                    }
+
+                    if (IsNodeInARegion(currentNode) || !currentNode.Walkable)
+                    {
+                        if (firstRow)
+                        {
+                            maxX = currentNode.XCoordinateInGrid;
+                            firstRow = false;
+                            toolEnd.transform.position = (Vector3)graph.nodes[i].position;
+                            break;
+                        }
+
+                        currentRegionEnd = (Vector3)currentNodes.Last().position;
+                        running = false;
+                        break;
+                    }
+
+                    nodesInRow.Add(currentNode);
+                }
+
+                currentIndex += graph.width;
+            }
+
+            navRegions.Add(new NavRegion(currentRegionStart, currentRegionEnd, currentNodes));
+            Debug.Log("New Region: " + currentRegionStart + " to " + currentRegionEnd + " node count: " + navRegions.Last().nodes.Count);
+            foreach (GridNode node in currentNodes)
+            {
+                remainingNodes.Remove(node);
+            }
+
+            iteration++;
+            if (iteration > 50000)
+            {
+                Debug.Log("Potential infinite loop! Regionator abondoned!");
+                break;
+            }
+
+            if (remainingNodes.Count == 0)
+            {
+                Debug.Log("Regionator successfully exiting, number of regions created: " + navRegions.Count);
+            }
         }
-        navRegions.Add(new NavRegion(currentRegionStart, currentRegionEnd, currentNodes));
         
-        toolEnd.transform.position = currentRegionEnd;
-        Debug.Log(navRegions[0].regionStart + " to " + navRegions[0].regionEnd);
     }
 
     private List<GraphNode> GetUnwalkableNodes(GridGraph graph)
@@ -159,12 +200,13 @@ public class GraphRegionator : MonoBehaviour
         {
             Gizmos.DrawCube((Vector3)node.position,Vector3.one * 0.2f);
         }
-        Gizmos.color = Color.blue;
+
         foreach (NavRegion region in navRegions)
         {
+            Gizmos.color = region.regionColor;
             foreach (GridNode node in region.nodes)
             {
-                Gizmos.DrawCube((Vector3)node.position,Vector3.one * 0.2f);
+                Gizmos.DrawCube((Vector3)node.position,Vector3.one * gridGraph.nodeSize);
             }
         }
     }

@@ -9,7 +9,6 @@ public class ModifiedAI : AIPath
     protected override void OnPathComplete(Path newPath)
     {
         var regionatedPath = RegionatePath(newPath);
-        Debug.Log(regionatedPath.path.Count) ;
         base.OnPathComplete(regionatedPath);
     }
 
@@ -19,6 +18,7 @@ public class ModifiedAI : AIPath
         int currentRegionID =1;
         List<GraphNode> nodesToKeep = new();
         List<Vector3> vectorPathToKeep = new();
+        Debug.Log("Regionating path, nodes: " + p.path.Count);
         for(int i = 0; i < p.path.Count - 1; i++)
         {
             if (GraphRegionator.instance.IsNodeInARegion(p.path[i] as GridNode, out regionID))
@@ -35,6 +35,7 @@ public class ModifiedAI : AIPath
         vectorPathToKeep.Add((Vector3)p.path.Last().position);
         p.path = nodesToKeep;
         p.vectorPath = vectorPathToKeep;
+        Debug.Log("Path regionated, nodes: " + p.path.Count);
         return p;
     }
 }
